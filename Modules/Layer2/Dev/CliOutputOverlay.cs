@@ -11,7 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class CliOutputOverlay : BaseOverlay
     {
@@ -29,7 +29,7 @@ namespace JarvisLauncher
             });
         }
 
-        private CliOutputOverlay() : base("JARVIS SYSTEM TERMINAL", width: 750, height: 500)
+        private CliOutputOverlay() : base("HEAPLIT SYSTEM TERMINAL", width: 750, height: 500)
         {
             this.Closed += (s, e) => { _instance = null; };
 
@@ -77,7 +77,7 @@ namespace JarvisLauncher
             try {
                 string dir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data");
                 Directory.CreateDirectory(dir);
-                File.AppendAllText(Path.Combine(dir, "Jarvis.log"), $"\n[{DateTime.Now}] {commandTitle}:\n{outputContent}\n");
+                File.AppendAllText(Path.Combine(dir, "Heaplit.log"), $"\n[{DateTime.Now}] {commandTitle}:\n{outputContent}\n");
             } catch { }
         }
     }

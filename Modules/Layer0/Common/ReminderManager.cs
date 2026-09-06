@@ -10,7 +10,7 @@ using System.Text.Json;
 using System.Windows.Threading;
 using System.Media;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class ReminderItem
     {

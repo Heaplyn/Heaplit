@@ -52,9 +52,9 @@ Thumbs.db
 desktop.ini
 
 # Obsidian runtime files (machine-specific, locked while Obsidian is open)
-Jarvis Obsidian/.obsidian/workspace.json
-Jarvis Obsidian/.obsidian/workspace-mobile.json
-Jarvis Obsidian/.obsidian/cache
+Heaplit Obsidian/.obsidian/workspace.json
+Heaplit Obsidian/.obsidian/workspace-mobile.json
+Heaplit Obsidian/.obsidian/cache
 
 # Node modules (DownloadMedia)
 Modules/Layer0/DownloadMedia/node_modules/

@@ -8,7 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class LogCommandHandler : ICommandHandler
     {
@@ -26,11 +26,11 @@ namespace JarvisLauncher
             double similarity = SearchUtil.GetSimilarity(query, "logs");
             string logPath = GetLogPath();
 
-            // Suggestion 1: View logs in Jarvis Terminal
+            // Suggestion 1: View logs in Heaplit Terminal
             suggestions.Add(new CommandResult
             {
                 TITLE       = "View System Logs",
-                DESCRIPTION = "Read Jarvis execution history inside the System Terminal",
+                DESCRIPTION = "Read Heaplit execution history inside the System Terminal",
                 SIMILARITY  = similarity + 0.1,
                 EXECUTE     = () => ShowLogsInTerminal(logPath)
             });
@@ -39,7 +39,7 @@ namespace JarvisLauncher
             suggestions.Add(new CommandResult
             {
                 TITLE       = "Open Logs in Notepad",
-                DESCRIPTION = "Open the raw Jarvis.log file in your system text editor",
+                DESCRIPTION = "Open the raw Heaplit.log file in your system text editor",
                 SIMILARITY  = similarity,
                 EXECUTE     = () => OpenLogInNotepad(logPath)
             });
@@ -48,7 +48,7 @@ namespace JarvisLauncher
             suggestions.Add(new CommandResult
             {
                 TITLE       = "Clear System Logs",
-                DESCRIPTION = "Permanently empty the Jarvis.log file on disk",
+                DESCRIPTION = "Permanently empty the Heaplit.log file on disk",
                 SIMILARITY  = similarity - 0.2,
                 EXECUTE     = () => ClearLogs(logPath)
             });
@@ -67,7 +67,7 @@ namespace JarvisLauncher
                     dataDir = devPath;
                 }
             }
-            return Path.Combine(dataDir, "Jarvis.log");
+            return Path.Combine(dataDir, "Heaplit.log");
         }
 
         private static void ShowLogsInTerminal(string logPath)
@@ -79,7 +79,7 @@ namespace JarvisLauncher
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to read logs:\n{ex.Message}", "Jarvis Log Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Failed to read logs:\n{ex.Message}", "Heaplit Log Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -90,7 +90,7 @@ namespace JarvisLauncher
                 if (!File.Exists(logPath))
                 {
                     // Create empty log file if missing
-                    File.WriteAllText(logPath, "=== JARVIS INITIALIZED LOGS ===\n");
+                    File.WriteAllText(logPath, "=== HEAPLIT INITIALIZED LOGS ===\n");
                 }
 
                 Process.Start(new ProcessStartInfo
@@ -102,7 +102,7 @@ namespace JarvisLauncher
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to open log file:\n{ex.Message}", "Jarvis Log Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Failed to open log file:\n{ex.Message}", "Heaplit Log Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -118,7 +118,7 @@ namespace JarvisLauncher
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to clear logs:\n{ex.Message}", "Jarvis Log Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Failed to clear logs:\n{ex.Message}", "Heaplit Log Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

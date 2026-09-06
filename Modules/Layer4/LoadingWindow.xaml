@@ -1,8 +1,8 @@
-<Window x:Class="JarvisLauncher.LoadingWindow"
+<Window x:Class="HeaplitLauncher.LoadingWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:JarvisLauncher"
-        Title="Jarvis Initializing" Height="300" Width="500"
+        xmlns:local="clr-namespace:HeaplitLauncher"
+        Title="Heaplit Initializing" Height="300" Width="500"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         WindowStartupLocation="CenterScreen" Topmost="True" ShowInTaskbar="False">
     <Border Background="#1A1A1E" CornerRadius="15" BorderBrush="#33FFFFFF" BorderThickness="1">
@@ -14,7 +14,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <local:OutlinedText Text="JARVIS SYSTEM BOOT" Foreground="White" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="0"/>
+            <local:OutlinedText Text="HEAPLIT SYSTEM BOOT" Foreground="White" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="0"/>
 
             <Viewbox Grid.Row="1" Margin="20">
                 <Grid Width="100" Height="100">

@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class ScreenCaptureUtil
     {
@@ -13,7 +13,7 @@ namespace JarvisLauncher
         {
             try
             {
-                // Capture the entire Virtual Screen (all monitors) to ensure Jarvis sees everything
+                // Capture the entire Virtual Screen (all monitors) to ensure Heaplit sees everything
                 var bounds = SystemInformation.VirtualScreen;
                 using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height))
                 {

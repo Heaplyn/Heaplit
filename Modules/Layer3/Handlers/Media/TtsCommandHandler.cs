@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class TtsCommandHandler : ICommandHandler
     {
@@ -38,7 +38,7 @@ namespace JarvisLauncher
             {
                 suggestions.Add(new CommandResult
                 {
-                    TITLE = "🔇 Stop Jarvis Speech",
+                    TITLE = "🔇 Stop Heaplit Speech",
                     DESCRIPTION = "Instantly cancel all active TTS output",
                     EXECUTE = () => TtsManager.Stop(),
                     SIMILARITY = (SearchUtil.BestSimilarity(query, "tts", "speak", "say", "read", "stop tts", "ttsvoices", "voices") + 5.0 * 0.01)

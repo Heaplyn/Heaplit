@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class DebuggerCommandHandler : ICommandHandler
     {
@@ -34,7 +34,7 @@ namespace JarvisLauncher
 
             suggestions.Add(new CommandResult
             {
-                TITLE = "🛠️ Open Jarvis Live System Debugger & PC Optimizer",
+                TITLE = "🛠️ Open Heaplit Live System Debugger & PC Optimizer",
                 DESCRIPTION = "Real-time telemetry, RAM compactor, junk purger, zombie task killer & process manager",
                 SIMILARITY = (SearchUtil.BestSimilarity(query, "debug", "inspect", "diagnostics", "perf", "monitor", "optimizer", "taskmgr", "system monitor") + 9.8 * 0.01),
                 EXECUTE = () => SystemMonitorOverlay.ShowOverlay()

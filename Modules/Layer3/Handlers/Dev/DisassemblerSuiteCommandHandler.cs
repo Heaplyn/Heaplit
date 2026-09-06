@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace JarvisLauncher.Modules.Layer3.Handlers
+namespace HeaplitLauncher.Modules.Layer3.Handlers
 {
     public class DisassemblerSuiteCommandHandler : ICommandHandler
     {

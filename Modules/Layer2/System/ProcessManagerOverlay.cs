@@ -12,7 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class ProcessInfo
     {
@@ -42,7 +42,7 @@ namespace JarvisLauncher
         public static void OpenManager() => ShowOverlay();
 
         private ProcessManagerOverlay()
-            : base("JARVIS PROCESS STUDIO", width: 800, height: 600)
+            : base("HEAPLIT PROCESS STUDIO", width: 800, height: 600)
         {
             this.Closed += (s, e) =>
             {

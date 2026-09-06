@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Diagnostics;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     internal static class NativeMethods
     {
@@ -188,7 +188,7 @@ namespace JarvisLauncher
                 string checkDir = AppDomain.CurrentDomain.BaseDirectory;
                 for (int i = 0; i < 5; i++)
                 {
-                    if (System.IO.File.Exists(System.IO.Path.Combine(checkDir, "JarvisLauncher.csproj")))
+                    if (System.IO.File.Exists(System.IO.Path.Combine(checkDir, "HeaplitLauncher.csproj")))
                     {
                         projectRoot = checkDir;
                         break;
@@ -200,9 +200,9 @@ namespace JarvisLauncher
 
                 string script;
                 string waitAndKill = $@"
-                    # Kill current process and any other Jarvis instances to prevent file locks
+                    # Kill current process and any other Heaplit instances to prevent file locks
                     $currentId = {Process.GetCurrentProcess().Id};
-                    Get-Process -Name 'JarvisLauncher' -ErrorAction SilentlyContinue | Where-Object {{ $_.Id -ne $currentId }} | Stop-Process -Force;
+                    Get-Process -Name 'HeaplitLauncher' -ErrorAction SilentlyContinue | Where-Object {{ $_.Id -ne $currentId }} | Stop-Process -Force;
 
                     $count = 0;
                     while ((Get-Process -Id $currentId -ErrorAction SilentlyContinue) -and ($count -lt 50)) {{
@@ -219,7 +219,7 @@ namespace JarvisLauncher
                 else
                 {
                     // Fresh Boot or Pull: Try to rebuild if in a dev environment
-                    bool isDev = System.IO.File.Exists(System.IO.Path.Combine(projectRoot, "JarvisLauncher.csproj"));
+                    bool isDev = System.IO.File.Exists(System.IO.Path.Combine(projectRoot, "HeaplitLauncher.csproj"));
                     if (isDev)
                     {
                         // If it's a Git repo, we'll do a pull if requested, OR at least a fetch to see if we're behind
@@ -238,9 +238,9 @@ namespace JarvisLauncher
                                 dotnet build -c Debug;
 
                                 if ($LASTEXITCODE -eq 0) {{
-                                    Start-Process '{projectRoot}\JarvisLauncher.exe'
+                                    Start-Process '{projectRoot}\HeaplitLauncher.exe'
                                 }} else {{
-                                    Start-Process '{projectRoot}\JarvisLauncher.exe'
+                                    Start-Process '{projectRoot}\HeaplitLauncher.exe'
                                     Write-Error 'Rebuild failed, starting previous stable build.';
                                 }}
                             }}";

@@ -11,7 +11,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class HelpCenterOverlay : BaseOverlay
     {
@@ -31,7 +31,7 @@ namespace JarvisLauncher
         private TextBox _searchBox;
         private TabControl _cmdSubTabControl;
 
-        public HelpCenterOverlay() : base("📖 JARVIS HELP & DOCUMENTATION CENTER", 780, 560)
+        public HelpCenterOverlay() : base("📖 HEAPLIT HELP & DOCUMENTATION CENTER", 780, 560)
         {
             var mainGrid = new Grid { Margin = new Thickness(10) };
             mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -85,10 +85,10 @@ namespace JarvisLauncher
 
             keysStack.Children.Add(CreateHeaderBlock("Global Hotkeys & System Accelerators"));
 
-            keysStack.Children.Add(CreateShortcutRow("` (Backtick / Tilde)", "Toggle Jarvis Main HUD Command Bar"));
+            keysStack.Children.Add(CreateShortcutRow("` (Backtick / Tilde)", "Toggle Heaplit Main HUD Command Bar"));
             keysStack.Children.Add(CreateShortcutRow("Ctrl + Shift + A", "Open AI Chat Assistant Overlay"));
             keysStack.Children.Add(CreateShortcutRow("Ctrl + Alt + M", "Open Mobile Companion Hub Overlay"));
-            keysStack.Children.Add(CreateShortcutRow("Ctrl + Shift + R", "Restart Jarvis Launcher Application"));
+            keysStack.Children.Add(CreateShortcutRow("Ctrl + Shift + R", "Restart Heaplit Launcher Application"));
             keysStack.Children.Add(CreateShortcutRow("Ctrl + Shift + C", "Emergency Exit Application"));
             keysStack.Children.Add(CreateShortcutRow("Tab", "Autocomplete Top Ghost Suggestion in Search Bar"));
             keysStack.Children.Add(CreateShortcutRow("Esc", "Hide HUD or Overlay Window"));
@@ -136,8 +136,8 @@ namespace JarvisLauncher
 
             advStack.Children.Add(CreateHeaderBlock("HUD Mastery & Chaining Tips"));
             advStack.Children.Add(CreateInfoRow("AI Shorthand", "Use @rf{file} or @ps{cmd} in chat for direct system control."));
-            advStack.Children.Add(CreateInfoRow("Custom Processors", "Link Python/C++ binaries to Jarvis via the @proc pipeline."));
-            advStack.Children.Add(CreateInfoRow("Obsidian Sync", "Ask Jarvis to save notes directly to your Obsidian vault using [[links]]."));
+            advStack.Children.Add(CreateInfoRow("Custom Processors", "Link Python/C++ binaries to Heaplit via the @proc pipeline."));
+            advStack.Children.Add(CreateInfoRow("Obsidian Sync", "Ask Heaplit to save notes directly to your Obsidian vault using [[links]]."));
             advStack.Children.Add(CreateInfoRow("Math HUD", "Type math directly (e.g. '54 * 12 + sqrt(144)') for instant output."));
 
             advScroll.Content = advStack;
@@ -149,7 +149,7 @@ namespace JarvisLauncher
             var guideScroll = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Margin = new Thickness(12) };
             var guideStack = new StackPanel();
 
-            guideStack.Children.Add(CreateHeaderBlock("🤖 JARVIS MASTER USER GUIDE & FEATURE MANUAL"));
+            guideStack.Children.Add(CreateHeaderBlock("🤖 HEAPLIT MASTER USER GUIDE & FEATURE MANUAL"));
 
             string guideText = "⚠️ Guide file user_guide.md not found.";
             try

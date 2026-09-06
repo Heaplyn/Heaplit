@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class SearchLauncherCommandHandler : ICommandHandler
     {

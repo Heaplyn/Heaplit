@@ -5,12 +5,12 @@
 using System;
 using System.IO;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class StartMenuRegistrar
     {
         /// <summary>
-        /// Registers Jarvis in the Windows Start Menu & Search Bar by creating shortcuts in %APPDATA%\Microsoft\Windows\Start Menu\Programs.
+        /// Registers Heaplit in the Windows Start Menu & Search Bar by creating shortcuts in %APPDATA%\Microsoft\Windows\Start Menu\Programs.
         /// </summary>
         public static void EnsureStartMenuShortcut()
         {
@@ -29,16 +29,16 @@ namespace JarvisLauncher
                 string? exePath = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName;
                 if (string.IsNullOrEmpty(exePath) || !File.Exists(exePath))
                 {
-                    exePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "JarvisLauncher.exe");
+                    exePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "HeaplitLauncher.exe");
                 }
 
                 if (!File.Exists(exePath)) return;
 
-                // 1. Create "Jarvis.lnk" for "Jarvis" search
-                CreateShortcut(Path.Combine(programsDir, "Jarvis.lnk"), exePath, "Jarvis HUD Launcher & AI Assistant");
+                // 1. Create "Heaplit.lnk" for "Heaplit" search
+                CreateShortcut(Path.Combine(programsDir, "Heaplit.lnk"), exePath, "Heaplit HUD Launcher & AI Assistant");
 
-                // 2. Create "Jarvis AI.lnk" for "Jarvis AI" search
-                CreateShortcut(Path.Combine(programsDir, "Jarvis AI.lnk"), exePath, "Jarvis AI Assistant");
+                // 2. Create "Heaplit AI.lnk" for "Heaplit AI" search
+                CreateShortcut(Path.Combine(programsDir, "Heaplit AI.lnk"), exePath, "Heaplit AI Assistant");
             }
             catch { }
         }

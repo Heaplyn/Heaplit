@@ -11,7 +11,7 @@ using System.Windows.Media.Animation;
 using System.Linq;
 using System.Windows.Controls;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class ThemeManager
     {

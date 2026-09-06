@@ -1,6 +1,6 @@
 // Developer: heaplyn
 // Date: 2026-08-16
-// Summary: VSIX / VS Code Extension Parser for Jarvis Studio.
+// Summary: VSIX / VS Code Extension Parser for Heaplit Studio.
 //          Extracts language definitions, grammars, and snippets to enhance editor intelligence.
 
 using System;
@@ -13,7 +13,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class VsixExtension
     {
@@ -144,7 +144,7 @@ namespace JarvisLauncher
                     ExtractPatterns(patterns, rules);
                 }
 
-                // Map to Jarvis extensions
+                // Map to Heaplit extensions
                 string ext = "." + languageId.ToLower();
                 if (languageId.Equals("csharp", StringComparison.OrdinalIgnoreCase)) ext = ".cs";
                 if (languageId.Equals("python", StringComparison.OrdinalIgnoreCase)) ext = ".py";

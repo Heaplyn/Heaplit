@@ -1,6 +1,6 @@
 // Developer: heaplyn
 // Date: 2026-09-03
-// Summary: High-Performance Live System Debugger & PC Optimizer Suite for Jarvis.
+// Summary: High-Performance Live System Debugger & PC Optimizer Suite for Heaplit.
 //          Features:
 //          - Real-time CPU, RAM, Multi-Drive Disk, Network IO, and System Uptime Telemetry
 //          - Algorithmic Deep RAM Working-Set Optimizer across background applications
@@ -24,7 +24,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class SystemProcessEntry
     {
@@ -88,7 +88,7 @@ namespace JarvisLauncher
         }
 
         private SystemMonitorOverlay()
-            : base("JARVIS LIVE SYSTEM DEBUGGER & PC OPTIMIZER", width: 780, height: 600)
+            : base("HEAPLIT LIVE SYSTEM DEBUGGER & PC OPTIMIZER", width: 780, height: 600)
         {
             this.Closed += (s, e) =>
             {
@@ -577,7 +577,7 @@ namespace JarvisLauncher
         {
             double memoryBefore = GetTotalUsedMemoryMB();
 
-            // 1. Purge Jarvis internal textures & LOH
+            // 1. Purge Heaplit internal textures & LOH
             try { BaseOverlay.PurgeSystemMemory(); } catch { }
             try { OutlinedText.ClearCache(); } catch { }
             try { SelfHealingManager.CompactAndHealMemory("Deep RAM Optimization"); } catch { }

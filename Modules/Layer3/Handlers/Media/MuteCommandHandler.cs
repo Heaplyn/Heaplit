@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class MuteCommandHandler : ICommandHandler
     {

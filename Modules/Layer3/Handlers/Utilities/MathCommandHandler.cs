@@ -8,7 +8,7 @@ using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class MathCommandHandler : ICommandHandler
     {

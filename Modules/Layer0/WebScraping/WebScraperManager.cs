@@ -1,7 +1,7 @@
 // Developer: heaplyn / copilot
 // Date: 2026-08-21
 // Layer: 0 (no WPF/UI dependencies)
-// Summary: Advanced web scraper for Jarvis.
+// Summary: Advanced web scraper for Heaplit.
 //   - Static HTML scraping via HtmlAgilityPack
 //   - JSON API scraping
 //   - Recursive link crawler
@@ -18,7 +18,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class ScrapeResult
     {
@@ -37,7 +37,7 @@ namespace JarvisLauncher
 
         static WebScraperManager()
         {
-            _client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) JarvisLauncher/2.0");
+            _client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) HeaplitLauncher/2.0");
             _client.DefaultRequestHeaders.Add("Accept-Language", "en-US,en;q=0.9");
             _client.DefaultRequestHeaders.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
             _client.Timeout = TimeSpan.FromSeconds(20);

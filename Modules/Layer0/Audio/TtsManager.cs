@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.IO;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class TtsManager : ITtsService
     {

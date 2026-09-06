@@ -12,7 +12,7 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using System.Linq;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class DesktopWindow
     {
@@ -151,8 +151,8 @@ namespace JarvisLauncher
                         int style = GetWindowLong(hWnd, GWL_STYLE);
                         int exStyle = GetWindowLong(hWnd, GWL_EXSTYLE);
 
-                        // Exclude tool windows, borders, and overlays (like Jarvis itself!)
-                        if ((exStyle & WS_EX_TOOLWINDOW) == 0 && titleStr != "📌 JARVIS MULTI-NOTE WORKSPACE" && titleStr != "📅 JARVIS PLANNER & CALENDAR" && !titleStr.Contains("Jarvis"))
+                        // Exclude tool windows, borders, and overlays (like Heaplit itself!)
+                        if ((exStyle & WS_EX_TOOLWINDOW) == 0 && titleStr != "📌 HEAPLIT MULTI-NOTE WORKSPACE" && titleStr != "📅 HEAPLIT PLANNER & CALENDAR" && !titleStr.Contains("Heaplit"))
                         {
                             if (GetWindowRect(hWnd, out var r))
                             {

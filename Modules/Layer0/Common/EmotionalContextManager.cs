@@ -2,14 +2,14 @@
 // Date: 2026-08-15
 // Summary: User Sentiment & Emotional Intelligence Engine.
 //          Tracks the user's emotional state over the current session.
-//          Allows Jarvis to "Understand" when to dial down the sass and be more supportive.
+//          Allows Heaplit to "Understand" when to dial down the sass and be more supportive.
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public enum UserMood { Neutral, Focused, Stressed, Frustrated, Happy, Bored }
 
@@ -52,7 +52,7 @@ namespace JarvisLauncher
                 UserMood.Focused => "DIRECTIVE: User is in flow. Do not interrupt unless necessary. Stay in the background.",
                 UserMood.Happy => "DIRECTIVE: User is in a good mood. Sass is encouraged. Celebrate successes with them.",
                 UserMood.Bored => "DIRECTIVE: User is idle/bored. Engage them with a witty thought or system insight.",
-                _ => "DIRECTIVE: Maintain standard witty Jarvis persona."
+                _ => "DIRECTIVE: Maintain standard witty Heaplit persona."
             };
         }
     }

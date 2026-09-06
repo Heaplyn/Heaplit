@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class NoteItem
     {

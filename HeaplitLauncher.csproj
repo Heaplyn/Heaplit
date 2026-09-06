@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <UseWpf>true</UseWpf>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>HeaplitLauncher</RootNamespace>
+    <AssemblyName>HeaplitLauncher</AssemblyName>
+    <Platforms>AnyCPU;x64</Platforms>
+    <PublishReadyToRun>false</PublishReadyToRun>
+    <DefaultItemExcludes>$(DefaultItemExcludes);Modules/Layer0/DownloadMedia/node_modules/**;Modules/Layer0/DownloadMedia/user_data/**;Data/**;Downloads/**</DefaultItemExcludes>
+    <!-- GC Tuning: Workstation GC with concurrent sweeps gives the best UI responsiveness -->
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
+    <!-- Keep Roslyn compilation server warm between incremental builds -->
+    <UseSharedCompilation>true</UseSharedCompilation>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Modules/Layer0/DownloadMedia/node_modules/**" />
+    <Compile Remove="Modules/Layer0/DownloadMedia/user_data/**" />
+    <Compile Remove="Data/**" />
+    <Compile Remove="Downloads/**" />
+    <EmbeddedResource Remove="Modules/Layer0/DownloadMedia/node_modules/**" />
+    <EmbeddedResource Remove="Modules/Layer0/DownloadMedia/user_data/**" />
+    <EmbeddedResource Remove="Data/**" />
+    <EmbeddedResource Remove="Downloads/**" />
+    <None Remove="Modules/Layer0/DownloadMedia/node_modules/**" />
+    <None Remove="Modules/Layer0/DownloadMedia/user_data/**" />
+    <None Remove="Data/**" />
+    <None Remove="Downloads/**" />
+    <Content Remove="Modules/Layer0/DownloadMedia/node_modules/**" />
+    <Content Remove="Modules/Layer0/DownloadMedia/user_data/**" />
+    <Content Remove="Data/**" />
+    <Content Remove="Downloads/**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Apis.Auth" Version="1.76.0" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.72" />
+    <PackageReference Include="NAudio" Version="3.0.1" />
+    <PackageReference Include="NetCord" Version="1.0.0-beta.15" />
+    <PackageReference Include="SharpCompress" Version="0.38.0" />
+    <PackageReference Include="System.Management" Version="10.0.11" />
+    <PackageReference Include="System.Speech" Version="10.0.11" />
+    <PackageReference Include="Vosk" Version="0.3.38" />
+    <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
+  </ItemGroup>
+
+</Project>

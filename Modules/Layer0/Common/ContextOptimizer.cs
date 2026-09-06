@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class ContextOptimizer
     {

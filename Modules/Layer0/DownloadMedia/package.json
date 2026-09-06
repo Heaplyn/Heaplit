@@ -1,7 +1,7 @@
 {
   "name": "downloadmedia",
   "version": "1.0.0",
-  "description": "Standalone CLI downloader inside Jarvis Layer 0",
+  "description": "Standalone CLI downloader inside Heaplit Layer 0",
   "type": "module",
   "scripts": {
     "download": "tsx DownloadMedia.ts"

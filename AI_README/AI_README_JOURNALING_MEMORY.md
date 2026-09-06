@@ -1,7 +1,7 @@
 # JOURNALING, MEMORY & CONTEXT SUBSYSTEM (`Modules/Layer0/`)
 
 ## OVERVIEW
-Jarvis retains long-term developer activity logs, clipboard snippets, context notes, and active session histories to provide continuous awareness across coding sessions.
+Heaplit retains long-term developer activity logs, clipboard snippets, context notes, and active session histories to provide continuous awareness across coding sessions.
 
 ---
 

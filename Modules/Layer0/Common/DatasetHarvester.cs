@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class DatasetHarvester
     {
@@ -104,7 +104,7 @@ namespace JarvisLauncher
             {
                 // Similar to HuggingFaceManager.SearchModelsAsync but for datasets
                 using var client = new System.Net.Http.HttpClient();
-                client.DefaultRequestHeaders.Add("User-Agent", "JarvisLauncher/1.0");
+                client.DefaultRequestHeaders.Add("User-Agent", "HeaplitLauncher/1.0");
                 string url = $"https://huggingface.co/api/datasets?search={Uri.EscapeDataString(keyword)}&limit=5&sort=downloads&direction=-1";
 
                 string json = await client.GetStringAsync(url);

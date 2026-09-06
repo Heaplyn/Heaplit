@@ -13,7 +13,7 @@ using System.Windows;
 using System.Text;
 using System.Threading;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class AutonomousAgentEngine
     {

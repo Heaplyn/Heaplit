@@ -7,11 +7,11 @@
 using System;
 using System.Windows;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class HumanConfirm
     {
-        public static bool Ask(string message, string title = "Jarvis — Confirm Action")
+        public static bool Ask(string message, string title = "Heaplit — Confirm Action")
         {
             try
             {

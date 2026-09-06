@@ -16,7 +16,7 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class McpServerConfig
     {
@@ -546,7 +546,7 @@ namespace JarvisLauncher
                 {
                     protocolVersion = "2024-11-05",
                     capabilities = new { },
-                    clientInfo = new { name = "JarvisLauncher", version = "1.0.0" }
+                    clientInfo = new { name = "HeaplitLauncher", version = "1.0.0" }
                 };
                 var result = await RequestAsync("initialize", initParams, 15000);
                 if (result.TryGetProperty("error", out var err))

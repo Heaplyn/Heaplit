@@ -11,7 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.IO.Compression;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class NgrokTunnelManager
     {
@@ -289,7 +289,7 @@ namespace JarvisLauncher
         {
             string zipUrl = "https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip";
             using var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("User-Agent", "JarvisLauncher/1.0");
+            client.DefaultRequestHeaders.Add("User-Agent", "HeaplitLauncher/1.0");
             var data = await client.GetByteArrayAsync(zipUrl);
             string toolsDir = Path.GetDirectoryName(exePath) ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "Tools");
             string tmpZip = Path.Combine(Path.GetTempPath(), $"ngrok_{Guid.NewGuid()}.zip");

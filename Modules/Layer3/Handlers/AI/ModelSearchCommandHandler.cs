@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class ModelSearchCommandHandler : ICommandHandler
     {
@@ -88,7 +88,7 @@ namespace JarvisLauncher
                 suggestions.Add(new CommandResult
                 {
                     TITLE = $"{icon} {model.Id}",
-                    DESCRIPTION = $"[{model.Provider}] {model.Detail} — click to switch Jarvis to this model",
+                    DESCRIPTION = $"[{model.Provider}] {model.Detail} — click to switch Heaplit to this model",
                     SIMILARITY = sim,
                     EXECUTE = () =>
                     {

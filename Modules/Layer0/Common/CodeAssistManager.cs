@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class CodeAssistManager
     {
@@ -42,7 +42,7 @@ namespace JarvisLauncher
             string checkDir = AppDomain.CurrentDomain.BaseDirectory;
             for (int i = 0; i < 5; i++)
             {
-                if (Directory.Exists(Path.Combine(checkDir, "Modules")) || File.Exists(Path.Combine(checkDir, "JarvisLauncher.csproj")))
+                if (Directory.Exists(Path.Combine(checkDir, "Modules")) || File.Exists(Path.Combine(checkDir, "HeaplitLauncher.csproj")))
                 {
                     ActiveCodebasePath = checkDir;
                     break;

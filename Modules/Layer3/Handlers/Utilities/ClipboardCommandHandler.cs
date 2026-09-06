@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class ClipboardCommandHandler : ICommandHandler
     {

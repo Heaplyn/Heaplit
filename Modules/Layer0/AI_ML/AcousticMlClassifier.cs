@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class AcousticMatchResult
     {
@@ -108,8 +108,8 @@ namespace JarvisLauncher
             Result.MATCHED_PHRASE = BestPhrase;
             Result.BEST_SAMPLE = BestSample;
 
-            // STRICT GATE: Only consider it a match if it's actually Jarvis
-            bool isWakeWordMatch = BestPhrase.ToLowerInvariant().Contains("jarvis");
+            // STRICT GATE: Only consider it a match if it's actually Heaplit
+            bool isWakeWordMatch = BestPhrase.ToLowerInvariant().Contains("heaplit");
             Result.IS_MATCHED = MaxSimilarity >= Threshold && isWakeWordMatch;
 
             if (Result.IS_MATCHED)

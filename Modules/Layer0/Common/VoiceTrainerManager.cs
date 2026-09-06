@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class VoiceSample
     {
@@ -98,13 +98,13 @@ namespace JarvisLauncher
 
             try
             {
-                mciSendString("close jarvis_rec", null, 0, IntPtr.Zero);
-                int res1 = mciSendString("open new type waveaudio alias jarvis_rec", null, 0, IntPtr.Zero);
+                mciSendString("close heaplit_rec", null, 0, IntPtr.Zero);
+                int res1 = mciSendString("open new type waveaudio alias heaplit_rec", null, 0, IntPtr.Zero);
                 if (res1 != 0) return false;
 
-                mciSendString("set jarvis_rec samplespersec 44100 bitspersample 16 channels 2 alignment 4 bytespersec 176400", null, 0, IntPtr.Zero);
+                mciSendString("set heaplit_rec samplespersec 44100 bitspersample 16 channels 2 alignment 4 bytespersec 176400", null, 0, IntPtr.Zero);
 
-                int res2 = mciSendString("record jarvis_rec", null, 0, IntPtr.Zero);
+                int res2 = mciSendString("record heaplit_rec", null, 0, IntPtr.Zero);
                 if (res2 == 0)
                 {
                     _isRecording = true;
@@ -129,8 +129,8 @@ namespace JarvisLauncher
 
             try
             {
-                mciSendString($"save jarvis_rec \"{filePath}\"", null, 0, IntPtr.Zero);
-                mciSendString("close jarvis_rec", null, 0, IntPtr.Zero);
+                mciSendString($"save heaplit_rec \"{filePath}\"", null, 0, IntPtr.Zero);
+                mciSendString("close heaplit_rec", null, 0, IntPtr.Zero);
 
                 if (File.Exists(filePath))
                 {
@@ -238,10 +238,10 @@ namespace JarvisLauncher
             {
                 try
                 {
-                    mciSendString("close jarvis_play", null, 0, IntPtr.Zero);
-                    mciSendString($"open \"{filePath}\" type waveaudio alias jarvis_play", null, 0, IntPtr.Zero);
-                    mciSendString("play jarvis_play wait", null, 0, IntPtr.Zero);
-                    mciSendString("close jarvis_play", null, 0, IntPtr.Zero);
+                    mciSendString("close heaplit_play", null, 0, IntPtr.Zero);
+                    mciSendString($"open \"{filePath}\" type waveaudio alias heaplit_play", null, 0, IntPtr.Zero);
+                    mciSendString("play heaplit_play wait", null, 0, IntPtr.Zero);
+                    mciSendString("close heaplit_play", null, 0, IntPtr.Zero);
                 }
                 catch { }
             });

@@ -17,7 +17,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class AdaptiveSleeper
     {
@@ -110,7 +110,7 @@ namespace JarvisLauncher
             {
                 IsBackground = true,
                 Priority = ThreadPriority.BelowNormal,
-                Name = "Jarvis-AdaptiveSleeper"
+                Name = "Heaplit-AdaptiveSleeper"
             };
             thread.Start();
         }

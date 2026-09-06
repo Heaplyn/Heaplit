@@ -15,7 +15,7 @@ def search_files():
                 full_path = os.path.join(root, file)
                 results.append(full_path)
                 
-    output_path = r"C:\Users\Kyle\Downloads\Projects\Jarvis\Data\Instructions\search_results.txt"
+    output_path = r"C:\Users\Kyle\Downloads\Projects\Heaplit\Data\Instructions\search_results.txt"
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
         f.write("# Search Results\n")

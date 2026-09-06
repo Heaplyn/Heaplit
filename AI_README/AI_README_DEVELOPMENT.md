@@ -1,4 +1,4 @@
-# JARVIS DEVELOPMENT & TROUBLESHOOTING GUIDE
+# HEAPLIT DEVELOPMENT & TROUBLESHOOTING GUIDE
 
 ## HOW TO ADD NEW THINGS
 
@@ -63,7 +63,7 @@
 
 ---
 
-## JARVIS DEVELOPER & AI WISDOM MANUAL (CRITICAL DIRECTIONS FOR FUTURE DEVELOPERS/AGENTS)
+## HEAPLIT DEVELOPER & AI WISDOM MANUAL (CRITICAL DIRECTIONS FOR FUTURE DEVELOPERS/AGENTS)
 
 ### 1. Initial Diagnostics & Scan Checklist (Run EVERY Turn)
 1. **Verify Compile State**: Run `dotnet build` immediately before making changes to ensure the workspace starts in a clean, working state.
@@ -80,22 +80,22 @@
 - **Dispatcher Invocation**: Always use `Application.Current.Dispatcher.Invoke()` or `InvokeAsync()` when updating progress texts, logs, or displaying dialog windows from background tasks.
 
 ### 4. Resolving Lock File Collisions
-- If building the project fails because `JarvisLauncher.exe` is locked, it means the app is running in the background. Kill it using the CLI:
-  `Stop-Process -Name JarvisLauncher -Force`
+- If building the project fails because `HeaplitLauncher.exe` is locked, it means the app is running in the background. Kill it using the CLI:
+  `Stop-Process -Name HeaplitLauncher -Force`
 
 ---
 
 ## NUGET & DEPENDENCY MANAGEMENT
 
-### How NuGet Packages Work in Jarvis
-All third-party libraries are declared in `JarvisLauncher.csproj` as `<PackageReference>` entries. They are **automatically restored and bundled** into the output EXE on every `dotnet build` — no manual installation step is needed.
+### How NuGet Packages Work in Heaplit
+All third-party libraries are declared in `HeaplitLauncher.csproj` as `<PackageReference>` entries. They are **automatically restored and bundled** into the output EXE on every `dotnet build` — no manual installation step is needed.
 
 To add a new package:
 ```powershell
 dotnet add package <PackageName>
 ```
 
-This updates `JarvisLauncher.csproj` immediately. The package will be available in all subsequent builds.
+This updates `HeaplitLauncher.csproj` immediately. The package will be available in all subsequent builds.
 
 ### Current NuGet Dependencies of Note
 | Package | Purpose |

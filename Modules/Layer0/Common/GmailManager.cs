@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class GmailManager
     {
@@ -26,7 +26,7 @@ namespace JarvisLauncher
                 var sb = new System.Text.StringBuilder();
                 sb.AppendLine("📬 **Recent Gmail Inbox**:");
                 sb.AppendLine("- [Security Alert] New sign-in detected on Windows (10:45 AM)");
-                sb.AppendLine("- [GitHub] Your build of Jarvis Mobile succeeded (09:12 AM)");
+                sb.AppendLine("- [GitHub] Your build of Heaplit Mobile succeeded (09:12 AM)");
                 sb.AppendLine("- [Amazon] Your package has been delivered (Yesterday)");
                 sb.AppendLine("\n(Note: This is a simulation based on active OAuth2 token. Full API integration pending library install.)");
 

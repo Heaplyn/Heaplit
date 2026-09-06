@@ -12,7 +12,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class PinnedFile
     {
@@ -41,7 +41,7 @@ namespace JarvisLauncher
         }
 
         private FileGridOverlay()
-            : base("JARVIS FILE LAUNCHPAD", width: 550, height: 420)
+            : base("HEAPLIT FILE LAUNCHPAD", width: 550, height: 420)
         {
             this.Closed += (s, e) => { _instance = null; };
 

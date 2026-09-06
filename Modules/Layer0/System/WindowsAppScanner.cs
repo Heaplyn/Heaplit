@@ -11,7 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Win32;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class AppInfo
     {

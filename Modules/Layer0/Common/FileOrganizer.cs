@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class FileOrganizer
     {

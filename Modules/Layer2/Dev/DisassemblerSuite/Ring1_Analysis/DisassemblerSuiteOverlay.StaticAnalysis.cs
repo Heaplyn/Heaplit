@@ -1,5 +1,5 @@
 // Developer: heaplyn
-// Ring 1 (Analysis) of the JARVIS Disassembler Suite.
+// Ring 1 (Analysis) of the HEAPLIT Disassembler Suite.
 // AI-assisted static analysis: builds a GROUNDED feature bundle from Ring0 primitives
 // (real import table, classified Win32 capabilities, IOCs, per-section entropy) and either
 // scores it instantly (heuristic) or sends it to the LLM for a structured threat report.
@@ -15,7 +15,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public partial class DisassemblerSuiteOverlay : BaseOverlay
     {
@@ -84,7 +84,7 @@ namespace JarvisLauncher
 
             _aiStaticText = CreateLogConsole();
             _aiStaticText.Text =
-                "// === JARVIS AI STATIC ANALYSIS ===\n" +
+                "// === HEAPLIT AI STATIC ANALYSIS ===\n" +
                 "// Load a binary (Browse + Analyze), then:\n" +
                 "//   ⚡ HEURISTIC SCAN  — instant, offline. Parses the real PE import table,\n" +
                 "//                        classifies Win32 capabilities, extracts IOCs, scores risk.\n" +
@@ -285,7 +285,7 @@ namespace JarvisLauncher
                     _aiStaticText.Text = "🤖 Feature bundle ready. Reasoning over it with the LLM engine...\n\n" + bundle);
 
                 string prompt =
-                    "You are the JARVIS binary static-analysis engine. Below is a GROUNDED feature bundle " +
+                    "You are the HEAPLIT binary static-analysis engine. Below is a GROUNDED feature bundle " +
                     "extracted directly from a binary (real PE import table, classified Win32 capabilities, " +
                     "IOCs from strings, entropy). Reason ONLY from this evidence — do not invent imports or IOCs.\n\n" +
                     "Respond in EXACTLY this structure:\n" +

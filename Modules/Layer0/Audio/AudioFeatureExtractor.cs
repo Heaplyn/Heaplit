@@ -7,7 +7,7 @@ using System;
 using System.IO;
 using System.Linq;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class AudioFeatures
     {

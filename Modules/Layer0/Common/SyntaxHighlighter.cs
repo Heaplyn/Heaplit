@@ -13,7 +13,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using System.Linq;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class SyntaxHighlighter
     {

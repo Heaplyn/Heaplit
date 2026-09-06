@@ -9,7 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class VoiceAutoImprover
     {
@@ -30,7 +30,7 @@ namespace JarvisLauncher
                 {
                     try
                     {
-                        if (SettingsManager.Current.IS_VOICE_MODE_ACTIVE && SettingsManager.Current.IS_JARVIS_ENABLED)
+                        if (SettingsManager.Current.IS_VOICE_MODE_ACTIVE && SettingsManager.Current.IS_HEAPLIT_ENABLED)
                         {
                             await RunAutoImproverAuditAsync();
                         }
@@ -87,7 +87,7 @@ namespace JarvisLauncher
 
                 // 2. If it's a wake phrase that was processed through Gemini fallback,
                 // teach SAPI the variant
-                if (record.Classification == "Wake Word" && !t.Equals("Jarvis", StringComparison.OrdinalIgnoreCase))
+                if (record.Classification == "Wake Word" && !t.Equals("Heaplit", StringComparison.OrdinalIgnoreCase))
                 {
                     VoiceActivationManager.LearnPhraseGlobal(t);
                     learnedCount++;

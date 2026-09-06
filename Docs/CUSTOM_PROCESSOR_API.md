@@ -1,6 +1,6 @@
-# Jarvis Custom Processor API
+# Heaplit Custom Processor API
 
-Jarvis supports fine-tuned data processing through specialized tags that allow your external programs to differentiate between text, images, and network requests.
+Heaplit supports fine-tuned data processing through specialized tags that allow your external programs to differentiate between text, images, and network requests.
 
 ## ⚡ Shorthand Tags
 - **Text**: `@proc_text{operation, data}`
@@ -10,8 +10,8 @@ Jarvis supports fine-tuned data processing through specialized tags that allow y
 
 ---
 
-## 🛠️ How Jarvis Calls Your Program
-When any `@proc_` tag is used, Jarvis executes your binary with **Named Arguments**. Your program should use a CLI library (like `argparse` in Python or `yargs` in Node) to parse these.
+## 🛠️ How Heaplit Calls Your Program
+When any `@proc_` tag is used, Heaplit executes your binary with **Named Arguments**. Your program should use a CLI library (like `argparse` in Python or `yargs` in Node) to parse these.
 
 **Arguments Passed:**
 1. `--mode`: Either `text`, `image`, `request`, or `generic`.
@@ -72,7 +72,7 @@ class Program {
 }
 ```
 
-1. Open the **LLM Studio** in Jarvis.
+1. Open the **LLM Studio** in Heaplit.
 2. Enable **External Data Processor**.
 3. Point the **Processor Path** to your script (e.g., `python C:\path\to\my_processor.py` or the path to your compiled `.exe`).
-4. Test it by asking Jarvis: *"Run your custom processor on 'Hello World'"*.
+4. Test it by asking Heaplit: *"Run your custom processor on 'Hello World'"*.

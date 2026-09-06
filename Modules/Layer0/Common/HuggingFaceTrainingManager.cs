@@ -14,7 +14,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class HuggingFaceTrainingManager
     {
@@ -72,16 +72,16 @@ namespace JarvisLauncher
                     foreach (var turn in turns)
                     {
                         int uIdx = turn.IndexOf("USER: ");
-                        int jIdx = turn.IndexOf("JARVIS: ");
+                        int jIdx = turn.IndexOf("HEAPLIT: ");
 
                         if (uIdx >= 0 && jIdx > uIdx)
                         {
                             string user = turn.Substring(uIdx + 6, jIdx - (uIdx + 6)).Trim();
-                            string jarvis = turn.Substring(jIdx + 8).Trim();
+                            string heaplit = turn.Substring(jIdx + 8).Trim();
 
-                            if (!string.IsNullOrEmpty(user) && !string.IsNullOrEmpty(jarvis))
+                            if (!string.IsNullOrEmpty(user) && !string.IsNullOrEmpty(heaplit))
                             {
-                                trainingData.Add(new { instruction = user, response = jarvis });
+                                trainingData.Add(new { instruction = user, response = heaplit });
                             }
                         }
                     }

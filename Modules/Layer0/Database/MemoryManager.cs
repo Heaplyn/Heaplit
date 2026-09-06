@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class MemoryManager : IMemoryService
     {

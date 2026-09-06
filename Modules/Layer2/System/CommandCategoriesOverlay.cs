@@ -1,6 +1,6 @@
 // Developer: copilot
 // Date: 2026-08-12
-// Summary: Categorized command browser overlay — groups all registered Jarvis commands into topic sections with click-to-run cards.
+// Summary: Categorized command browser overlay — groups all registered Heaplit commands into topic sections with click-to-run cards.
 
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class CommandCategoriesOverlay : BaseOverlay
     {

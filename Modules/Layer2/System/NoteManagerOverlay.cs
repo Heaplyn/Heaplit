@@ -16,7 +16,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Documents;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class NoteManagerOverlay : BaseOverlay
     {
@@ -48,7 +48,7 @@ namespace JarvisLauncher
 
         public class NoteManagerState { public string? LastNotePath { get; set; } }
 
-        public NoteManagerOverlay() : base("📓 JARVIS NOTES STUDIO", width: 950, height: 650)
+        public NoteManagerOverlay() : base("📓 HEAPLIT NOTES STUDIO", width: 950, height: 650)
         {
             var state = PersistentStateManager.LoadState<NoteManagerState>("Notes");
 
@@ -331,7 +331,7 @@ namespace JarvisLauncher
                 if (string.IsNullOrWhiteSpace(instruction)) return;
 
                 Application.Current.Dispatcher.Invoke(() => {
-                    _statusLabel.Text = "🤖 JARVIS is thinking...";
+                    _statusLabel.Text = "🤖 HEAPLIT is thinking...";
                 });
 
                 try

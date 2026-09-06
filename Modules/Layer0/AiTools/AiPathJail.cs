@@ -7,11 +7,11 @@
 using System;
 using System.IO;
 
-namespace JarvisLauncher.AiTools
+namespace HeaplitLauncher.AiTools
 {
     public static class AiPathJail
     {
-        // Workspace root the model is allowed to touch. Defaults to the Jarvis install dir.
+        // Workspace root the model is allowed to touch. Defaults to the Heaplit install dir.
         public static string Root { get; } =
             Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory);
 

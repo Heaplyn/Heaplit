@@ -1,5 +1,5 @@
 // Developer: heaplyn
-// Ring 0 (Core) of the JARVIS Disassembler Suite.
+// Ring 0 (Core) of the HEAPLIT Disassembler Suite.
 // Pure, UI-free static-analysis primitives: PE navigation, real import-table parsing,
 // Win32 API capability classification, and IOC extraction. No instance state, no WPF.
 // Higher rings (Ring1 analysis engines, Ring2 UI) consume this; this file requires nothing above it.
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     /// <summary>A single imported module and the functions the binary imports from it.</summary>
     public sealed class ImportedModule

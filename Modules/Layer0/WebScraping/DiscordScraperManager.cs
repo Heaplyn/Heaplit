@@ -15,7 +15,7 @@ using System.IO;
 using System.Threading.Tasks;
 using NetCord;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class DiscordGuildInfo
     {

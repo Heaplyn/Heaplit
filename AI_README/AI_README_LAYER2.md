@@ -6,7 +6,7 @@
 ---
 
 ## 1. GLASSMORPHIC ARCHITECTURE (`BaseOverlay.cs`)
-Overlays inherit from `BaseOverlay` ([`BaseOverlay.cs`](file:///c:/Users/Kyle/Downloads/Projects/Jarvis/Modules/Layer2/BaseOverlay.cs)), which wraps native Win32 Desktop Window Manager (DWM) Acrylic APIs to render hardware-accelerated translucent glass panels.
+Overlays inherit from `BaseOverlay` ([`BaseOverlay.cs`](file:///c:/Users/Kyle/Downloads/Projects/Heaplit/Modules/Layer2/BaseOverlay.cs)), which wraps native Win32 Desktop Window Manager (DWM) Acrylic APIs to render hardware-accelerated translucent glass panels.
 
 - **Window Base Setup**: Subclasses invoke the base constructor: `base("WPF Window Title", width, height)`
 - **Dynamic Content Binding**: Assign root layout containers via `this.UserContent = mainGrid;`
@@ -56,7 +56,7 @@ To ensure uniform rendering and prevent text clipping across all display DPI sca
 
 ## 3. DISASSEMBLER SUITE OVERLAY (`DisassemblerSuiteOverlay.cs`)
 
-[`DisassemblerSuiteOverlay`](file:///c:/Users/Kyle/Downloads/Projects/Jarvis/Modules/Layer2/DisassemblerSuiteOverlay.cs) is a comprehensive binary reverse engineering environment featuring a 13-tab analysis and reconstruction suite.
+[`DisassemblerSuiteOverlay`](file:///c:/Users/Kyle/Downloads/Projects/Heaplit/Modules/Layer2/DisassemblerSuiteOverlay.cs) is a comprehensive binary reverse engineering environment featuring a 13-tab analysis and reconstruction suite.
 
 ```mermaid
 flowchart TD
@@ -216,7 +216,7 @@ flowchart LR
     EditOn --> EditCode["Developer edits assembly blocks in editor"]
     EditCode --> SavePart["Click '💾 SAVE PART'\n(SaveAssemblyPart)"]
     SavePart --> MemCache["Updates _reconstructedAssemblyParts[partName]"]
-    SavePart --> DiskWrite["Writes file to ~/Jarvis_Reconstructed/[Project]/..."]
+    SavePart --> DiskWrite["Writes file to ~/Heaplit_Reconstructed/[Project]/..."]
 ```
 
 1. **Toggle Edit Mode (`ToggleAssemblyEditMode`)**:
@@ -231,11 +231,11 @@ flowchart LR
 2. **Code Modification & Sync**:
    - Developer alters disassembled or reconstructed code blocks directly in the editor.
    - Clicking `💾 SAVE PART` (`SaveAssemblyPart()`) commits changes into the memory cache `_reconstructedAssemblyParts[partName]`.
-   - Flushes file payload to disk under the developer workspace path: `~/Jarvis_Reconstructed/[Project]/[PartName]`.
+   - Flushes file payload to disk under the developer workspace path: `~/Heaplit_Reconstructed/[Project]/[PartName]`.
 
 ---
 
-## 5. VISUAL CUSTOMIZATION SYSTEM (`ThemeManager.cs`, `SettingsOverlay.cs`, `JarvisVisualsOverlay.cs`)
+## 5. VISUAL CUSTOMIZATION SYSTEM (`ThemeManager.cs`, `SettingsOverlay.cs`, `HeaplitVisualsOverlay.cs`)
 
 All visual styling options are defined in `SystemSettings` (Layer 0) and applied at runtime via `ThemeManager.ApplyVisualOverrides()`.
 

@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class GitHubManager
     {
@@ -13,7 +13,7 @@ namespace JarvisLauncher
 
         static GitHubManager()
         {
-            _client.DefaultRequestHeaders.Add("User-Agent", "Jarvis-PC-Assistant");
+            _client.DefaultRequestHeaders.Add("User-Agent", "Heaplit-PC-Assistant");
         }
 
         public static async Task<string> GetRepoInfoAsync(string ownerRepo)

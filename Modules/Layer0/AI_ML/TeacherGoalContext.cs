@@ -11,7 +11,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class TeacherGoalContext
     {
@@ -144,7 +144,7 @@ namespace JarvisLauncher
         public static async Task<(string focus, string triggers, string tone, string raw)> GenerateFromGoalAsync(string goal)
         {
             string prompt =
-                "You are JARVIS configuring yourself as a live over-the-shoulder coding tutor. " +
+                "You are HEAPLIT configuring yourself as a live over-the-shoulder coding tutor. " +
                 "The user will tell you what they're working on or trying to learn. Turn that into a concrete watch-plan " +
                 "you (a screen-watching vision model) will use to decide when to interrupt and help.\n\n" +
                 $"USER GOAL: \"{goal}\"\n\n" +

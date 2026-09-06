@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace JarvisLauncher.Modules.Layer3.Handlers
+namespace HeaplitLauncher.Modules.Layer3.Handlers
 {
     public class UrlPullerCommandHandler : ICommandHandler
     {
@@ -78,7 +78,7 @@ namespace JarvisLauncher.Modules.Layer3.Handlers
             {
                 var viewWindow = new Window
                 {
-                    Title = "Jarvis Web Puller Result",
+                    Title = "Heaplit Web Puller Result",
                     Width = 600,
                     Height = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen,
@@ -106,7 +106,7 @@ namespace JarvisLauncher.Modules.Layer3.Handlers
         {
             var list = new List<CommandDesc>();
             list.Add(new CommandDesc("pull <url>", "Pull raw text content from target URL", "pull https://api.ipify.org"));
-            list.Add(new CommandDesc("pull <json_config>", "Execute HTTP request with custom headers/cookies config", "pull {\"Url\": \"https://httpbin.org/headers\", \"Headers\": {\"X-Jarvis\": \"Active\"}}"));
+            list.Add(new CommandDesc("pull <json_config>", "Execute HTTP request with custom headers/cookies config", "pull {\"Url\": \"https://httpbin.org/headers\", \"Headers\": {\"X-Heaplit\": \"Active\"}}"));
             return list;
         }
 

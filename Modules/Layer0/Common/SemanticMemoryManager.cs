@@ -12,7 +12,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class MemoryNode
     {
@@ -124,7 +124,7 @@ namespace JarvisLauncher
                 string json = await File.ReadAllTextAsync(lastFile);
                 var turns = JsonSerializer.Deserialize<List<ChatTurn>>(json);
                 if (turns == null) return "Empty log.";
-                return string.Join("\n", turns.TakeLast(5).Select(t => $"[{(t.Role == "user" ? "User" : "Jarvis")}]: {t.Text}"));
+                return string.Join("\n", turns.TakeLast(5).Select(t => $"[{(t.Role == "user" ? "User" : "Heaplit")}]: {t.Text}"));
             } catch { return "Chat log access failure."; }
         }
 
@@ -189,7 +189,7 @@ namespace JarvisLauncher
             string prompt = "### TASK\nExtract 1-3 critical new facts about the user or their active project from this interaction. Focus on names, preferences, file paths, or complex logic details.\n\n" +
                             "### FORMAT\nOutput ONLY short bullet points. If no NEW facts are present, respond with 'NONE'.\n\n" +
                             $"USER: {userMessage}\n" +
-                            $"JARVIS: {aiResponse}";
+                            $"HEAPLIT: {aiResponse}";
 
             try
             {
@@ -212,7 +212,7 @@ namespace JarvisLauncher
             if (history == null || history.Count < 4) return;
 
             var fullText = new StringBuilder();
-            foreach (var turn in history) fullText.AppendLine($"{(turn.Role == "user" ? "User" : "Jarvis")}: {turn.Text}");
+            foreach (var turn in history) fullText.AppendLine($"{(turn.Role == "user" ? "User" : "Heaplit")}: {turn.Text}");
 
             string prompt = "### TASK\nSummarize this entire chat session into 1-2 powerful sentences that capture the core goals achieved or discussed.\n\n" +
                             "### CONTENT\n" + fullText.ToString();

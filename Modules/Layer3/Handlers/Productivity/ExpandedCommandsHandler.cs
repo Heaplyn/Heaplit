@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class ExpandedCommandsHandler : ICommandHandler
     {
@@ -52,7 +52,7 @@ namespace JarvisLauncher
                 suggestions.Add(new CommandResult { TITLE = $"🧠 Analyze: {Path.GetFileName(arg)}", DESCRIPTION = "Perform deep AI analysis on file content", EXECUTE = async () => { if (File.Exists(arg)) { string c = File.ReadAllText(arg); string res = await LlmRouter.AskAsync($"Perform a deep technical analysis of this file:\n\n{c}"); CliOutputOverlay.Show("Deep Analysis", res); } }, SIMILARITY = 4.5 });
 
             if (cmd == "os")
-                suggestions.Add(new CommandResult { TITLE = "🖥️ JarvisOS Info", DESCRIPTION = "Show information about the active OS development project", EXECUTE = () => { string root = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\JarvisOS")); if (Directory.Exists(root)) TextOverlay.Show($"JarvisOS Project detected at {root}", 4000); else TextOverlay.Show("JarvisOS project folder not found.", 3000); }, SIMILARITY = 5.0 });
+                suggestions.Add(new CommandResult { TITLE = "🖥️ HeaplitOS Info", DESCRIPTION = "Show information about the active OS development project", EXECUTE = () => { string root = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\HeaplitOS")); if (Directory.Exists(root)) TextOverlay.Show($"HeaplitOS Project detected at {root}", 4000); else TextOverlay.Show("HeaplitOS project folder not found.", 3000); }, SIMILARITY = 5.0 });
 
             // ── 1. GMAIL & WEB SCRAPING ──────────────────────────────────────────
             if (cmd == "gmail")

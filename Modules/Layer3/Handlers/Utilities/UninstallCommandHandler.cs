@@ -1,7 +1,7 @@
 // Developer: heaplyn
 // Date: 2026-08-14
 // Summary: Handles packages uninstall commands (winget, npm, python/pip)
-//          and supports self-uninstallation of the Jarvis launcher.
+//          and supports self-uninstallation of the Heaplit launcher.
 
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class UninstallCommandHandler : ICommandHandler
     {
@@ -28,7 +28,7 @@ namespace JarvisLauncher
             {
                 suggestions.Add(new CommandResult
                 {
-                    TITLE = "🗑️ Uninstall Packages or Jarvis",
+                    TITLE = "🗑️ Uninstall Packages or Heaplit",
                     DESCRIPTION = "Syntax: uninstall [winget/npm/python/self] [package_name]",
                     SIMILARITY = (SearchUtil.BestSimilarity(query, "uninstall") + 5.0 * 0.01),
                     EXECUTE = () => TextOverlay.Show("Example: uninstall winget sideloadly", 4000)
@@ -37,17 +37,17 @@ namespace JarvisLauncher
             }
 
             // Self-Uninstall Route
-            if (args.ToLower() == "self" || args.ToLower() == "jarvis")
+            if (args.ToLower() == "self" || args.ToLower() == "heaplit")
             {
                 suggestions.Add(new CommandResult
                 {
-                    TITLE = "⚠️ Completely Uninstall Jarvis Launcher",
+                    TITLE = "⚠️ Completely Uninstall Heaplit Launcher",
                     DESCRIPTION = "Purges all local configurations, templates, voice models, and files",
                     SIMILARITY = (SearchUtil.BestSimilarity(query, "uninstall") + 9.0 * 0.01),
                     EXECUTE = () =>
                     {
                         var confirm = MessageBox.Show(
-                            "This action will completely remove Jarvis, delete all local configuration profiles, voiceprints, reminders, and close the application. Proceed with uninstallation?",
+                            "This action will completely remove Heaplit, delete all local configuration profiles, voiceprints, reminders, and close the application. Proceed with uninstallation?",
                             "Confirm Full Uninstallation",
                             MessageBoxButton.YesNo,
                             MessageBoxImage.Warning
@@ -55,7 +55,7 @@ namespace JarvisLauncher
 
                         if (confirm == MessageBoxResult.Yes)
                         {
-                            TtsManager.Speak("Jarvis uninstallation initiated. Goodbye, owner.");
+                            TtsManager.Speak("Heaplit uninstallation initiated. Goodbye, owner.");
                             TextOverlay.Show("Goodbye...", 3000);
                             
                             // Write and trigger uninstaller cleanup script
@@ -145,13 +145,13 @@ echo Removing app binaries...
 rmdir /s /q ""{projectDir}""
 echo Removing user settings, models and cache...
 rmdir /s /q ""{geminiAppData}""
-echo Jarvis has been completely removed.
+echo Heaplit has been completely removed.
 pause
 del ""%~f0""
 exit
 ";
 
-                string tempBatch = Path.Combine(Path.GetTempPath(), "jarvis_uninstaller.bat");
+                string tempBatch = Path.Combine(Path.GetTempPath(), "heaplit_uninstaller.bat");
                 File.WriteAllText(tempBatch, batchScript);
 
                 Process.Start(new ProcessStartInfo

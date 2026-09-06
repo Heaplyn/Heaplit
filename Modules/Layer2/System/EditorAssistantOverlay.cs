@@ -1,7 +1,7 @@
 // Developer: heaplyn
 // Date: 2026-08-20
 // Summary: Code Editor Assistant Overlay.
-//          Bridges Jarvis to any foreground editor (VS Code, Visual Studio, Notepad++, Sublime, etc.) 
+//          Bridges Heaplit to any foreground editor (VS Code, Visual Studio, Notepad++, Sublime, etc.) 
 //          and automatically pastes boilerplate structures, headers, or imports directly at the cursor.
 
 using System;
@@ -13,7 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class EditorAssistantOverlay : BaseOverlay
     {

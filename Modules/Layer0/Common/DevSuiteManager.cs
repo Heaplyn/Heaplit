@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class DevToolInfo
     {
@@ -154,7 +154,7 @@ namespace JarvisLauncher
             sb.AppendLine("echo [COMPLETE] All requested tools have been queued for installation.");
             sb.AppendLine("pause");
 
-            string tempBat = Path.Combine(Path.GetTempPath(), "jarvis_batch_install.bat");
+            string tempBat = Path.Combine(Path.GetTempPath(), "heaplit_batch_install.bat");
             File.WriteAllText(tempBat, sb.ToString());
 
             Process.Start(new ProcessStartInfo

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class VoiceTriggerEvent
     {
@@ -144,7 +144,7 @@ namespace JarvisLauncher
             // Trigger acoustic ML re-indexing to include the new historical data
             Task.Run(() => AcousticMlClassifier.RebuildAcousticIndex());
 
-            return $"✅ Training Complete!\n\nJarvis has incorporated {officialCount + historicalCount} recordings into his acoustic memory.\n\n" +
+            return $"✅ Training Complete!\n\nHeaplit has incorporated {officialCount + historicalCount} recordings into his acoustic memory.\n\n" +
                    $"• Official Trainer Samples: {officialCount}\n" +
                    $"• Background Captured Logs: {historicalCount}\n\n" +
                    $"Breakdown:\n" +

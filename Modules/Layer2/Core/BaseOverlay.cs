@@ -18,7 +18,7 @@ using System.Windows.Data;
 using System.Windows.Shapes;
 using Button = System.Windows.Controls.Button;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public abstract class BaseOverlay : Window
     {

@@ -11,7 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class ScreenAnalysisOverlay : BaseOverlay
     {
@@ -44,7 +44,7 @@ namespace JarvisLauncher
         }
 
         private ScreenAnalysisOverlay()
-            : base("🖥️ JARVIS SCREEN & WORKSPACE ANALYZER", width: 580, height: 440)
+            : base("🖥️ HEAPLIT SCREEN & WORKSPACE ANALYZER", width: 580, height: 440)
         {
             var mainGrid = new Grid { Margin = new Thickness(10) };
             mainGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(320) });
@@ -164,7 +164,7 @@ namespace JarvisLauncher
             accBox.Children.Add(_accentHexLabel);
             rightPanel.Children.Add(accBox);
 
-            var syncBtn = CreateActionButton("🎨 Sync Jarvis Theme", (s, e) => SyncJarvisTheme());
+            var syncBtn = CreateActionButton("🎨 Sync Heaplit Theme", (s, e) => SyncHeaplitTheme());
             syncBtn.Margin = new Thickness(0, 0, 0, 8);
             rightPanel.Children.Add(syncBtn);
 
@@ -224,7 +224,7 @@ namespace JarvisLauncher
             }
         }
 
-        private void SyncJarvisTheme()
+        private void SyncHeaplitTheme()
         {
             // Calculate a dark theme color scheme based on screen dominant average
             // Reduce brightness to make it a pleasant dark HUD background
@@ -263,7 +263,7 @@ namespace JarvisLauncher
             ThemeManager.SetColorResource("TextPlaceholderBrush", "#5AFFFFFF");
             ThemeManager.SetColorResource("TextSecondaryBrush", "#8CFFFFFF");
 
-            TextOverlay.Show("🎨 Dynamic Screen Theme Applied to Jarvis HUD!", 3000);
+            TextOverlay.Show("🎨 Dynamic Screen Theme Applied to Heaplit HUD!", 3000);
         }
 
         private void AutoTile()

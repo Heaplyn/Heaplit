@@ -10,7 +10,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class SelfBackupManager
     {
@@ -24,7 +24,7 @@ namespace JarvisLauncher
                 if (!Directory.Exists(BackupRoot)) Directory.CreateDirectory(BackupRoot);
 
                 string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                string zipPath = Path.Combine(BackupRoot, $"Jarvis_Backup_{timestamp}_{reason}.zip");
+                string zipPath = Path.Combine(BackupRoot, $"Heaplit_Backup_{timestamp}_{reason}.zip");
                 string sourceDir = PathHandler.GetProjectRoot();
 
                 await Task.Run(() => {

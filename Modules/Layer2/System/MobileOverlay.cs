@@ -11,7 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class MobileOverlay : BaseOverlay
     {
@@ -124,7 +124,7 @@ namespace JarvisLauncher
             var card = MakeCard("🔗 Phone Connection Links & IP WebTunnel Gateway");
             var stack = CardStack(card);
 
-            _dnsText = AddLinkRow(stack, "🌐 Local Hostname:", MobileBridgeServer.JarvisDomain);
+            _dnsText = AddLinkRow(stack, "🌐 Local Hostname:", MobileBridgeServer.HeaplitDomain);
             _localIpText = AddLinkRow(stack, "📱 Local Wi-Fi IP:", MobileBridgeServer.ServerUrl);
 
             var btnRow = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 6, 0, 0) };
@@ -430,7 +430,7 @@ namespace JarvisLauncher
         {
             _statusText.Text = MobileBridgeServer.IsActive ? "🟢 Server Active" : "🔴 Server Offline";
             _statusText.Foreground = MobileBridgeServer.IsActive ? Brushes.LimeGreen : Brushes.Red;
-            _dnsText.Text = MobileBridgeServer.JarvisDomain;
+            _dnsText.Text = MobileBridgeServer.HeaplitDomain;
             _localIpText.Text = MobileBridgeServer.ServerUrl;
 
             _cfUrlText.Text = CloudflareTunnelManager.PublicUrl ?? "(Inactive)";

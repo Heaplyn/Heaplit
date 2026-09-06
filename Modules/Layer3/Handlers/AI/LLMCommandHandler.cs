@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class LLMCommandHandler : ICommandHandler
     {
@@ -175,7 +175,7 @@ namespace JarvisLauncher
                 suggestions.Add(new CommandResult
                 {
                     TITLE = "🧠 Deep Reasoning Mode",
-                    DESCRIPTION = "Force Jarvis to use extensive step-by-step logic for this session",
+                    DESCRIPTION = "Force Heaplit to use extensive step-by-step logic for this session",
                     SIMILARITY = 9.0,
                     EXECUTE = () => { ChatOverlay.SubmitTextMessage("look deep " + (parts.Length > 2 ? string.Join(" ", parts.Skip(2)) : "")); }
                 });

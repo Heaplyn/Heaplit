@@ -14,7 +14,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Linq;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public partial class App : Application
     {
@@ -25,7 +25,7 @@ namespace JarvisLauncher
         {
             System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12 | System.Net.SecurityProtocolType.Tls13;
             SelfHealingManager.Initialize();
-            KillPreviousJarvisInstances();
+            KillPreviousHeaplitInstances();
             WpfScrollHelper.InitializeGlobalScrollFix();
             base.OnStartup(e);
 
@@ -42,7 +42,7 @@ namespace JarvisLauncher
                     try
                     {
                         System.IO.File.AppendAllText(
-                            System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "jarvis_debug.log"),
+                            System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "heaplit_debug.log"),
                             $"[{DateTime.Now:u}] DISPATCHER EXCEPTION: {details}\n");
                     }
                     catch { }
@@ -63,7 +63,7 @@ namespace JarvisLauncher
                 loadingWindow = new LoadingWindow();
                 loadingWindow.Show();
 
-                // Boot profiler: log each phase's wall-clock to jarvis_debug.log so slow startup
+                // Boot profiler: log each phase's wall-clock to heaplit_debug.log so slow startup
                 // is diagnosable instead of guessed. (Search the log for "BOOT-PROFILE".)
                 var bootSw = System.Diagnostics.Stopwatch.StartNew();
                 long lastMs = 0;
@@ -71,7 +71,7 @@ namespace JarvisLauncher
                 {
                     long now = bootSw.ElapsedMilliseconds;
                     try { System.IO.File.AppendAllText(
-                        System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "jarvis_debug.log"),
+                        System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "heaplit_debug.log"),
                         $"[{DateTime.Now:HH:mm:ss.fff}] BOOT-PROFILE {name}: +{now - lastMs}ms (total {now}ms)\n"); } catch { }
                     lastMs = now;
                 }
@@ -126,7 +126,7 @@ namespace JarvisLauncher
 
                 // 5. System Tray
                 try {
-                    _notifyIcon = new NotifyIcon { Icon = SystemIcons.Application, Visible = true, Text = "Jarvis HUD" };
+                    _notifyIcon = new NotifyIcon { Icon = SystemIcons.Application, Visible = true, Text = "Heaplit HUD" };
                     var contextMenu = new ContextMenuStrip();
                     contextMenu.Items.Add("Show Launcher", null, (s, ev) => _mainWindow?.Dispatcher.Invoke(() => _mainWindow.ShowHUD()));
                     contextMenu.Items.Add(new ToolStripSeparator());
@@ -145,7 +145,7 @@ namespace JarvisLauncher
             catch (Exception ex)
             {
                 loadingWindow?.Close();
-                MessageBox.Show("Jarvis failed to boot: " + ex.Message);
+                MessageBox.Show("Heaplit failed to boot: " + ex.Message);
             }
         }
 
@@ -193,12 +193,12 @@ namespace JarvisLauncher
             catch { /* Swallow: app continues even without the restore */ }
         }
 
-        private static void KillPreviousJarvisInstances()
+        private static void KillPreviousHeaplitInstances()
         {
             try
             {
                 int currentId = System.Diagnostics.Process.GetCurrentProcess().Id;
-                foreach (var proc in System.Diagnostics.Process.GetProcessesByName("JarvisLauncher"))
+                foreach (var proc in System.Diagnostics.Process.GetProcessesByName("HeaplitLauncher"))
                 {
                     if (proc.Id != currentId) { try { proc.Kill(); } catch { } }
                 }

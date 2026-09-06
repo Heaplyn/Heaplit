@@ -14,7 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class LiveCodingTutorEngine
     {
@@ -107,8 +107,8 @@ namespace JarvisLauncher
                 string proc = (ScreenMonitorEngine.ActiveProcessName ?? "").ToLowerInvariant();
                 string title = (ScreenMonitorEngine.ActiveWindowTitle ?? "").ToLowerInvariant();
 
-                // Never treat Jarvis's own windows as a coding target.
-                if (proc.Contains("jarvis")) return false;
+                // Never treat Heaplit's own windows as a coding target.
+                if (proc.Contains("heaplit")) return false;
 
                 if (EditorProcesses.Any(p => proc == p || proc.StartsWith(p))) return true;
                 if (TitleCues.Any(c => title.Contains(c))) return true;
@@ -129,7 +129,7 @@ namespace JarvisLauncher
                 string goalAugment = "";
                 try { goalAugment = TeacherGoalContext.BuildPromptAugment(); } catch { }
                 string prompt =
-                    "You are JARVIS, a calm senior pair-programmer watching over the user's shoulder while they code. " +
+                    "You are HEAPLIT, a calm senior pair-programmer watching over the user's shoulder while they code. " +
                     $"The active editor window is: \"{ctxWindow}\".\n" +
                     (string.IsNullOrWhiteSpace(goalAugment) ? "" : "\n" + goalAugment + "\n") +
                     "Look at this screenshot of their screen and decide whether to gently INTERRUPT. Only interrupt if you " +

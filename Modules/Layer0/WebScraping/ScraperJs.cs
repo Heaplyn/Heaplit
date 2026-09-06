@@ -12,7 +12,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class ScraperJs
     {
@@ -30,7 +30,7 @@ namespace JarvisLauncher
                 _client = client ?? new HttpClient();
                 if (!_client.DefaultRequestHeaders.Contains("User-Agent"))
                 {
-                    _client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) JarvisLauncher/ScraperJs");
+                    _client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) HeaplitLauncher/ScraperJs");
                 }
             }
 

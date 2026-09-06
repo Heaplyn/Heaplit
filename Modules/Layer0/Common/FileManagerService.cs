@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using SharpCompress.Archives;
 using SharpCompress.Common;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public enum FileItemType { File, Directory, Archive }
 

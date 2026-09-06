@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class BrightnessCommandHandler : ICommandHandler
     {

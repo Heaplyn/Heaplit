@@ -1,5 +1,5 @@
 // Developer: heaplyn
-// Part of the JARVIS Disassembler Suite — split into a ring-layered module set.
+// Part of the HEAPLIT Disassembler Suite — split into a ring-layered module set.
 // This file is a partial of DisassemblerSuiteOverlay (see Ring2_UI/DisassemblerSuiteOverlay.cs).
 
 using System;
@@ -21,7 +21,7 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public partial class DisassemblerSuiteOverlay : BaseOverlay
     {
@@ -325,7 +325,7 @@ namespace JarvisLauncher
                 _dumpLog.AppendText("[+] Reconstructing Section Map from memory pages...\n");
                 await Task.Delay(500); // Simulate heavy lifting
 
-                string dumpPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Jarvis_Dump_" + Path.GetFileName(modInfo.Split(' ')[0]));
+                string dumpPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Heaplit_Dump_" + Path.GetFileName(modInfo.Split(' ')[0]));
                 _dumpLog.AppendText($"[+] Successfully dumped module to: {dumpPath}\n");
                 _dumpLog.AppendText("[+] Scan complete. Ready for PE fixing.");
 

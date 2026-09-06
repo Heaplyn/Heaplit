@@ -2,7 +2,7 @@
 // Date: 2026-08-15
 // Summary: Vector Store for Environmental Sounds.
 //          Maintains a library of acoustic "Fingerprints" (MFCC vectors) for non-voice sounds.
-//          Allows Jarvis to recognize sounds like clapping, snapping, sirens, or door knocks.
+//          Allows Heaplit to recognize sounds like clapping, snapping, sirens, or door knocks.
 
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class SoundCategory
     {

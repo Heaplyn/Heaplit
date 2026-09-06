@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class ReminderCommandHandler : ICommandHandler
     {
@@ -203,7 +203,7 @@ namespace JarvisLauncher
             var sb = new StringBuilder();
 
             sb.AppendLine("===================================================");
-            sb.AppendLine("                JARVIS REMINDERS LIST              ");
+            sb.AppendLine("                HEAPLIT REMINDERS LIST              ");
             sb.AppendLine("===================================================");
             sb.AppendLine();
 

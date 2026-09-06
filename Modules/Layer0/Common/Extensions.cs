@@ -1,6 +1,6 @@
 using System;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class Extensions
     {

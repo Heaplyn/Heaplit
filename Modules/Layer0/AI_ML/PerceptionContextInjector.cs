@@ -1,6 +1,6 @@
 // Developer: heaplyn
 // Date: 2026-09-02
-// Summary: Gathers Jarvis's live "senses" — the active window, the latest screen capture summary,
+// Summary: Gathers Heaplit's live "senses" — the active window, the latest screen capture summary,
 //          and the project files most relevant to the request — into a compact text block injected
 //          into every AI prompt, so the model can reason about what's on screen and in the codebase.
 //          Efficiency-aware: skips the heavier work when the system is under load.
@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class PerceptionContextInjector
     {
@@ -96,7 +96,7 @@ namespace JarvisLauncher
                 catch { }
 
                 if (sb.Length == 0) return "";
-                return "[PERCEPTION CONTEXT — what Jarvis currently sees / knows]\n" + sb;
+                return "[PERCEPTION CONTEXT — what Heaplit currently sees / knows]\n" + sb;
             }
             catch { return ""; }
         }

@@ -1,6 +1,6 @@
 // Developer: heaplyn
 // Date: 2026-08-18
-// Summary: Advanced real-time Debug Console overlay for monitoring internal Jarvis events.
+// Summary: Advanced real-time Debug Console overlay for monitoring internal Heaplit events.
 //          Hardened logging to be thread-safe and non-blocking.
 //          Fixed UI deadlock by removing synchronous dispatcher calls from log path.
 
@@ -16,7 +16,7 @@ using System.Windows.Threading;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class DebugConsoleOverlay : BaseOverlay
     {
@@ -89,7 +89,7 @@ namespace JarvisLauncher
             }), DispatcherPriority.Background);
         }
 
-        private DebugConsoleOverlay() : base("🛠️ JARVIS DEBUG & DIAGNOSTICS", width: 850, height: 650)
+        private DebugConsoleOverlay() : base("🛠️ HEAPLIT DEBUG & DIAGNOSTICS", width: 850, height: 650)
         {
             _instance = this;
             this.Closed += (s, e) => { _instance = null; };

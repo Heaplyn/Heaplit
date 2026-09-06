@@ -1,11 +1,11 @@
 // Developer: heaplyn
 // Date: 2026-08-09
-// Summary: Handles CLI commands to preview, select, and persistently load Jarvis launcher window visual themes.
+// Summary: Handles CLI commands to preview, select, and persistently load Heaplit launcher window visual themes.
 
 using System;
 using System.Collections.Generic;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class ThemeCommandHandler : ICommandHandler
     {

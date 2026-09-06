@@ -11,7 +11,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class BackgroundContextManager
     {
@@ -34,7 +34,7 @@ namespace JarvisLauncher
                 {
                     try
                     {
-                        if (SettingsManager.Current.IS_JARVIS_ENABLED)
+                        if (SettingsManager.Current.IS_HEAPLIT_ENABLED)
                         {
                             await RefreshContextSnapshotAsync();
                         }

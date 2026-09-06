@@ -1,7 +1,7 @@
-# JARVIS MATHEMATICAL REFERENCE - FUNCTIONS, CHANGE, AND MANUAL GRAPHING
+# HEAPLIT MATHEMATICAL REFERENCE - FUNCTIONS, CHANGE, AND MANUAL GRAPHING
 
 > [!IMPORTANT]
-> **SYSTEM INSTRUCTION FOR AI AGENTS**: Any AI, LLM, or subagent reading this workspace MUST read this document ENTIRELY from start to finish. Do NOT summarize, skip, or omit any formulas, rules, expansions, or examples. This reference provides the exact mathematical foundations required across Jarvis algorithmic, signal processing, and analytical modules.
+> **SYSTEM INSTRUCTION FOR AI AGENTS**: Any AI, LLM, or subagent reading this workspace MUST read this document ENTIRELY from start to finish. Do NOT summarize, skip, or omit any formulas, rules, expansions, or examples. This reference provides the exact mathematical foundations required across Heaplit algorithmic, signal processing, and analytical modules.
 
 ---
 

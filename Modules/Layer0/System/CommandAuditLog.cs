@@ -2,13 +2,13 @@
 // Date: 2026-09-02
 // Summary: Append-only audit log of every command / tool the AI executes. Written to
 //          Data/CommandAudit.log with a UTC timestamp so there is a durable record of what
-//          Jarvis did on the machine (shell commands, file writes/edits, downloads, tool creation,
+//          Heaplit did on the machine (shell commands, file writes/edits, downloads, tool creation,
 //          settings changes). Best-effort and thread-safe; never throws into callers.
 
 using System;
 using System.IO;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class CommandAuditLog
     {

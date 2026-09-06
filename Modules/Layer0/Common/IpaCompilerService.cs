@@ -12,7 +12,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class IpaCompilerService
     {
@@ -140,7 +140,7 @@ namespace JarvisLauncher
                                 {
                                     LastCompiledIpaPath = ipaFile;
                                     CompileStatus = "Success";
-                                    OnCompileLogUpdated?.Invoke($"\n🎉 SUCCESS! Compiled IPA path: {ipaFile}\nIt is now ready to download via your Jarvis Mobile Companion!\n");
+                                    OnCompileLogUpdated?.Invoke($"\n🎉 SUCCESS! Compiled IPA path: {ipaFile}\nIt is now ready to download via your Heaplit Mobile Companion!\n");
                                     return true;
                                 }
 

@@ -1,13 +1,13 @@
 // Developer: heaplyn
 // Date: 2026-08-18
-// Summary: Robust Adaptive Resource Manager for Jarvis AI.
+// Summary: Robust Adaptive Resource Manager for Heaplit AI.
 //          Monitors CPU, Memory, and Latency to throttle Godellian processing.
 //          Prevents system lockups by dynamically adjusting complexity.
 
 using System;
 using System.Diagnostics;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class NeuralResourceManager
     {

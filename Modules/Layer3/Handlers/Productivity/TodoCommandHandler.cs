@@ -9,7 +9,7 @@ using System.Text;
 using System.Text.Json;
 using System.Windows;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class TodoItem
     {
@@ -274,7 +274,7 @@ namespace JarvisLauncher
             var sb = new StringBuilder();
 
             sb.AppendLine("===================================================");
-            sb.AppendLine("                 JARVIS TODO SYSTEM                ");
+            sb.AppendLine("                 HEAPLIT TODO SYSTEM                ");
             sb.AppendLine("===================================================");
             sb.AppendLine();
 

@@ -1,7 +1,7 @@
 @echo off
-title Jarvis GitHub Setup Wizard
+title Heaplit GitHub Setup Wizard
 echo ===================================================
-echo             JARVIS GITHUB SETUP WIZARD             
+echo             HEAPLIT GITHUB SETUP WIZARD             
 echo ===================================================
 echo.
 
@@ -43,7 +43,7 @@ echo.
 
 :: 4. GitHub Authentication Setup
 echo --- GitHub Authentication Setup ---
-echo Jarvis will help register your credentials for automatic syncing.
+echo Heaplit will help register your credentials for automatic syncing.
 echo.
 echo Select Auth Mode:
 echo [1] Git Credential Manager Login (Recommended - Browser Popup)
@@ -97,6 +97,6 @@ echo.
 echo ===================================================
 echo  🎉 GITHUB CONFIGURATION COMPLETED SUCCESSFULLY!
 echo ===================================================
-echo You can now use the 'push' command inside Jarvis.
+echo You can now use the 'push' command inside Heaplit.
 echo.
 pause

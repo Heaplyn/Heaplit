@@ -1,7 +1,7 @@
 // Developer: heaplyn
 // Date: 2026-08-18
 // Summary: Context Knowledge Base Manager.
-//          Automatically maintains a directory of Markdown notes representing Jarvis's "External Brain".
+//          Automatically maintains a directory of Markdown notes representing Heaplit's "External Brain".
 //          Syncs memories, audio logs, chat summaries, and screen analysis into categorized files.
 
 using System;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class ContextNotesManager
     {
@@ -40,7 +40,7 @@ namespace JarvisLauncher
                 if (!File.Exists(fullPath))
                 {
                     string header = f switch {
-                        "Instructions.md" => "# Operational Instructions & Behavioral Rules\n*Core rules Jarvis MUST follow.*\n\n",
+                        "Instructions.md" => "# Operational Instructions & Behavioral Rules\n*Core rules Heaplit MUST follow.*\n\n",
                         "Neural_Architecture.md" => "# Local Godellian Neural Schema\n*Details of the internal local neural net weights and topology.*\n\n",
                         _ => $"# {f.Replace(".md", "").Replace("_", " ")}\n*Initialized {DateTime.Now:F}*\n\n"
                     };

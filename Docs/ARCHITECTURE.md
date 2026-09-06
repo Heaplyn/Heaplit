@@ -1,11 +1,11 @@
-# Jarvis PC Architecture
+# Heaplit PC Architecture
 
-Jarvis is built on a strictly layered architecture designed for modularity, high performance, and rapid extensibility. The project is divided into **Layers (0-4)**, each with a specific responsibility.
+Heaplit is built on a strictly layered architecture designed for modularity, high performance, and rapid extensibility. The project is divided into **Layers (0-4)**, each with a specific responsibility.
 
 ## The Layered Model
 
 ### [Layer 0] - Core Runtime & Engines
-This is the "brain" and "nervous system" of Jarvis.
+This is the "brain" and "nervous system" of Heaplit.
 - **AI API (`AiAPI.cs`)**: Orchestrates communication with LLM providers. Handles prompt sanitization, tool-call execution, and multi-turn loops.
 - **LLM Router (`LlmRouter.cs`)**: A dispatcher that routes queries to Gemini, OpenAI, Anthropic, or local Ollama instances based on internet availability and user preference.
 - **Voice Systems (`VoskEngine.cs`, `VoiceActivationManager.cs`)**: Handles 100% local speech-to-text (Vosk) and neural phonetic wake-word detection.
@@ -37,7 +37,7 @@ The top-level shell of the application.
 ---
 
 ## File-Dependent Modular Execution
-Jarvis is intentionally built as a **File-Dependent (Modular)** system. Unlike monolithic applications, the `JarvisLauncher.exe` is a lightweight entry point that dynamically loads logic from the surrounding directory.
+Heaplit is intentionally built as a **File-Dependent (Modular)** system. Unlike monolithic applications, the `HeaplitLauncher.exe` is a lightweight entry point that dynamically loads logic from the surrounding directory.
 
 ### Structural Requirements
 - **DLL Dependencies**: All core libraries (Layer 0-3) are stored as external DLLs. 
@@ -45,4 +45,4 @@ Jarvis is intentionally built as a **File-Dependent (Modular)** system. Unlike m
 - **Development Flexibility**: This structure allows for real-time hot-swapping of modules and scripts without requiring a full application re-compile.
 
 ### Data Isolation
-All user state and long-term memories are stored in the `Data/` folder. Deleting this folder will "reset" Jarvis's personality and understanding of the user.
+All user state and long-term memories are stored in the `Data/` folder. Deleting this folder will "reset" Heaplit's personality and understanding of the user.

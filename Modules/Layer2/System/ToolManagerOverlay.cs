@@ -9,9 +9,9 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using JarvisLauncher.AiTools;
+using HeaplitLauncher.AiTools;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class ToolManagerOverlay : BaseOverlay
     {

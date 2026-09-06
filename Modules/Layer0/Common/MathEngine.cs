@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using System.Data;
 using System.Linq;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class MathEngine : IMathEngine
     {

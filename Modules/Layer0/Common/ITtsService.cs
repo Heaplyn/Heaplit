@@ -2,7 +2,7 @@
 // Date: 2026-08-17
 // Summary: Interface for Text-to-Speech operations.
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public interface ITtsService
     {

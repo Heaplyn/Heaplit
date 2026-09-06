@@ -1,7 +1,7 @@
 // Developer: heaplyn
 // Date: 2026-08-13
 // Summary: Window position & open state persistence manager.
-// Automatically records and restores screen coordinates, sizes, and open state of all Jarvis overlays across application restarts.
+// Automatically records and restores screen coordinates, sizes, and open state of all Heaplit overlays across application restarts.
 
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Windows;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class WindowPositionState
     {
@@ -126,7 +126,7 @@ namespace JarvisLauncher
         {
             try
             {
-                string path = @"C:\Users\Kyle\Downloads\Projects\Jarvis\Data\BOOT_DIAGNOSTICS.log";
+                string path = @"C:\Users\Kyle\Downloads\Projects\Heaplit\Data\BOOT_DIAGNOSTICS.log";
                 System.IO.File.AppendAllText(path, $"[{DateTime.Now:HH:mm:ss.fff}] [WPM] RestoreOpenOverlays called\n");
             } catch { }
 
@@ -143,7 +143,7 @@ namespace JarvisLauncher
             {
                 try
                 {
-                    string path = @"C:\Users\Kyle\Downloads\Projects\Jarvis\Data\BOOT_DIAGNOSTICS.log";
+                    string path = @"C:\Users\Kyle\Downloads\Projects\Heaplit\Data\BOOT_DIAGNOSTICS.log";
                     System.IO.File.AppendAllText(path, $"[{DateTime.Now:HH:mm:ss.fff}] [WPM] Attempting to restore: {name}\n");
                 } catch { }
 
@@ -170,7 +170,7 @@ namespace JarvisLauncher
                     {
                         try
                         {
-                            string path = @"C:\Users\Kyle\Downloads\Projects\Jarvis\BOOT_DIAGNOSTICS.log";
+                            string path = @"C:\Users\Kyle\Downloads\Projects\Heaplit\BOOT_DIAGNOSTICS.log";
                             System.IO.File.AppendAllText(path, $"[{DateTime.Now:HH:mm:ss.fff}] [WPM] Restore Error ({name}): {ex.Message}\n");
                         } catch { }
                     }

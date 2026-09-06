@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class PathHandler
     {
@@ -40,8 +40,8 @@ namespace JarvisLauncher
             string CheckDir = AppDomain.CurrentDomain.BaseDirectory;
             for (int I = 0; I < 8; I++)
             {
-                if (File.Exists(Path.Combine(CheckDir, "JarvisLauncher.csproj")) ||
-                    File.Exists(Path.Combine(CheckDir, "Jarvis.sln")) ||
+                if (File.Exists(Path.Combine(CheckDir, "HeaplitLauncher.csproj")) ||
+                    File.Exists(Path.Combine(CheckDir, "Heaplit.sln")) ||
                     Directory.Exists(Path.Combine(CheckDir, ".git")) ||
                     Directory.Exists(Path.Combine(CheckDir, "Modules")))
                 {

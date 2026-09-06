@@ -8,7 +8,7 @@ using System.IO;
 using System.IO.Compression;
 using Microsoft.Win32;
 
-namespace JarvisLauncher.AiTools
+namespace HeaplitLauncher.AiTools
 {
     public class ClipboardTool : IAiTool
     {

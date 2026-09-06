@@ -1,6 +1,6 @@
 // Developer: heaplyn
 // Date: 2026-09-03
-// Summary: High-Performance Self-Healing Guardian for Jarvis.
+// Summary: High-Performance Self-Healing Guardian for Heaplit.
 //          Features:
 //          - Proactive Memory Pressure Guardian (automatic LOH compaction, cache purge, working set trim)
 //          - Universal Crash Interceptor (AppDomain, Dispatcher, UnobservedTask protection)
@@ -18,7 +18,7 @@ using System.Windows.Threading;
 using System.Diagnostics;
 using System.Runtime;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class SelfHealingManager
     {
@@ -150,7 +150,7 @@ namespace JarvisLauncher
                     {
                         try
                         {
-                            TextOverlay.Show("⚡ Jarvis Self-Healing: Background fault recovered", 2500);
+                            TextOverlay.Show("⚡ Heaplit Self-Healing: Background fault recovered", 2500);
                         }
                         catch { }
                     }, DispatcherPriority.Background);

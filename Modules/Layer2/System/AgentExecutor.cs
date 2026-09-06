@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
-using JarvisLauncher.AiTools;
+using HeaplitLauncher.AiTools;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class AgentExecutor
     {
@@ -257,7 +257,7 @@ namespace JarvisLauncher
             CommandAuditLog.Log("SHELL", cmd);   // durable audit of every command run
             try
             {
-                string tempFile = Path.Combine(Path.GetTempPath(), $"jarvis_script_{Guid.NewGuid():N}.ps1");
+                string tempFile = Path.Combine(Path.GetTempPath(), $"heaplit_script_{Guid.NewGuid():N}.ps1");
                 File.WriteAllText(tempFile, cmd, new UTF8Encoding(false));
                 var psi = new ProcessStartInfo { FileName = "powershell.exe", Arguments = $"-NoProfile -ExecutionPolicy Bypass -File \"{tempFile}\"", RedirectStandardOutput = true, RedirectStandardError = true, UseShellExecute = false, CreateNoWindow = true };
                 using var proc = Process.Start(psi);

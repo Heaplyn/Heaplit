@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class DownloadPathCommandHandler : ICommandHandler
     {

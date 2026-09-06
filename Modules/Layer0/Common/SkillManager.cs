@@ -11,9 +11,9 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
-    public class JarvisSkill
+    public class HeaplitSkill
     {
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
@@ -27,13 +27,13 @@ namespace JarvisLauncher
     public static class SkillManager
     {
         private static readonly string SkillsPath = Path.Combine(PathHandler.GetDataDirectory(), "Skills.json");
-        private static List<JarvisSkill> _skills = new List<JarvisSkill>();
+        private static List<HeaplitSkill> _skills = new List<HeaplitSkill>();
         private static readonly object _lock = new object();
 
         static SkillManager() { LoadSkills(); }
 
         public static void LoadSkills() {
-            try { if (File.Exists(SkillsPath)) _skills = JsonSerializer.Deserialize<List<JarvisSkill>>(File.ReadAllText(SkillsPath)) ?? new List<JarvisSkill>(); } catch { }
+            try { if (File.Exists(SkillsPath)) _skills = JsonSerializer.Deserialize<List<HeaplitSkill>>(File.ReadAllText(SkillsPath)) ?? new List<HeaplitSkill>(); } catch { }
         }
 
         public static async Task<string> ExecuteSkillAsync(string skillName, string? input = null) {

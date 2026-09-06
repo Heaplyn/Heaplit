@@ -9,7 +9,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class ScreenshotCommandHandler : ICommandHandler
     {

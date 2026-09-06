@@ -20,7 +20,7 @@ using System.Windows.Media;
 using System.Windows.Documents;
 using System.Diagnostics;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class EditorTab
     {
@@ -79,7 +79,7 @@ namespace JarvisLauncher
             });
         }
 
-        private TextEditorOverlay() : base("JARVIS AI CODE STUDIO", 980, 680)
+        private TextEditorOverlay() : base("HEAPLIT AI CODE STUDIO", 980, 680)
         {
             _instance = this;
             var layoutGrid = new Grid { Margin = new Thickness(0, 10, 0, 0) };
@@ -266,7 +266,7 @@ namespace JarvisLauncher
         });
 
         private void ShowMarketplace() => ToggleSidePanel("EXTENSION MARKETPLACE", () => {
-            AddSideItem("Jarvis VIM", "VIM motions for HUD editor", false);
+            AddSideItem("Heaplit VIM", "VIM motions for HUD editor", false);
             AddSideItem("GitLens Lite", "Inline commit authorship", false);
             AddSideItem("Auto-Doc AI", "Generate Javadoc/KDoc via AI", false);
         });

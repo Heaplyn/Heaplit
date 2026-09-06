@@ -1,7 +1,7 @@
 # AUDIO & PERCEPTION SUBSYSTEM (`Modules/Layer0/`)
 
 ## OVERVIEW
-Jarvis incorporates an audio processing and perception engine that enables hands-free voice wake-up, acoustic environment classification, speech tone sentiment analysis, and text-to-speech synthesis.
+Heaplit incorporates an audio processing and perception engine that enables hands-free voice wake-up, acoustic environment classification, speech tone sentiment analysis, and text-to-speech synthesis.
 
 ---
 
@@ -9,8 +9,8 @@ Jarvis incorporates an audio processing and perception engine that enables hands
 
 ### 1. `LocalWakeWordDetector.cs`
 - Continuously listens to default audio input (microphone stream).
-- Performs lightweight pattern matching against target wake phrases (e.g. "Hey Jarvis").
-- Fires `OnWakeWordDetected` and `OnVoiceCommandRecognized` events on the dispatcher to wake up Jarvis overlays.
+- Performs lightweight pattern matching against target wake phrases (e.g. "Hey Heaplit").
+- Fires `OnWakeWordDetected` and `OnVoiceCommandRecognized` events on the dispatcher to wake up Heaplit overlays.
 
 ### 2. `AudioFeatureExtractor.cs` & `AcousticMlClassifier.cs`
 - **`AudioFeatureExtractor`**: Transforms raw PCM audio samples into frequency spectrum representations using Fast Fourier Transform (FFT). Extracts MFCC (Mel-Frequency Cepstral Coefficients) and spectral centroid features.

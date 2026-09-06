@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class StorageCleanupCommandHandler : ICommandHandler
     {
@@ -32,7 +32,7 @@ namespace JarvisLauncher
                     SelfHealingManager.AuditAndHealSettingsFile();
                     SelfHealingManager.AuditAndHealDataFiles();
                     SelfHealingManager.CompactAndHealMemory("User manual execution");
-                    TextOverlay.Show("⚡ Jarvis Self-Healing: Memory compacted & integrity verified!", 3000);
+                    TextOverlay.Show("⚡ Heaplit Self-Healing: Memory compacted & integrity verified!", 3000);
                 }
             });
 
@@ -93,7 +93,7 @@ namespace JarvisLauncher
         private void RunFullCleanup()
         {
             Task.Run(async () => {
-                TextOverlay.Show("🧼 Jarvis is cleaning your system...", 4000);
+                TextOverlay.Show("🧼 Heaplit is cleaning your system...", 4000);
                 int temp = await CoreRegistry.Data.StorageCleanup.ClearTempFilesAsync();
                 await CoreRegistry.Data.StorageCleanup.EmptyRecycleBinAsync();
                 int logs = await CoreRegistry.Data.StorageCleanup.CleanOldLogsAsync(7);

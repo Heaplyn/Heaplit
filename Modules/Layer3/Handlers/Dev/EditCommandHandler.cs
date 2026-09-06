@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class EditCommandHandler : ICommandHandler
     {
@@ -33,7 +33,7 @@ namespace JarvisLauncher
                 suggestions.Add(new CommandResult
                 {
                     TITLE       = isFolder ? $"📁 Open Workspace: {Path.GetFileName(targetPath)}" : $"Edit: {Path.GetFileName(targetPath)}",
-                    DESCRIPTION = isFolder ? $"Open folder \"{targetPath}\" as a project workspace" : $"Open \"{targetPath}\" inside the built-in Jarvis Text Editor",
+                    DESCRIPTION = isFolder ? $"Open folder \"{targetPath}\" as a project workspace" : $"Open \"{targetPath}\" inside the built-in Heaplit Text Editor",
                     SIMILARITY  = 9.5,
                     EXECUTE     = () => { if (isFolder) TextEditorOverlay.OpenWorkspace(targetPath); else TextEditorOverlay.OpenFile(targetPath); }
                 });
@@ -43,7 +43,7 @@ namespace JarvisLauncher
                 suggestions.Add(new CommandResult
                 {
                     TITLE       = "📂 Open Project/Workspace...",
-                    DESCRIPTION = "Open a full directory and work on all files in Jarvis Code Studio",
+                    DESCRIPTION = "Open a full directory and work on all files in Heaplit Code Studio",
                     SIMILARITY  = similarity + 0.9,
                     EXECUTE     = () => {
                         Application.Current.Dispatcher.Invoke(() => {
@@ -64,7 +64,7 @@ namespace JarvisLauncher
                 suggestions.Add(new CommandResult
                 {
                     TITLE       = "Open Scratch Note",
-                    DESCRIPTION = "Open a blank scratch.txt notepad inside the Jarvis Text Editor",
+                    DESCRIPTION = "Open a blank scratch.txt notepad inside the Heaplit Text Editor",
                     SIMILARITY  = similarity + 0.3,
                     EXECUTE     = () => TextEditorOverlay.OpenFile("scratch.txt")
                 });
@@ -79,7 +79,7 @@ namespace JarvisLauncher
             {
                 new CommandDesc("edit <path>", "Open a file or folder in AI Code Studio", "edit ."),
                 new CommandDesc("edit", "Browse and edit a single file", "edit"),
-                new CommandDesc("workspace", "Open a project directory", "edit C:\\projects\\jarvis")
+                new CommandDesc("workspace", "Open a project directory", "edit C:\\projects\\heaplit")
             };
         }
 

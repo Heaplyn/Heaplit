@@ -16,7 +16,7 @@ using System.Windows.Input;
 using System.Windows.Shapes;
 using System.Windows.Controls.Primitives;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class GoogleCloudOverlay : BaseOverlay
     {

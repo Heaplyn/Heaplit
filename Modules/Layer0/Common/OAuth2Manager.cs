@@ -18,7 +18,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class OAuth2Manager
     {
@@ -124,15 +124,15 @@ namespace JarvisLauncher
                            $"<h1 style='color:#f59e0b;'>⚠️ {providerName} sign-in blocked ({error})</h1>" +
                            "<p>The built-in Google app is in test mode and can't approve arbitrary accounts.</p>" +
                            "<div style='max-width:560px;margin:20px auto;text-align:left;color:#94a3b8;'>" +
-                           "<p><b>Easiest fix (Gemini):</b> skip Google login — in Jarvis, LLM settings &rarr; Gemini &rarr; <b>Get Key</b>, create a free API key, paste it.</p>" +
-                           "<p><b>For Gmail/Calendar/Drive:</b> create your own OAuth <i>Desktop</i> client at console.cloud.google.com &rarr; Credentials, then paste its Client ID into Jarvis (Accounts tab).</p>" +
+                           "<p><b>Easiest fix (Gemini):</b> skip Google login — in Heaplit, LLM settings &rarr; Gemini &rarr; <b>Get Key</b>, create a free API key, paste it.</p>" +
+                           "<p><b>For Gmail/Calendar/Drive:</b> create your own OAuth <i>Desktop</i> client at console.cloud.google.com &rarr; Credentials, then paste its Client ID into Heaplit (Accounts tab).</p>" +
                            "</div><p>You can close this tab.</p></body></html>";
                 }
                 else
                 {
                     html = $"<html><body style='font-family:sans-serif;background:#0f172a;color:#38bdf8;text-align:center;padding-top:50px;'>" +
                            $"<h1>✅ {providerName} Auth Successful!</h1>" +
-                           $"<p>Return to Jarvis.</p></body></html>";
+                           $"<p>Return to Heaplit.</p></body></html>";
                 }
 
                 byte[] buffer = Encoding.UTF8.GetBytes(html);

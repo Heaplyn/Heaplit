@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class AdminCommandHandler : ICommandHandler
     {
@@ -38,7 +38,7 @@ namespace JarvisLauncher
             suggestions.Add(new CommandResult
             {
                 TITLE = "💾 System Snapshots & Backups",
-                DESCRIPTION = "Create and restore local Jarvis system state snapshots and settings",
+                DESCRIPTION = "Create and restore local Heaplit system state snapshots and settings",
                 SIMILARITY = (SearchUtil.BestSimilarity(query, "snapshot", "backup", "restore system", "system backup") + 8.5 * 0.01),
                 EXECUTE = () => AdminPanelOverlay.ShowOverlay()
             });

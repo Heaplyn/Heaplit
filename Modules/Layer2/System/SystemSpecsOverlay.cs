@@ -11,7 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Collections.Generic;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class SystemSpecsOverlay : BaseOverlay
     {
@@ -41,7 +41,7 @@ namespace JarvisLauncher
         }
 
         private SystemSpecsOverlay()
-            : base("💻 JARVIS SYSTEM SPECIFICATIONS", width: 500, height: 600)
+            : base("💻 HEAPLIT SYSTEM SPECIFICATIONS", width: 500, height: 600)
         {
             var rootGrid = new Grid { Margin = new Thickness(15) };
             rootGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // Title
@@ -188,7 +188,7 @@ namespace JarvisLauncher
         private string GetRawSpecsText(StackPanel stack)
         {
             var sb = new System.Text.StringBuilder();
-            sb.AppendLine("=== JARVIS SYSTEM SPECIFICATIONS ===");
+            sb.AppendLine("=== HEAPLIT SYSTEM SPECIFICATIONS ===");
             foreach (var child in stack.Children) {
                 if (child is TextBlock tb && tb.FontWeight == FontWeights.Bold) {
                     sb.AppendLine($"\n[{tb.Text}]");

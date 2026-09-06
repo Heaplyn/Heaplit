@@ -7,7 +7,7 @@
 
 ## 1. FREE AI WEBSERVER & MODEL PROBER (`FreeAiServerProber.cs`)
 
-[`FreeAiServerProber`](file:///c:/Users/Kyle/Downloads/Projects/Jarvis/Modules/Layer0/FreeAiServerProber.cs) is a parallel diagnostic and binding engine that probes, benchmarks, and validates 17 free-tier and local AI inference endpoints simultaneously.
+[`FreeAiServerProber`](file:///c:/Users/Kyle/Downloads/Projects/Heaplit/Modules/Layer0/FreeAiServerProber.cs) is a parallel diagnostic and binding engine that probes, benchmarks, and validates 17 free-tier and local AI inference endpoints simultaneously.
 
 ```mermaid
 flowchart TD
@@ -157,7 +157,7 @@ Automatically installs, configures, and invokes external disassembly and decompi
 
 > **Layer**: 0 (pure I/O, no WPF/UI imports allowed)
 
-Core backend powering the Jarvis File Manager overlay. All extraction and filesystem operations live here; the UI overlay in Layer 2 calls these APIs.
+Core backend powering the Heaplit File Manager overlay. All extraction and filesystem operations live here; the UI overlay in Layer 2 calls these APIs.
 
 ### 9.1 Key Types
 - **`FileItem`**: Represents a file or directory entry with `Name`, `FullPath`, `Kind` (`File`, `Directory`, `Archive`), `SizeBytes`, `Modified`, `Icon` (emoji), and `SizeDisplay` (human-readable size).
@@ -180,7 +180,7 @@ Core backend powering the Jarvis File Manager overlay. All extraction and filesy
 `.zip` (native), `.rar`, `.7z`, `.tar`, `.gz`, `.bz2`, `.xz`, `.tgz` (via **SharpCompress**).
 
 ### 9.4 SharpCompress Dependency — Self-Healing Runtime Bootstrap
-SharpCompress is declared as a compile-time NuGet reference in `JarvisLauncher.csproj` — it is **always bundled into the output EXE** automatically on every `dotnet build`. No manual install is needed for normal development.
+SharpCompress is declared as a compile-time NuGet reference in `HeaplitLauncher.csproj` — it is **always bundled into the output EXE** automatically on every `dotnet build`. No manual install is needed for normal development.
 
 In addition, `App.xaml.cs` includes a **runtime safety net** (`EnsureDependenciesAsync`) that fires during the boot sequence:
 1. Probes the assembly via reflection (`Assembly.Load(new AssemblyName("SharpCompress"))`).

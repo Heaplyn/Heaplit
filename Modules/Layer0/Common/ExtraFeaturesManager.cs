@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class SnippetItem
     {

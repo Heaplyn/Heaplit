@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class AdhdFocusManager
     {

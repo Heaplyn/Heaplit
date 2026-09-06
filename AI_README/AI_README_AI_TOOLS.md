@@ -1,7 +1,7 @@
 # AI TOOLS & SELF-EVOLVING TOOL ENGINE (`Modules/Layer0/AiTools/`)
 
 ## ARCHITECTURE OVERVIEW
-Jarvis features an extensible tool invocation and self-evolution subsystem under `Modules/Layer0/AiTools/`. All tools implement the `IAiTool` interface and are registered in `AiToolRegistry`.
+Heaplit features an extensible tool invocation and self-evolution subsystem under `Modules/Layer0/AiTools/`. All tools implement the `IAiTool` interface and are registered in `AiToolRegistry`.
 
 ```mermaid
 graph TD
@@ -26,7 +26,7 @@ graph TD
 - **`AiToolRegistry`**: Central registry pattern that registers, dispatches, and validates tool argument schemas.
 
 ### 2. `SelfEvolvingToolEngine.cs` & `EvolutionTools.cs`
-- **Dynamic Tool Assembly**: Enables Jarvis to write new tool code snippets, compile them in memory, and register them into `AiToolRegistry` during runtime sessions.
+- **Dynamic Tool Assembly**: Enables Heaplit to write new tool code snippets, compile them in memory, and register them into `AiToolRegistry` during runtime sessions.
 - **Execution Benchmarking**: Evaluates tool success rates, execution latency, and output accuracy, auto-patching failing scripts.
 
 ### 3. `AutomationTools.cs` & `ExtraAutomationTools.cs`

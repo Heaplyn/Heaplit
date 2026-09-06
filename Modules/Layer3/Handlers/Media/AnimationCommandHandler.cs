@@ -4,7 +4,7 @@
 
 using System.Collections.Generic;
 
-namespace JarvisLauncher.Modules.Layer3.Handlers
+namespace HeaplitLauncher.Modules.Layer3.Handlers
 {
     public class AnimationCommandHandler : ICommandHandler
     {
@@ -19,10 +19,10 @@ namespace JarvisLauncher.Modules.Layer3.Handlers
 
             results.Add(new CommandResult
             {
-                TITLE = "✨ Open Jarvis Visuals",
+                TITLE = "✨ Open Heaplit Visuals",
                 DESCRIPTION = "Unified suite for motion, typography, and visual effects.",
                 SIMILARITY = (SearchUtil.BestSimilarity(query, "anim", "animation", "animations", "fx", "visuals", "motion") + 5.5 * 0.01),
-                EXECUTE = () => JarvisVisualsOverlay.ShowOverlay()
+                EXECUTE = () => HeaplitVisualsOverlay.ShowOverlay()
             });
 
             return results;

@@ -1,7 +1,7 @@
 // Developer: heaplyn
 // Date: 2026-08-15
 // Summary: Autonomous Personality Evolution Engine.
-//          Analyzes recent chat logs to detect the user's preferred "vibe" and Jarvis's evolving persona.
+//          Analyzes recent chat logs to detect the user's preferred "vibe" and Heaplit's evolving persona.
 //          Updates a persistent 'PersonalityProfile.md' in the instructions folder.
 
 using System;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class PersonalityEvolver
     {
@@ -72,11 +72,11 @@ namespace JarvisLauncher
 
             string currentProfile = File.Exists(ProfilePath) ? File.ReadAllText(ProfilePath) : "No personality profile established yet.";
 
-            string prompt = "You are the Jarvis Personality Architect. Analyze the recent conversation history and the current personality profile.\n" +
+            string prompt = "You are the Heaplit Personality Architect. Analyze the recent conversation history and the current personality profile.\n" +
                             "1. Detect the user's current 'vibe' (sarcastic, serious, friendly, chaotic).\n" +
                             "2. Note any inside jokes, nicknames, or recurring themes.\n" +
-                            "3. Update the 'Personality Profile' to reflect how Jarvis should behave to best match this dynamic.\n" +
-                            "Maintain the core 'Sassy Jarvis' persona but evolve the specific details.\n\n" +
+                            "3. Update the 'Personality Profile' to reflect how Heaplit should behave to best match this dynamic.\n" +
+                            "Maintain the core 'Sassy Heaplit' persona but evolve the specific details.\n\n" +
                             "CURRENT PROFILE:\n" + currentProfile + "\n\n" +
                             "RECENT HISTORY:\n" + recentHistory + "\n\n" +
                             "Return ONLY the updated Markdown content for the 'PersonalityProfile.md' file.";
@@ -91,7 +91,7 @@ namespace JarvisLauncher
                     if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
 
                     await File.WriteAllTextAsync(ProfilePath, evolvedProfile);
-                    DebugConsoleOverlay.Log("Personality-Update", "Jarvis's persona has evolved based on recent interactions.");
+                    DebugConsoleOverlay.Log("Personality-Update", "Heaplit's persona has evolved based on recent interactions.");
                 }
             }
             catch { }

@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class AiCommandHandler : ICommandHandler
     {
@@ -96,7 +96,7 @@ namespace JarvisLauncher
         {
             return new List<CommandDesc>
             {
-                new CommandDesc("ai <prompt> / ask", "Ask Jarvis AI assistant questions or tasks", "ai explain quantum computing")
+                new CommandDesc("ai <prompt> / ask", "Ask Heaplit AI assistant questions or tasks", "ai explain quantum computing")
             };
         }
     }

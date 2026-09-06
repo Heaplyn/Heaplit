@@ -1,6 +1,6 @@
 // Developer: heaplyn
 // Date: 2026-08-10
-// Summary: Self-healing Cloudflare Tunnel manager that downloads cloudflared.exe automatically, manages background HTTPS tunnels, and exposes Jarvis Mobile Web App to the public web with secure SSL encryption.
+// Summary: Self-healing Cloudflare Tunnel manager that downloads cloudflared.exe automatically, manages background HTTPS tunnels, and exposes Heaplit Mobile Web App to the public web with secure SSL encryption.
 
 using System;
 using System.Diagnostics;
@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class CloudflareTunnelManager
     {
@@ -54,7 +54,7 @@ namespace JarvisLauncher
         {
             string downloadUrl = "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe";
             using var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("User-Agent", "JarvisLauncher/1.0"); // Fix for GitHub HTTP 403
+            client.DefaultRequestHeaders.Add("User-Agent", "HeaplitLauncher/1.0"); // Fix for GitHub HTTP 403
             byte[] data = await client.GetByteArrayAsync(downloadUrl);
             await File.WriteAllBytesAsync(exePath, data);
             TextOverlay.Show("✅ Cloudflare Tunnel engine ready!", 2000);

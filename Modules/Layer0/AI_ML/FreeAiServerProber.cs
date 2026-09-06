@@ -1,6 +1,6 @@
 // Developer: heaplyn
 // Date: 2026-08-21
-// Summary: Free AI Web Server Prober and Binding Engine for Jarvis.
+// Summary: Free AI Web Server Prober and Binding Engine for Heaplit.
 // Probes free-tier AI endpoints in parallel (Task.WhenAll).
 // Providers: Local Ollama, LM Studio, GitHub Models, HuggingFace, Groq, Gemini,
 //   Together AI, OpenRouter, Mistral, Cohere, Cerebras, Fireworks, SambaNova,
@@ -14,7 +14,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher.Modules.Layer0
+namespace HeaplitLauncher.Modules.Layer0
 {
     public class FreeAiEndpointInfo
     {
@@ -97,7 +97,7 @@ namespace JarvisLauncher.Modules.Layer0
             if (ep.RequiresKey && string.IsNullOrEmpty(resolvedKey))
             {
                 copy.IsActive = false;
-                copy.StatusMessage = $"Key Missing — set %{ep.KeyEnvVariable}% env var or configure in Jarvis Settings";
+                copy.StatusMessage = $"Key Missing — set %{ep.KeyEnvVariable}% env var or configure in Heaplit Settings";
                 return copy;
             }
 
@@ -184,7 +184,7 @@ namespace JarvisLauncher.Modules.Layer0
             sb.AppendLine($"Summary: {active}/{endpoints.Count} endpoints reachable.");
             if (validateChat) sb.AppendLine($"         {validated}/{active} chat completions verified.");
             sb.AppendLine();
-            sb.AppendLine("💡 Set API keys as env vars or in Jarvis Settings to activate providers.");
+            sb.AppendLine("💡 Set API keys as env vars or in Heaplit Settings to activate providers.");
             sb.AppendLine("   OpenRouter: one key unlocks deepseek-r1:free, qwen2.5, llama3, and more.");
             return sb.ToString();
         }

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace JarvisLauncher.Modules.Layer3.Handlers
+namespace HeaplitLauncher.Modules.Layer3.Handlers
 {
     public class BackgroundCommandHandler : ICommandHandler
     {

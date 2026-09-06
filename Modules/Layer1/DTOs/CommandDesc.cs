@@ -1,11 +1,11 @@
 // Developer: heaplyn
 // Date: 2026-08-18
-// Summary: Command Metadata Descriptor for Jarvis Command System.
+// Summary: Command Metadata Descriptor for Heaplit Command System.
 //          Added default constructor to support object initializer syntax.
 
 using System;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class CommandDesc
     {

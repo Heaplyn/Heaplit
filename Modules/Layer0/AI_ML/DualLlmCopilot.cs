@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class DualLlmCopilot
     {
@@ -35,7 +35,7 @@ namespace JarvisLauncher
                 {
                     DebugConsoleOverlay.Log("Dual-LLM Co-Pilot", $"Processing parallel query with {settings.DUAL_LLM_BACKEND} [{settings.DUAL_LLM_MODEL}]: \"{query}\"");
 
-                    string prompt = $"You are Jarvis Dual-LLM Co-Pilot. Analyze this user query: \"{query}\". Provide a 1-sentence smart recommendation or follow-up suggestion.";
+                    string prompt = $"You are Heaplit Dual-LLM Co-Pilot. Analyze this user query: \"{query}\". Provide a 1-sentence smart recommendation or follow-up suggestion.";
 
                     string rawModel = ExtractModelName(settings.DUAL_LLM_MODEL);
                     string copilotInsight = "";

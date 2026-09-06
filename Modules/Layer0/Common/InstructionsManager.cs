@@ -6,7 +6,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class InstructionsManager
     {

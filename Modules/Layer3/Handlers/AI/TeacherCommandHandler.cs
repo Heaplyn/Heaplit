@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class TeacherCommandHandler : ICommandHandler
     {
@@ -49,7 +49,7 @@ namespace JarvisLauncher
                 suggestions.Add(new CommandResult
                 {
                     TITLE = "🎓 Open Teacher Studio",
-                    DESCRIPTION = "Set a goal and let JARVIS generate its own triggers to tutor you live while you code",
+                    DESCRIPTION = "Set a goal and let HEAPLIT generate its own triggers to tutor you live while you code",
                     EXECUTE = () => TeacherStudioOverlay.ShowOverlay(),
                     SIMILARITY = (SearchUtil.BestSimilarity(query, "teacher") + 9.0 * 0.01)
                 });
@@ -84,7 +84,7 @@ namespace JarvisLauncher
                                 string projectRoot = checkDir;
                                 for (int i = 0; i < 5; i++)
                                 {
-                                    if (File.Exists(Path.Combine(checkDir, "JarvisLauncher.csproj")))
+                                    if (File.Exists(Path.Combine(checkDir, "HeaplitLauncher.csproj")))
                                     {
                                         projectRoot = checkDir;
                                         break;

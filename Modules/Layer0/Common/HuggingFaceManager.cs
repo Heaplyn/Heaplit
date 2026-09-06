@@ -11,7 +11,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class HuggingFaceModelItem
     {
@@ -66,7 +66,7 @@ namespace JarvisLauncher
             try
             {
                 string url = $"https://huggingface.co/api/models?search={Uri.EscapeDataString(query)}&limit={limit}&sort=downloads&direction=-1";
-                _http.DefaultRequestHeaders.UserAgent.ParseAdd("JarvisLauncher/1.0");
+                _http.DefaultRequestHeaders.UserAgent.ParseAdd("HeaplitLauncher/1.0");
 
                 string json = await _http.GetStringAsync(url);
                 var items = JsonSerializer.Deserialize<List<HuggingFaceModelItem>>(json);

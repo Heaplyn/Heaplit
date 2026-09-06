@@ -1,6 +1,6 @@
-# 🤖 JARVIS MASTER USER GUIDE
+# 🤖 HEAPLIT MASTER USER GUIDE
 
-Welcome to the official manual for the Jarvis Windows HUD. Jarvis is a high-performance, AI-driven operating assistant designed for power users, developers, and those seeking an automated digital environment.
+Welcome to the official manual for the Heaplit Windows HUD. Heaplit is a high-performance, AI-driven operating assistant designed for power users, developers, and those seeking an automated digital environment.
 
 ## 🚀 Getting Started
 
@@ -12,7 +12,7 @@ Welcome to the official manual for the Jarvis Windows HUD. Jarvis is a high-perf
 
 ### AI Chat Assistant
 - **Open**: Type `ai` or `chat` in the HUD, or press **Ctrl + Shift + A**.
-- **Context**: Jarvis automatically knows what window you are looking at and what is on your clipboard.
+- **Context**: Heaplit automatically knows what window you are looking at and what is on your clipboard.
 - **Attachments**: Drag and drop files or folders into the chat to analyze them.
 - **Thinking Trace**: Click **"⌄ Details"** on any response to see the raw AI logic.
 
@@ -21,7 +21,7 @@ Welcome to the official manual for the Jarvis Windows HUD. Jarvis is a high-perf
 ## 🛠️ Key Feature Domains
 
 ### 1. Developer Power Tools
-Jarvis is built for creators.
+Heaplit is built for creators.
 - **Git Control**: Type `push` to auto-commit and push your active project. Use `push ai` for AI-generated commit messages.
 - **Code Assistance**: Use the **"Fix Code"** button in chat or type `code assist` to analyze your current project for bugs.
 - **PowerShell HUD**: Type any PS command directly into the HUD (e.g., `ps Get-Process`).
@@ -45,7 +45,7 @@ Jarvis is built for creators.
 ## 📶 Advanced Configuration
 
 ### LLM Engines
-Jarvis supports multiple backends. Switch them in **Settings -> LLM**:
+Heaplit supports multiple backends. Switch them in **Settings -> LLM**:
 - **Gemini**: High-context, supports image/audio analysis.
 - **Groq**: Ultra-fast inference for snappier voice replies.
 - **Ollama**: 100% offline, local execution for total privacy.
@@ -61,14 +61,14 @@ For faster communication, the AI uses a concise "@" protocol:
 ---
 
 ## 🏗️ Architecture: File-Dependent & Modular
-Jarvis is designed to be **transparent and modular**. The `JarvisLauncher.exe` you see in the folder is a dependent binary that relies on the surrounding files and directories to function.
+Heaplit is designed to be **transparent and modular**. The `HeaplitLauncher.exe` you see in the folder is a dependent binary that relies on the surrounding files and directories to function.
 
 - **Modules/**: Contains the core logic layers.
 - **Themes/**: Stores visual glassmorphic styles.
-- **Data/**: The persistent brain of Jarvis (Settings, Memory, Skills).
+- **Data/**: The persistent brain of Heaplit (Settings, Memory, Skills).
 - **Macros/**: User-defined command chains.
 
-**Note**: Do not move the `JarvisLauncher.exe` out of its root folder, or it will lose access to its "Limbs and Memories."
+**Note**: Do not move the `HeaplitLauncher.exe` out of its root folder, or it will lose access to its "Limbs and Memories."
 
 ---
 

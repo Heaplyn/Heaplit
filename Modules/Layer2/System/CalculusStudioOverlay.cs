@@ -10,7 +10,7 @@ using System.Windows.Media;
 using System.Threading.Tasks;
 using System.Linq;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class CalculusStudioOverlay : BaseOverlay
     {
@@ -29,7 +29,7 @@ namespace JarvisLauncher
             });
         }
 
-        private CalculusStudioOverlay() : base("JARVIS CALCULUS STUDIO", 600, 700)
+        private CalculusStudioOverlay() : base("HEAPLIT CALCULUS STUDIO", 600, 700)
         {
             _instance = this;
             this.Closed += (s, e) => _instance = null;

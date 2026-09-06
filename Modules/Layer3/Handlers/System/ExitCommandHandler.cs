@@ -1,17 +1,17 @@
 // Developer: heaplyn
 // Date: 2026-08-09
-// Summary: Handles CLI commands to exit, quit, or close the Jarvis HUD launcher completely.
+// Summary: Handles CLI commands to exit, quit, or close the Heaplit HUD launcher completely.
 
 using System;
 using System.Collections.Generic;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class ExitCommandHandler : ICommandHandler
     {
         public bool CanHandle(string query)
         {
-            return SearchUtil.MatchesAny(query, "exit", "quit", "close", "exit jarvis", "quit jarvis", "close jarvis");
+            return SearchUtil.MatchesAny(query, "exit", "quit", "close", "exit heaplit", "quit heaplit", "close heaplit");
         }
 
         public List<CommandResult> GetSuggestions(string query)
@@ -26,8 +26,8 @@ namespace JarvisLauncher
 
             suggestions.Add(new CommandResult
             {
-                TITLE       = "Exit Jarvis Launcher",
-                DESCRIPTION = "Close and terminate the Jarvis HUD application completely (Ctrl+Shift+C)",
+                TITLE       = "Exit Heaplit Launcher",
+                DESCRIPTION = "Close and terminate the Heaplit HUD application completely (Ctrl+Shift+C)",
                 SIMILARITY  = similarity + 0.5, // High similarity boost for direct commands
                 EXECUTE     = () => System.Environment.Exit(0)
             });

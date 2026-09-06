@@ -1,40 +1,40 @@
-# Jarvis C# Plugin & ML API Guide
+# Heaplit C# Plugin & ML API Guide
 
-Jarvis now supports native C# plugins, allowing you to extend the HUD with custom logic and high-level AI orchestration.
+Heaplit now supports native C# plugins, allowing you to extend the HUD with custom logic and high-level AI orchestration.
 
 ## 🚀 Getting Started
 
 1. Create a new **C# Class Library (.NET 8.0)** project.
-2. Reference the `JarvisLauncher.dll` (found in the Jarvis root folder).
-3. Implement the `IJarvisPlugin` interface.
-4. Drop your compiled `.dll` into the `/Plugins` folder in your Jarvis directory.
+2. Reference the `HeaplitLauncher.dll` (found in the Heaplit root folder).
+3. Implement the `IHeaplitPlugin` interface.
+4. Drop your compiled `.dll` into the `/Plugins` folder in your Heaplit directory.
 
-## 🧠 The Jarvis ML API
+## 🧠 The Heaplit ML API
 
-The `JarvisMLApi` static class provides high-level methods for AI processing.
+The `HeaplitMLApi` static class provides high-level methods for AI processing.
 
 ### Text & LLM
 ```csharp
 // Ask a generic question to the active LLM
-string result = await JarvisMLApi.AskAiAsync("Explain quantum physics.");
+string result = await HeaplitMLApi.AskAiAsync("Explain quantum physics.");
 
 // Summarize long text
-string summary = await JarvisMLApi.AskAiAsync(hugeContent, maxSentences: 2);
+string summary = await HeaplitMLApi.AskAiAsync(hugeContent, maxSentences: 2);
 ```
 
 ### Vision (Image Processing)
 ```csharp
 // Analyze a local image
-string description = await JarvisMLApi.AnalyzeImageFileAsync("C:\\temp\\data.png", "What's in this image?");
+string description = await HeaplitMLApi.AnalyzeImageFileAsync("C:\\temp\\data.png", "What's in this image?");
 
 // Analyze what the user is looking at right now
-string screenInfo = await JarvisMLApi.AnalyzeCurrentScreenAsync("Summarize this workspace.");
+string screenInfo = await HeaplitMLApi.AnalyzeCurrentScreenAsync("Summarize this workspace.");
 ```
 
 ### Audio Processing
 ```csharp
 // Multi-modal audio analysis via Gemini
-string audioIntent = await JarvisMLApi.AnalyzeAudioClipAsync("recording.wav", "Extract the emotional tone.");
+string audioIntent = await HeaplitMLApi.AnalyzeAudioClipAsync("recording.wav", "Extract the emotional tone.");
 ```
 
 ## 🛠️ Example Plugin Implementation
@@ -42,11 +42,11 @@ string audioIntent = await JarvisMLApi.AnalyzeAudioClipAsync("recording.wav", "E
 ```csharp
 using System;
 using System.Collections.Generic;
-using JarvisLauncher;
+using HeaplitLauncher;
 
 namespace MyCustomPlugin
 {
-    public class WorkspaceAnalyzerPlugin : IJarvisPlugin
+    public class WorkspaceAnalyzerPlugin : IHeaplitPlugin
     {
         public string PluginName => "Workspace Analyzer";
         public string Description => "Uses AI to suggest workspace optimizations based on screen captures.";
@@ -75,9 +75,9 @@ namespace MyCustomPlugin
 
 ## 📂 Folder Structure
 ```text
-Jarvis/
-├── JarvisLauncher.exe
-├── JarvisLauncher.dll (Core Library)
+Heaplit/
+├── HeaplitLauncher.exe
+├── HeaplitLauncher.dll (Core Library)
 ├── Plugins/
 │   └── MyCustomPlugin.dll (Your Plugin)
 └── Data/

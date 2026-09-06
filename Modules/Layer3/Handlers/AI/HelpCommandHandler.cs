@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace JarvisLauncher.Modules.Layer3.Handlers
+namespace HeaplitLauncher.Modules.Layer3.Handlers
 {
     public class HelpCommandHandler : ICommandHandler
     {
@@ -28,7 +28,7 @@ namespace JarvisLauncher.Modules.Layer3.Handlers
 
             results.Add(new CommandResult
             {
-                TITLE = "🛠️ Repair Jarvis Documentation",
+                TITLE = "🛠️ Repair Heaplit Documentation",
                 DESCRIPTION = "Force restore and link guide files if they are missing",
                 SIMILARITY = (SearchUtil.BestSimilarity(query, "help", "guide", "shortcuts", "docs", "commands", "manual", "help center") + 5.0 * 0.01),
                 EXECUTE = () => RepairDocumentation()
@@ -63,7 +63,7 @@ namespace JarvisLauncher.Modules.Layer3.Handlers
             var l = new List<CommandDesc>();
 
             // AI & LLM (10)
-            l.Add(new CommandDesc("ai <prompt>", "Ask Jarvis AI assistant questions or tasks", "ai explain recursion"));
+            l.Add(new CommandDesc("ai <prompt>", "Ask Heaplit AI assistant questions or tasks", "ai explain recursion"));
             l.Add(new CommandDesc("llm", "Open LLM Engine Studio", "llm"));
             l.Add(new CommandDesc("llm discover", "Scan network for local AI nodes (Ollama/vLLM)", "llm discover"));
             l.Add(new CommandDesc("look deep <query>", "Activate AI Deep Reasoning mode", "look deep fix this memory leak"));
@@ -85,7 +85,7 @@ namespace JarvisLauncher.Modules.Layer3.Handlers
             l.Add(new CommandDesc("monitor", "Open resource monitor HUD", "monitor"));
             l.Add(new CommandDesc("inspect", "Inspect all running processes", "inspect"));
             l.Add(new CommandDesc("specs", "Show detailed hardware specifications", "specs"));
-            l.Add(new CommandDesc("exit", "Close Jarvis completely", "exit"));
+            l.Add(new CommandDesc("exit", "Close Heaplit completely", "exit"));
 
             // Media & Audio (10)
             l.Add(new CommandDesc("volume <0-100>", "Set system master volume", "volume 50"));

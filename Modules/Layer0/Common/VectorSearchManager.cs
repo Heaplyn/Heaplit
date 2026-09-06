@@ -13,7 +13,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Linq;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class VectorSearchResult
     {
@@ -118,7 +118,7 @@ namespace JarvisLauncher
         public static async Task UpsertMemoryAsync(string text, string metadataJson)
         {
             // Note: Cloud Vector Search typically uses batch ingestion from JSONL files in GCS.
-            // For a "Live" feel, Jarvis will log these locally then trigger a re-index or use a hybrid approach.
+            // For a "Live" feel, Heaplit will log these locally then trigger a re-index or use a hybrid approach.
             DebugConsoleOverlay.Log("Vector-Search", $"Queueing semantic ingest: {text.Take(30)}...");
 
             // Generate embedding locally to associate with the memory

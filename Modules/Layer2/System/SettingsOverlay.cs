@@ -11,7 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Microsoft.Win32;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class SettingsOverlay : BaseOverlay
     {
@@ -21,7 +21,7 @@ namespace JarvisLauncher
         private CheckBox _playSoundCheck = null!;
         private CheckBox _autoHideCheck = null!;
         private CheckBox _roundedCornersCheck = null!;
-        private CheckBox _jarvisEnabledCheck = null!;
+        private CheckBox _heaplitEnabledCheck = null!;
         private CheckBox _voiceModeActiveCheck = null!;
         private CheckBox _speakerVerifyCheck = null!;
         private CheckBox _teacherModeCheck = null!;
@@ -88,16 +88,16 @@ namespace JarvisLauncher
             s.Children.Add(CreateCheckBox("Always on Top (HUD Priority)", set.ALWAYS_ON_TOP, v => set.ALWAYS_ON_TOP = v));
             _autoHideCheck = CreateCheckBox("Auto-Hide HUD on Command Execution", set.AUTO_HIDE_ON_EXECUTE, v => set.AUTO_HIDE_ON_EXECUTE = v); s.Children.Add(_autoHideCheck);
             _playSoundCheck = CreateCheckBox("Play System Audio Feedback", set.PLAY_SOUNDS, v => set.PLAY_SOUNDS = v); s.Children.Add(_playSoundCheck);
-            s.Children.Add(CreateCheckBox("🎙️ Voice Activation — listen for \"Hey Jarvis\"", set.ENABLE_WAKE_WORD, v => {
+            s.Children.Add(CreateCheckBox("🎙️ Voice Activation — listen for \"Hey Heaplit\"", set.ENABLE_WAKE_WORD, v => {
                 set.ENABLE_WAKE_WORD = v;
                 try {
-                    if (v) { CoreRegistry.Interaction.Voice.Start(); TextOverlay.Show("🎙️ Wake word ON — say \"Hey Jarvis\"", 2500); }
+                    if (v) { CoreRegistry.Interaction.Voice.Start(); TextOverlay.Show("🎙️ Wake word ON — say \"Hey Heaplit\"", 2500); }
                     else   { CoreRegistry.Interaction.Voice.Stop();  TextOverlay.Show("🔇 Wake word OFF", 2500); }
                     SettingsManager.Save();
                 } catch { }
             }));
             _autonomousModeCheck = CreateCheckBox("Enable Autonomous Proactive Interjections", set.IS_AUTONOMOUS_MODE_ENABLED, v => set.IS_AUTONOMOUS_MODE_ENABLED = v); s.Children.Add(_autonomousModeCheck);
-            s.Children.Add(CreateCheckBox("🛠️ Agent Mode — let Jarvis run commands, access ALL files, and make its own tools (asks to confirm risky actions)", set.ENABLE_PC_CONTROL, v => { set.ENABLE_PC_CONTROL = v; try { SettingsManager.Save(); } catch { } }));
+            s.Children.Add(CreateCheckBox("🛠️ Agent Mode — let Heaplit run commands, access ALL files, and make its own tools (asks to confirm risky actions)", set.ENABLE_PC_CONTROL, v => { set.ENABLE_PC_CONTROL = v; try { SettingsManager.Save(); } catch { } }));
             s.Children.Add(CreateHeader("Glassmorphic UI & Aesthetics"));
             s.Children.Add(CreateCheckBox("Enable Fluid Window Animations", set.ENABLE_ANIMATIONS, v => set.ENABLE_ANIMATIONS = v));
             s.Children.Add(CreateCheckBox("Use High-Fidelity Dynamic Gradients", set.USE_GRADIENT_BACKGROUND, v => set.USE_GRADIENT_BACKGROUND = v));
@@ -176,10 +176,10 @@ namespace JarvisLauncher
             var s = new StackPanel();
             var set = SettingsManager.Current;
             s.Children.Add(CreateHeader("Visual Suite & HUD Customization"));
-            s.Children.Add(CreateLabel("Consolidate all system visual options, colors, fonts, outer glow, window drag physics, and background media in the Jarvis Visual Studio."));
+            s.Children.Add(CreateLabel("Consolidate all system visual options, colors, fonts, outer glow, window drag physics, and background media in the Heaplit Visual Studio."));
 
             var openBtn = CreateStyledButton("🎨 OPEN VISUAL SUITE", (obj, e) => {
-                JarvisVisualsOverlay.ShowOverlay();
+                HeaplitVisualsOverlay.ShowOverlay();
                 this.Hide();
             }, isPrimary: true, fontSize: 13);
             openBtn.Height = 40;

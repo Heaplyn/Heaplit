@@ -1,6 +1,6 @@
 // Developer: heaplyn
 // Date: 2026-08-20
-// Summary: Advanced Glassmorphic Disassembler Suite overlay for Jarvis.
+// Summary: Advanced Glassmorphic Disassembler Suite overlay for Heaplit.
 // Features: PE Header parser, C# Reflection-based MSIL decompiler with token resolution, virtualized Hex Dump viewer, and native objdump wrapper.
 
 using System;
@@ -22,7 +22,7 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public partial class DisassemblerSuiteOverlay : BaseOverlay
     {
@@ -150,7 +150,7 @@ namespace JarvisLauncher
             }
         }
 
-        private DisassemblerSuiteOverlay() : base("🛠️ JARVIS DISASSEMBLER SUITE", width: 920, height: 650)
+        private DisassemblerSuiteOverlay() : base("🛠️ HEAPLIT DISASSEMBLER SUITE", width: 920, height: 650)
         {
             var mainGrid = new Grid { Margin = new Thickness(12) };
             mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // File selection
@@ -778,7 +778,7 @@ namespace JarvisLauncher
             injectGrid.Children.Add(injectToolbar);
 
             _tracerLogText = CreateLogConsole();
-            _tracerLogText.Text = "// --- JARVIS DYNAMIC INSTRUCTION TRACER ---\n// 1. Select a running process.\n// 2. Click Inject to start logging virtual instruction stream.\n// 3. Jarvis will mock-hook and display executed mnemonics in real-time.";
+            _tracerLogText.Text = "// --- HEAPLIT DYNAMIC INSTRUCTION TRACER ---\n// 1. Select a running process.\n// 2. Click Inject to start logging virtual instruction stream.\n// 3. Heaplit will mock-hook and display executed mnemonics in real-time.";
             Grid.SetRow(_tracerLogText, 1);
             injectGrid.Children.Add(_tracerLogText);
 
@@ -813,7 +813,7 @@ namespace JarvisLauncher
             dumpGrid.Children.Add(dumpLeft);
 
             _dumpLog = CreateLogConsole();
-            _dumpLog.Text = "// --- JARVIS MEGADUMPER ---\n// 1. Select a process to view its memory map.\n// 2. Choose a module (EXE/DLL) and hit DUMP.\n// 3. Jarvis will reconstruct the binary from RAM.";
+            _dumpLog.Text = "// --- HEAPLIT MEGADUMPER ---\n// 1. Select a process to view its memory map.\n// 2. Choose a module (EXE/DLL) and hit DUMP.\n// 3. Heaplit will reconstruct the binary from RAM.";
             Grid.SetRow(_dumpLog, 1); Grid.SetColumn(_dumpLog, 1);
             dumpGrid.Children.Add(_dumpLog);
 
@@ -1100,7 +1100,7 @@ namespace JarvisLauncher
             _assemblyTreeView.Items.Clear();
             _reconstructedAssemblyParts.Clear();
 
-            var loadContext = new System.Runtime.Loader.AssemblyLoadContext("JarvisDecompilerContext", isCollectible: true);
+            var loadContext = new System.Runtime.Loader.AssemblyLoadContext("HeaplitDecompilerContext", isCollectible: true);
             try
             {
                 Assembly assembly;
@@ -1699,7 +1699,7 @@ namespace JarvisLauncher
                 output = "No native disassembler tools (Ghidra, objdump or dumpbin) detected in system PATH.\n\n" +
                          "To enable native x86/x64 assembly viewing:\n" +
                          "1. Install MSYS2 or MinGW (includes objdump.exe) and add it to system PATH.\n" +
-                         "2. Or execute Jarvis Launcher from a Visual Studio Developer Command Prompt (which exposes dumpbin.exe).\n\n" +
+                         "2. Or execute Heaplit Launcher from a Visual Studio Developer Command Prompt (which exposes dumpbin.exe).\n\n" +
                          "Fallback PE structure, .NET MSIL decompiler, and Hex Dump tabs are fully active.";
             }
 
@@ -1740,7 +1740,7 @@ namespace JarvisLauncher
             if (_loadedFileBytes == null) return;
 
             var sb = new StringBuilder();
-            sb.AppendLine("=== JARVIS BINARY DIAGNOSTICS & SECURITY SUMMARY ===");
+            sb.AppendLine("=== HEAPLIT BINARY DIAGNOSTICS & SECURITY SUMMARY ===");
             sb.AppendLine();
 
             // 1. Language & Platform Detection
@@ -2100,7 +2100,7 @@ namespace JarvisLauncher
             _reconstructedAssemblyParts[key] = _assemblyEditorText.Text;
 
             string userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            string projectFolder = Path.Combine(userProfile, "Jarvis_Reconstructed", Path.GetFileNameWithoutExtension(_loadedFilePath));
+            string projectFolder = Path.Combine(userProfile, "Heaplit_Reconstructed", Path.GetFileNameWithoutExtension(_loadedFilePath));
             string physicalPath = Path.Combine(projectFolder, key.Replace('/', Path.DirectorySeparatorChar));
 
             try
@@ -2177,7 +2177,7 @@ namespace JarvisLauncher
             targetTextBox.Text = "🤖 AI Decompilation & Reverse Engineering Assistant is analyzing the component...\n" +
                                  "Please wait... (Invoking Local/Cloud LLM engine)";
 
-            string prompt = $"You are the Jarvis Reverse Engineering Assistant.\n" +
+            string prompt = $"You are the Heaplit Reverse Engineering Assistant.\n" +
                             $"Analyze this disassembled code segment ('{componentName}') from the binary '{Path.GetFileName(_loadedFilePath)}'.\n" +
                             $"Provide a clear, high-level structural explanation of what this code does, including variables, control flows, and potential algorithms.\n\n" +
                             $"Sibling Files Context:\n{_directoryContext}\n\n" +
@@ -2262,7 +2262,7 @@ namespace JarvisLauncher
                         _assemblyEditorText.Text = $"🤖 Translating C# / MSIL code structure into {targetLang}... Please wait...";
                     });
                     
-                    string prompt = $"You are the Jarvis Language Recomposer.\n" +
+                    string prompt = $"You are the Heaplit Language Recomposer.\n" +
                                     $"Recompose and translate the following combined assembly program outline into clean, syntactically correct, and idiomatically written {targetLang}.\n" +
                                     $"Keep all structure, class signatures, and logic intact where possible. Render the complete source code without annotations or markdowns.\n\n" +
                                     $"Source Code Outline:\n{combinedContent}";
@@ -2288,7 +2288,7 @@ namespace JarvisLauncher
                     _assemblyFileLabel.Text = $"Rebuild Part: Recomposed Unified Project";
                     
                     var result = MessageBox.Show(
-                        $"Project successfully recomposed in {targetLang}!\n\nSaved to temp file:\n{tempPath}\n\nWould you like to open it in JARVIS AI Code Studio?",
+                        $"Project successfully recomposed in {targetLang}!\n\nSaved to temp file:\n{tempPath}\n\nWould you like to open it in HEAPLIT AI Code Studio?",
                         "Recomposition Successful",
                         MessageBoxButton.YesNo,
                         MessageBoxImage.Question);
@@ -2602,7 +2602,7 @@ namespace JarvisLauncher
                 else
                 {
                     // Use LLM to split program modules into multiple files recursively
-                    string prompt = $"You are the Jarvis Complete Project Workspace Reconstructor.\n" +
+                    string prompt = $"You are the Heaplit Complete Project Workspace Reconstructor.\n" +
                                     $"Decompose this complete program outline into multiple separate, modular source code files for a clean {targetLang}.\n" +
                                     $"Ensure correct imports/includes, namespaces/scopes, and module configurations are established between files.\n" +
                                     $"Output in a format where each file has a distinct tag [FILE: filename.ext] followed by the file's raw content, then [END_FILE].\n\n" +
@@ -2671,7 +2671,7 @@ namespace JarvisLauncher
                     var result = MessageBox.Show(
                         $"Project successfully reconstructed and modularized in '{targetLang}'!\n\n" +
                         $"Workspace Location:\n{tempWorkspaceDir}\n\n" +
-                        $"Would you like to open this workspace folder in JARVIS AI Code Studio?",
+                        $"Would you like to open this workspace folder in HEAPLIT AI Code Studio?",
                         "Reconstruction Complete",
                         MessageBoxButton.YesNo,
                         MessageBoxImage.Question);

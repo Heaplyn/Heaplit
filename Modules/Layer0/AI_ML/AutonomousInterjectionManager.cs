@@ -7,7 +7,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class AutonomousInterjectionManager : IAutonomousInterjectionService
     {
@@ -57,7 +57,7 @@ namespace JarvisLauncher
                 string prompt = $"Reason: {fallback}\nGenerate wity 1-sentence remark.";
                 string res = await CoreRegistry.Llm.AskAsync(prompt);
                 CoreRegistry.Tts.Speak(res);
-                TextOverlay.Show("🤖 Jarvis: " + res, 5000);
+                TextOverlay.Show("🤖 Heaplit: " + res, 5000);
             } catch { CoreRegistry.Tts.Speak(fallback); }
         }
 

@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class ViewFileCommandHandler : ICommandHandler
     {

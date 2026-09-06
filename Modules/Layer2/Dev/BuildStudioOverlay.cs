@@ -11,7 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class BuildStudioOverlay : BaseOverlay
     {
@@ -30,7 +30,7 @@ namespace JarvisLauncher
             _instance.BringToFront();
         }
 
-        public BuildStudioOverlay() : base("🛠️ JARVIS UNIVERSAL BUILD STUDIO", 650, 500)
+        public BuildStudioOverlay() : base("🛠️ HEAPLIT UNIVERSAL BUILD STUDIO", 650, 500)
         {
             this.Closed += (s, e) => _instance = null;
             _selectedPath = GetProjectRoot();

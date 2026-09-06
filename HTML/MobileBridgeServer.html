@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JARVIS Mobile Companion</title>
+    <title>HEAPLIT Mobile Companion</title>
     <meta name="theme-color" content="#0f172a">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -73,7 +73,7 @@
 </head>
 <body>
     <header>
-        <div class="logo">⚡ JARVIS Mobile</div>
+        <div class="logo">⚡ HEAPLIT Mobile</div>
         <div class="badge" id="status-badge">ONLINE</div>
     </header>
 
@@ -165,13 +165,13 @@
         <!-- 2. Interactive CLI Terminal View -->
         <div id="view-terminal" class="view">
             <div class="terminal-container">
-                <div id="terminal-log">Windows PowerShell [Jarvis PC Terminal]
+                <div id="terminal-log">Windows PowerShell [Heaplit PC Terminal]
 Type any command below (e.g. dir, git status, ping, ipconfig)
 ------------------------------------------------------------
 </div>
                 <div id="term-popover" class="popover" style="display:none;"></div>
                 <div class="term-prompt-line">
-                    <span class="term-prompt">jarvis@pc:~$</span>
+                    <span class="term-prompt">heaplit@pc:~$</span>
                     <input type="text" id="term-input" class="term-input" placeholder="Type PowerShell command..." onkeydown="if(event.key==='Enter') runTerminalCmd()">
                 </div>
             </div>

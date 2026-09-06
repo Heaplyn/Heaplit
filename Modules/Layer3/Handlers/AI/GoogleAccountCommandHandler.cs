@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class GoogleAccountCommandHandler : ICommandHandler
     {
@@ -63,7 +63,7 @@ namespace JarvisLauncher
                 list.Add(new CommandResult
                 {
                     TITLE = $"🚪 Disconnect {active}",
-                    DESCRIPTION = "Remove this account from Jarvis",
+                    DESCRIPTION = "Remove this account from Heaplit",
                     SIMILARITY = (SearchUtil.BestSimilarity(query, "google", "connect google", "gmail login", "sign in google") + 8.5 * 0.01),
                     EXECUTE = () => { GoogleAccountManager.Remove(active); Notify($"Disconnected {active}"); }
                 });

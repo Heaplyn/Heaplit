@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class VideoSummarizer
     {
@@ -30,7 +30,7 @@ namespace JarvisLauncher
             bool isUrl = Uri.TryCreate(target, UriKind.Absolute, out var uriResult) 
                          && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
 
-            string tempDir = Path.Combine(Path.GetTempPath(), "JarvisVideoSummarizer");
+            string tempDir = Path.Combine(Path.GetTempPath(), "HeaplitVideoSummarizer");
             if (!Directory.Exists(tempDir)) Directory.CreateDirectory(tempDir);
 
             string uniqueId = Guid.NewGuid().ToString("N");
@@ -55,7 +55,7 @@ namespace JarvisLauncher
                     }
                     else
                     {
-                        logProgress?.Invoke("🧠 Analyzing transcript using JARVIS AI...");
+                        logProgress?.Invoke("🧠 Analyzing transcript using HEAPLIT AI...");
                         string prompt = "Please provide a comprehensive summary of the following video transcript. " +
                                        "Identify the main topics covered, key takeaways/decisions made, and list them structured by bullet points with titles:\n\n" + cleanTranscript;
                         string res = await LlmRouter.AskAsync(prompt);

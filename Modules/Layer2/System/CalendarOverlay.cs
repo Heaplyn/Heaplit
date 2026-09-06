@@ -14,7 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Data;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class CalendarEvent
     {
@@ -139,7 +139,7 @@ namespace JarvisLauncher
         }
 
         private CalendarOverlay()
-            : base("📅 JARVIS PLANNER & CALENDAR", width: 620, height: 460)
+            : base("📅 HEAPLIT PLANNER & CALENDAR", width: 620, height: 460)
         {
             LoadEvents();
             _selectedDate = DateTime.Today;

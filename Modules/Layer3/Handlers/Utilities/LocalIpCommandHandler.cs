@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class LocalIpCommandHandler : ICommandHandler
     {

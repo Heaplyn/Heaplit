@@ -4,7 +4,7 @@
 
 using System.Collections.Generic;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public interface IAppScannerService
     {

@@ -1,15 +1,15 @@
 <!-- Developer: heaplyn -->
 <!-- Date: 2026-08-08 -->
 <!-- Summary: Main visual dashboard layout containing search bar inputs, divider separator, and fuzzy-sorted suggestions ListBox. -->
-<Window x:Class="JarvisLauncher.MainWindow"
+<Window x:Class="HeaplitLauncher.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
-        xmlns:local="clr-namespace:JarvisLauncher"
+        xmlns:local="clr-namespace:HeaplitLauncher"
         mc:Ignorable="d"
-        Title="Jarvis Launcher" 
+        Title="Heaplit Launcher" 
         Width="680"
         SizeToContent="Height"
         MaxHeight="550"

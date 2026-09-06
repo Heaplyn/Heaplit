@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class EditorAssistantCommandHandler : ICommandHandler
     {
@@ -38,7 +38,7 @@ namespace JarvisLauncher
         {
             return new List<CommandDesc>
             {
-                new CommandDesc("editor", "Open Jarvis Code Editor Assistant", "editor"),
+                new CommandDesc("editor", "Open Heaplit Code Editor Assistant", "editor"),
                 new CommandDesc("imports", "Quickly paste programming imports/headers", "imports"),
                 new CommandDesc("boilerplate", "Quickly paste boilerplate code", "boilerplate")
             };

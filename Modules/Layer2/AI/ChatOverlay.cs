@@ -19,7 +19,7 @@ using System.Threading;
 using System.Windows.Documents;
 using Ellipse = System.Windows.Shapes.Ellipse;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class ChatOverlay : BaseOverlay
     {
@@ -70,7 +70,7 @@ namespace JarvisLauncher
             }));
         }
 
-        private ChatOverlay() : base("JARVIS AI COMPANION", 480, 720) {
+        private ChatOverlay() : base("HEAPLIT AI COMPANION", 480, 720) {
             var WorkArea = SystemParameters.WorkArea; this.Left = WorkArea.Width - this.Width - 20; this.Top = WorkArea.Top + 40;
             var root = new Grid { Margin = new Thickness(12) };
             root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // Toolbar
@@ -204,7 +204,7 @@ namespace JarvisLauncher
 
             var systemBtn = CreateToolbarButton("⚙️ SYSTEM", (s, e) => {
                 string prompt = AiAPI.GetCompactSystemPrompt();
-                MessageBox.Show(prompt, "JARVIS SYSTEM PROMPT", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(prompt, "HEAPLIT SYSTEM PROMPT", MessageBoxButton.OK, MessageBoxImage.Information);
             });
             toolStack.Children.Add(systemBtn);
 
@@ -298,7 +298,7 @@ namespace JarvisLauncher
 
             var boxGrid = new Grid();
             InputTextBox = new TextBox { AcceptsReturn = true, TextWrapping = TextWrapping.Wrap, MinHeight = 38, MaxHeight = 150, Padding = new Thickness(12,8,12,8), FontSize = 14, Background = new SolidColorBrush(Color.FromArgb(30, 255, 255, 255)), Foreground = Brushes.White, BorderBrush = Brushes.DimGray, CaretBrush = Brushes.Cyan, BorderThickness = new Thickness(1) };
-            var placeholder = new TextBlock { Text = "Command Jarvis...", Foreground = Brushes.Gray, IsHitTestVisible = false, Margin = new Thickness(15,10,0,0), FontSize = 14 };
+            var placeholder = new TextBlock { Text = "Command Heaplit...", Foreground = Brushes.Gray, IsHitTestVisible = false, Margin = new Thickness(15,10,0,0), FontSize = 14 };
             InputTextBox.TextChanged += (s, e) => placeholder.Visibility = string.IsNullOrEmpty(InputTextBox.Text) ? Visibility.Visible : Visibility.Collapsed;
             InputTextBox.PreviewKeyDown += (s, e) => { if (e.Key == Key.Enter && Keyboard.Modifiers == ModifierKeys.None) { e.Handled = true; SendCurrentInput(); } };
             boxGrid.Children.Add(InputTextBox); boxGrid.Children.Add(placeholder);
@@ -376,9 +376,9 @@ namespace JarvisLauncher
 
         private void LoadLastSession() {
             string dir = Path.Combine(PathHandler.GetDataDirectory(), "Conversations");
-            if (!Directory.Exists(dir)) { AddMessageBubble("Jarvis Online. Operational.", true); return; }
+            if (!Directory.Exists(dir)) { AddMessageBubble("Heaplit Online. Operational.", true); return; }
             var last = Directory.GetFiles(dir, "*.json").OrderByDescending(File.GetLastWriteTime).FirstOrDefault();
-            if (last != null) LoadSession(Path.GetFileName(last)); else AddMessageBubble("Jarvis Online. Operational.", true);
+            if (last != null) LoadSession(Path.GetFileName(last)); else AddMessageBubble("Heaplit Online. Operational.", true);
         }
 
         public static async Task SubmitTextMessage(string msg) { ShowChat(); if (Instance != null) await Instance.SendUserMessage(msg); }
@@ -474,7 +474,7 @@ namespace JarvisLauncher
                 if (!string.IsNullOrEmpty(processedText)) FormatRichText(rt, processedText);
 
                 dbg.Text = "INTERNAL TRACE:\n" + aiRaw;
-                ChronoLogManager.LogEvent("Chat", $"Jarvis: {aiRaw}");
+                ChronoLogManager.LogEvent("Chat", $"Heaplit: {aiRaw}");
 
                 ConversationHistory.Add(new ChatTurn { Role = "user", Text = msg });
                 ConversationHistory.Add(new ChatTurn { Role = "model", Text = aiRaw });

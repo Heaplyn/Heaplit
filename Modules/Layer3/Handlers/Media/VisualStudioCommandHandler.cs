@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace JarvisLauncher.Modules.Layer3.Handlers
+namespace HeaplitLauncher.Modules.Layer3.Handlers
 {
     public class VisualStudioCommandHandler : ICommandHandler
     {
@@ -20,10 +20,10 @@ namespace JarvisLauncher.Modules.Layer3.Handlers
         {
             return new List<CommandResult> {
                 new CommandResult {
-                    TITLE = "🎨 Open Jarvis Visuals",
+                    TITLE = "🎨 Open Heaplit Visuals",
                     DESCRIPTION = "Unified suite for colors, typography, motion, and system aesthetics.",
                     SIMILARITY = Math.Max(SearchUtil.GetSimilarity(query, "visual studio"), SearchUtil.GetSimilarity(query, "suite")),
-                    EXECUTE = () => JarvisVisualsOverlay.ShowOverlay()
+                    EXECUTE = () => HeaplitVisualsOverlay.ShowOverlay()
                 }
             };
         }

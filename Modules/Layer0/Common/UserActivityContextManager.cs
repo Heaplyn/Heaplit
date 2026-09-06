@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class ActivityItem
     {

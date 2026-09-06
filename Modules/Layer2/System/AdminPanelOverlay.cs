@@ -5,7 +5,7 @@
 //          1. Generate Roblox Studio Luau DataStore Player Data Recovery Scripts
 //          2. Roll back player profiles using DataStore Versioning & Snapshot APIs
 //          3. Generate in-game Admin Commands for live DataStore restoration
-//          4. Backup and restore local Jarvis system state, memories, and settings.
+//          4. Backup and restore local Heaplit system state, memories, and settings.
 
 using System;
 using System.Collections.Generic;
@@ -18,7 +18,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class AdminPanelOverlay : BaseOverlay
     {
@@ -55,7 +55,7 @@ namespace JarvisLauncher
         }
 
         private AdminPanelOverlay()
-            : base("🛡️ JARVIS ADMIN PANEL & DATA RESTORER", width: 840, height: 620)
+            : base("🛡️ HEAPLIT ADMIN PANEL & DATA RESTORER", width: 840, height: 620)
         {
             this.Closed += (s, e) => _instance = null;
 
@@ -70,7 +70,7 @@ namespace JarvisLauncher
 
             tabControl.Items.Add(new TabItem
             {
-                Header = "💾 Jarvis System Backups & Snapshots",
+                Header = "💾 Heaplit System Backups & Snapshots",
                 Content = BuildLocalSystemBackupsTab()
             });
 
@@ -253,7 +253,7 @@ namespace JarvisLauncher
             if (methodIdx == 0) // Direct Inject / Force Overwrite
             {
                 sb.AppendLine($"-- ==========================================================================");
-                sb.AppendLine($"-- JARVIS DATASTORE DIRECT RESTORER & OVERRIDE PROTOCOL");
+                sb.AppendLine($"-- HEAPLIT DATASTORE DIRECT RESTORER & OVERRIDE PROTOCOL");
                 sb.AppendLine($"-- Target Player UserId: {userId} | DataStore: {storeName}");
                 sb.AppendLine($"-- Paste this into Roblox Studio View -> Command Bar or run on live Server");
                 sb.AppendLine($"-- ==========================================================================");
@@ -273,7 +273,7 @@ namespace JarvisLauncher
                 sb.AppendLine($"end)");
                 sb.AppendLine();
                 sb.AppendLine($"if not success then");
-                sb.AppendLine($"    warn(\"[JARVIS RESTORER] ❌ Failed to parse payload JSON: \" .. tostring(restoredData))");
+                sb.AppendLine($"    warn(\"[HEAPLIT RESTORER] ❌ Failed to parse payload JSON: \" .. tostring(restoredData))");
                 sb.AppendLine($"    return");
                 sb.AppendLine($"end");
                 sb.AppendLine();
@@ -287,31 +287,31 @@ namespace JarvisLauncher
                 sb.AppendLine($"if oldSuccess and oldData ~= nil then");
                 sb.AppendLine($"    local backupKey = \"BACKUP_\" .. TARGET_KEY .. \"_\" .. os.time()");
                 sb.AppendLine($"    pcall(function() dataStore:SetAsync(backupKey, oldData) end)");
-                sb.AppendLine($"    print(\"[JARVIS RESTORER] 🛡️ Snapshot backup created: \" .. backupKey)");
+                sb.AppendLine($"    print(\"[HEAPLIT RESTORER] 🛡️ Snapshot backup created: \" .. backupKey)");
                 sb.AppendLine($"end");
                 sb.AppendLine();
                 sb.AppendLine($"-- 2. Force Write Restored Payload with Metadata Tagging");
                 sb.AppendLine($"local setSuccess, setErr = pcall(function()");
                 sb.AppendLine($"    local setOptions = Instance.new(\"DataStoreSetOptions\")");
-                sb.AppendLine($"    setOptions:SetMetadata({{ RestoredBy = \"JarvisAdminRestorer\", RestoreTime = os.time() }})");
+                sb.AppendLine($"    setOptions:SetMetadata({{ RestoredBy = \"HeaplitAdminRestorer\", RestoreTime = os.time() }})");
                 sb.AppendLine($"    dataStore:SetAsync(TARGET_KEY, restoredData, {{ TARGET_USER_ID }}, setOptions)");
                 sb.AppendLine($"end)");
                 sb.AppendLine();
                 sb.AppendLine($"if setSuccess then");
-                sb.AppendLine($"    print(\"[JARVIS RESTORER] ✅ Successfully restored data for UserId \" .. TARGET_USER_ID .. \" in '\" .. DATASTORE_NAME .. \"'!\")");
+                sb.AppendLine($"    print(\"[HEAPLIT RESTORER] ✅ Successfully restored data for UserId \" .. TARGET_USER_ID .. \" in '\" .. DATASTORE_NAME .. \"'!\")");
                 sb.AppendLine($"    -- If player is currently online, notify or kick to reload clean state");
                 sb.AppendLine($"    local onlinePlayer = Players:GetPlayerByUserId(TARGET_USER_ID)");
                 sb.AppendLine($"    if onlinePlayer then");
                 sb.AppendLine($"        onlinePlayer:Kick(\"Your data has been restored by Server Admin. Please rejoin to load updated stats.\")");
                 sb.AppendLine($"    end");
                 sb.AppendLine($"else");
-                sb.AppendLine($"    warn(\"[JARVIS RESTORER] ❌ Failed to write restored data: \" .. tostring(setErr))");
+                sb.AppendLine($"    warn(\"[HEAPLIT RESTORER] ❌ Failed to write restored data: \" .. tostring(setErr))");
                 sb.AppendLine($"end");
             }
             else if (methodIdx == 1) // Version Rollback
             {
                 sb.AppendLine($"-- ==========================================================================");
-                sb.AppendLine($"-- JARVIS DATASTORE VERSION ROLLBACK & SNAPSHOT RECOVERY");
+                sb.AppendLine($"-- HEAPLIT DATASTORE VERSION ROLLBACK & SNAPSHOT RECOVERY");
                 sb.AppendLine($"-- Inspects all historical versions of a key and restores chosen point-in-time");
                 sb.AppendLine($"-- ==========================================================================");
                 sb.AppendLine($"local DataStoreService = game:GetService(\"DataStoreService\")");
@@ -364,7 +364,7 @@ namespace JarvisLauncher
             else if (methodIdx == 2) // In-Game Admin Command Module
             {
                 sb.AppendLine($"-- ==========================================================================");
-                sb.AppendLine($"-- JARVIS IN-GAME ADMIN DATA RESTORATION COMMAND HANDLER");
+                sb.AppendLine($"-- HEAPLIT IN-GAME ADMIN DATA RESTORATION COMMAND HANDLER");
                 sb.AppendLine($"-- Place inside ServerScriptService -> AdminCommands");
                 sb.AppendLine($"-- Usage in-game chat by authorized admins: :restore <Username/UserId>");
                 sb.AppendLine($"-- ==========================================================================");
@@ -421,7 +421,7 @@ namespace JarvisLauncher
             else // Automated Backup System
             {
                 sb.AppendLine($"-- ==========================================================================");
-                sb.AppendLine($"-- JARVIS AUTONOMIC DATASTORE SNAPSHOT & RETENTION SYSTEM");
+                sb.AppendLine($"-- HEAPLIT AUTONOMIC DATASTORE SNAPSHOT & RETENTION SYSTEM");
                 sb.AppendLine($"-- Place in ServerScriptService. Takes rolling backups and provides instant restore.");
                 sb.AppendLine($"-- ==========================================================================");
                 sb.AppendLine($"local DataStoreService = game:GetService(\"DataStoreService\")");
@@ -472,10 +472,10 @@ namespace JarvisLauncher
         {
             var panel = new StackPanel { Margin = new Thickness(10) };
 
-            panel.Children.Add(CreateHeader("💾 Jarvis Local System State Snapshots", category: "Headers"));
+            panel.Children.Add(CreateHeader("💾 Heaplit Local System State Snapshots", category: "Headers"));
             panel.Children.Add(new OutlinedText
             {
-                Text = "Create instant system snapshots of your Jarvis settings, AI memory context, and custom configurations with 1-click restore.",
+                Text = "Create instant system snapshots of your Heaplit settings, AI memory context, and custom configurations with 1-click restore.",
                 Category = "Subtext",
                 FontSize = 10,
                 Foreground = Brushes.Gray,

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher.AiTools
+namespace HeaplitLauncher.AiTools
 {
     public class DynamicScriptTool : IAiTool
     {
@@ -58,7 +58,7 @@ namespace JarvisLauncher.AiTools
                 string script = m.Groups["script"].Value.Trim();
                 if (string.IsNullOrEmpty(tag) || string.IsNullOrEmpty(pattern)) continue;
 
-                if (!HumanConfirm.Ask($"Jarvis (AI) wants to CREATE a reusable tool '{tag}' that runs this script:\n\n{script}\n\nAllow?"))
+                if (!HumanConfirm.Ask($"Heaplit (AI) wants to CREATE a reusable tool '{tag}' that runs this script:\n\n{script}\n\nAllow?"))
                     continue;
 
                 AiToolRegistry.Register(new DynamicScriptTool(tag, pattern, script) { IsVerified = true });

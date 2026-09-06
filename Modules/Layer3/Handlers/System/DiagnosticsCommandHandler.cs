@@ -12,7 +12,7 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class DiagnosticsCommandHandler : ICommandHandler
     {
@@ -39,7 +39,7 @@ namespace JarvisLauncher
             {
                 suggestions.Add(new CommandResult
                 {
-                    TITLE = "🩺 Run Jarvis System Self-Check",
+                    TITLE = "🩺 Run Heaplit System Self-Check",
                     DESCRIPTION = "Verify AI API, Bridge Server, Database, and File System status",
                     SIMILARITY = 5.0,
                     EXECUTE = () => RunSelfCheck()
@@ -61,7 +61,7 @@ namespace JarvisLauncher
             {
                 suggestions.Add(new CommandResult
                 {
-                    TITLE = "⚙️ Open Jarvis Process Manager",
+                    TITLE = "⚙️ Open Heaplit Process Manager",
                     DESCRIPTION = "Advanced task manager with search and kill capabilities",
                     SIMILARITY = 5.0,
                     EXECUTE = () => ProcessManagerOverlay.OpenManager()
@@ -96,7 +96,7 @@ namespace JarvisLauncher
                 suggestions.Add(new CommandResult
                 {
                     TITLE = "🛠️ Open Debug Console",
-                    DESCRIPTION = "View real-time internal Jarvis logs and bridge traffic",
+                    DESCRIPTION = "View real-time internal Heaplit logs and bridge traffic",
                     SIMILARITY = 5.0,
                     EXECUTE = () => DebugConsoleOverlay.ShowConsole()
                 });
@@ -121,7 +121,7 @@ namespace JarvisLauncher
             Task.Run(() =>
             {
                 var sb = new StringBuilder();
-                sb.AppendLine("=== JARVIS SYSTEM SELF-CHECK ===");
+                sb.AppendLine("=== HEAPLIT SYSTEM SELF-CHECK ===");
 
                 // 1. Bridge Server
                 bool bridgeOk = MobileBridgeServer.IsActive;
@@ -141,7 +141,7 @@ namespace JarvisLauncher
                 sb.AppendLine($"[INFO] Runtime: {threadCount} threads, {GC.GetTotalMemory(false) / 1024 / 1024}MB Memory");
 
                 DebugConsoleOverlay.Log("Health", "Self-check completed.");
-                ContentPreviewOverlay.Show("Jarvis Self-Check", sb.ToString(), "markdown");
+                ContentPreviewOverlay.Show("Heaplit Self-Check", sb.ToString(), "markdown");
             });
         }
 

@@ -1,18 +1,18 @@
 // Developer: heaplyn
 // Date: 2026-08-09
-// Summary: Handles application commands to restart the active Jarvis launcher thread or environment.
+// Summary: Handles application commands to restart the active Heaplit launcher thread or environment.
 
 using System;
 using System.Collections.Generic;
 using System.Windows.Threading;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class RestartCommandHandler : ICommandHandler
     {
         public bool CanHandle(string query)
         {
-            return SearchUtil.MatchesAny(query, "restart", "re", "reload", "restart jarvis", "fresh boot", "fresh start");
+            return SearchUtil.MatchesAny(query, "restart", "re", "reload", "restart heaplit", "fresh boot", "fresh start");
         }
 
         public List<CommandResult> GetSuggestions(string query)
@@ -23,7 +23,7 @@ namespace JarvisLauncher
             suggestions.Add(new CommandResult
             {
                 TITLE = "🔄 Restart & Sync (Quick)",
-                DESCRIPTION = "Restart Jarvis and sync logic changes (Rebuilds if necessary)",
+                DESCRIPTION = "Restart Heaplit and sync logic changes (Rebuilds if necessary)",
                 EXECUTE = () =>
                 {
                     TextOverlay.Show("Restarting & Syncing...", 800);
@@ -35,7 +35,7 @@ namespace JarvisLauncher
                     };
                     timer.Start();
                 },
-                SIMILARITY = (SearchUtil.BestSimilarity(query, "restart", "re", "reload", "restart jarvis", "fresh boot", "fresh start") + 9.0 * 0.01)
+                SIMILARITY = (SearchUtil.BestSimilarity(query, "restart", "re", "reload", "restart heaplit", "fresh boot", "fresh start") + 9.0 * 0.01)
             });
 
             // 2. Explicit Fresh Start / Sync
@@ -54,7 +54,7 @@ namespace JarvisLauncher
                     };
                     timer.Start();
                 },
-                SIMILARITY = (SearchUtil.BestSimilarity(query, "restart", "re", "reload", "restart jarvis", "fresh boot", "fresh start") + 10.0 * 0.01)
+                SIMILARITY = (SearchUtil.BestSimilarity(query, "restart", "re", "reload", "restart heaplit", "fresh boot", "fresh start") + 10.0 * 0.01)
             });
 
             // 3. Cloud Sync & Rebuild
@@ -73,7 +73,7 @@ namespace JarvisLauncher
                     };
                     timer.Start();
                 },
-                SIMILARITY = (SearchUtil.BestSimilarity(query, "restart", "re", "reload", "restart jarvis", "fresh boot", "fresh start") + 7.5 * 0.01)
+                SIMILARITY = (SearchUtil.BestSimilarity(query, "restart", "re", "reload", "restart heaplit", "fresh boot", "fresh start") + 7.5 * 0.01)
             });
 
             return suggestions;

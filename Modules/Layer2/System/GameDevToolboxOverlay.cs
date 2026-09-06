@@ -14,7 +14,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class GameDevToolboxOverlay : BaseOverlay
     {
@@ -105,7 +105,7 @@ namespace JarvisLauncher
         }
 
         private GameDevToolboxOverlay()
-            : base("🎮 JARVIS GAME CREATOR TOOLBOX", width: 780, height: 530)
+            : base("🎮 HEAPLIT GAME CREATOR TOOLBOX", width: 780, height: 530)
         {
             this.Closed += (s, e) => { _instance = null; };
 
@@ -1417,7 +1417,7 @@ namespace JarvisLauncher
 
             if (methodIdx == 0) // Direct Inject / Force Overwrite
             {
-                sb.AppendLine($"-- JARVIS DATASTORE DIRECT RESTORER & OVERRIDE PROTOCOL");
+                sb.AppendLine($"-- HEAPLIT DATASTORE DIRECT RESTORER & OVERRIDE PROTOCOL");
                 sb.AppendLine($"-- Target Player UserId: {userId} | DataStore: {storeName}");
                 sb.AppendLine($"local DataStoreService = game:GetService(\"DataStoreService\")");
                 sb.AppendLine($"local HttpService = game:GetService(\"HttpService\")");
@@ -1438,7 +1438,7 @@ namespace JarvisLauncher
                 sb.AppendLine();
                 sb.AppendLine($"local setSuccess, setErr = pcall(function()");
                 sb.AppendLine($"    local setOptions = Instance.new(\"DataStoreSetOptions\")");
-                sb.AppendLine($"    setOptions:SetMetadata({{ RestoredBy = \"JarvisAdminRestorer\", RestoreTime = os.time() }})");
+                sb.AppendLine($"    setOptions:SetMetadata({{ RestoredBy = \"HeaplitAdminRestorer\", RestoreTime = os.time() }})");
                 sb.AppendLine($"    dataStore:SetAsync(TARGET_KEY, restoredData, {{ TARGET_USER_ID }}, setOptions)");
                 sb.AppendLine($"end)");
                 sb.AppendLine();
@@ -1452,7 +1452,7 @@ namespace JarvisLauncher
             }
             else if (methodIdx == 1) // Version Rollback
             {
-                sb.AppendLine($"-- JARVIS DATASTORE VERSION ROLLBACK & SNAPSHOT RECOVERY");
+                sb.AppendLine($"-- HEAPLIT DATASTORE VERSION ROLLBACK & SNAPSHOT RECOVERY");
                 sb.AppendLine($"local DataStoreService = game:GetService(\"DataStoreService\")");
                 sb.AppendLine($"local dataStore = DataStoreService:GetDataStore(\"{storeName}\")");
                 sb.AppendLine($"local TARGET_KEY = \"Player_{userId}\"");
@@ -1685,8 +1685,8 @@ namespace JarvisLauncher
 
             panel.Children.Add(CreateSectionHeader("📦 Port Codebase → Studio"));
 
-            panel.Children.Add(CreateSubHeader("STEP 1 — Load Source Codebase into Jarvis"));
-            panel.Children.Add(CreateHintText("Point to any folder or .rbxlx file. Jarvis stores all scripts in memory until you restart."));
+            panel.Children.Add(CreateSubHeader("STEP 1 — Load Source Codebase into Heaplit"));
+            panel.Children.Add(CreateHintText("Point to any folder or .rbxlx file. Heaplit stores all scripts in memory until you restart."));
 
             var srcGrid = new Grid { Margin = new Thickness(0, 4, 0, 4) };
             srcGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -1720,7 +1720,7 @@ namespace JarvisLauncher
             panel.Children.Add(_portStatusLabel);
             RefreshPortStatus();
 
-            var loadBtn = CreateButton("📥 Load & Store Codebase in Jarvis", (s, e) => LoadPortCurrent());
+            var loadBtn = CreateButton("📥 Load & Store Codebase in Heaplit", (s, e) => LoadPortCurrent());
             loadBtn.FontWeight = FontWeights.Bold;
             panel.Children.Add(loadBtn);
 
@@ -1967,7 +1967,7 @@ namespace JarvisLauncher
             bool hasSub = !string.IsNullOrEmpty(sub);
 
             var sb = new StringBuilder();
-            sb.AppendLine($"-- JARVIS CODEBASE PORTER | {_portEntries.Count} scripts | {Path.GetFileName(_portLoadedFrom)} → {svc}{(hasSub ? "/" + sub : "")} | {DateTime.Now:HH:mm}");
+            sb.AppendLine($"-- HEAPLIT CODEBASE PORTER | {_portEntries.Count} scripts | {Path.GetFileName(_portLoadedFrom)} → {svc}{(hasSub ? "/" + sub : "")} | {DateTime.Now:HH:mm}");
             sb.AppendLine($"local svc = game:GetService(\"{svc}\")");
 
             if (hasSub)
@@ -2009,7 +2009,7 @@ namespace JarvisLauncher
                 }
             }
 
-            sb.AppendLine($"print(\"[JARVIS] ✅ Ported {_portEntries.Count} scripts into {svc}{(hasSub ? "/" + sub : "")}\")");
+            sb.AppendLine($"print(\"[HEAPLIT] ✅ Ported {_portEntries.Count} scripts into {svc}{(hasSub ? "/" + sub : "")}\")");
 
             string result = sb.ToString();
             _portOutputBox.Text = result;
@@ -2228,7 +2228,7 @@ namespace JarvisLauncher
 
             var sb = new StringBuilder();
             sb.AppendLine("-- =====================================================");
-            sb.AppendLine($"-- JARVIS PORT INSTALLER  |  Source: {Path.GetFileName(_portSourcePathBox?.Text ?? "?")}");
+            sb.AppendLine($"-- HEAPLIT PORT INSTALLER  |  Source: {Path.GetFileName(_portSourcePathBox?.Text ?? "?")}");
             sb.AppendLine($"-- Target: {service}{(hasSubfolder ? "/" + subfolder : "")}");
             sb.AppendLine($"-- Scripts: {_portEntries.Count}  |  Generated: {DateTime.Now:yyyy-MM-dd HH:mm}");
             sb.AppendLine("-- Paste into Studio Command Bar and press Enter.");
@@ -2321,7 +2321,7 @@ namespace JarvisLauncher
                 sb.AppendLine();
             }
 
-            sb.AppendLine($"print(\"[JARVIS] Ported {_portEntries.Count} scripts into \" .. \"{service}{(hasSubfolder ? "/" + subfolder : "")}\")");
+            sb.AppendLine($"print(\"[HEAPLIT] Ported {_portEntries.Count} scripts into \" .. \"{service}{(hasSubfolder ? "/" + subfolder : "")}\")");
 
             _portOutputBox.Text = sb.ToString();
         }

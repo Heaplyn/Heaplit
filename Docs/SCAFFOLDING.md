@@ -1,12 +1,12 @@
 # Scaffolding & Implementation Guide
 
-Use these templates to quickly implement new features in Jarvis while maintaining architectural consistency.
+Use these templates to quickly implement new features in Heaplit while maintaining architectural consistency.
 
 ## 1. Creating a New Command Handler
 Handlers live in `Modules/Layer3/Handlers`. They must implement `ICommandHandler`.
 
 ```csharp
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class MyNewFeatureHandler : ICommandHandler
     {
@@ -40,7 +40,7 @@ namespace JarvisLauncher
 Overlays live in `Modules/Layer2`. They must inherit from `BaseOverlay`.
 
 ```csharp
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class MyOverlay : BaseOverlay
     {
@@ -63,14 +63,14 @@ namespace JarvisLauncher
 ```
 
 ## 3. Creating a Mobile Plugin
-Mobile plugins live in `Modules/Layer0/Plugins` of the Jarvis Mobile project.
+Mobile plugins live in `Modules/Layer0/Plugins` of the Heaplit Mobile project.
 
 ```csharp
-namespace Jarvis_Mobile.Modules.Layer0.Plugins
+namespace Heaplit_Mobile.Modules.Layer0.Plugins
 {
-    public class MyMobilePlugin : IJarvisPlugin
+    public class MyMobilePlugin : IHeaplitPlugin
     {
-        public string PluginId => "com.jarvis.myfeature";
+        public string PluginId => "com.heaplit.myfeature";
         public string Name => "My Feature";
         public string Description => "Mobile implementation of X.";
         public string Version => "1.0.0";
@@ -88,7 +88,7 @@ namespace Jarvis_Mobile.Modules.Layer0.Plugins
 
 ---
 
-## The Jarvis Way (Rules for AI)
+## The Heaplit Way (Rules for AI)
 1. **Glassmorphism**: Use the styles defined in `Styles.xaml`. Never use default WPF colors.
 2. **Layering**: Logic belongs in Layer 0. UI belongs in Layer 2. Routing belongs in Layer 3.
 3. **Async/Await**: Never block the UI thread. Use `Task.Run` for background work.

@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class DevCommandsCommandHandler : ICommandHandler
     {
@@ -38,8 +38,8 @@ namespace JarvisLauncher
         {
             return new List<CommandDesc>
             {
-                new CommandDesc("dev", "Open Jarvis Developer Command Deck", "dev"),
-                new CommandDesc("cheatsheet", "Open Jarvis Developer Command Deck", "cheatsheet")
+                new CommandDesc("dev", "Open Heaplit Developer Command Deck", "dev"),
+                new CommandDesc("cheatsheet", "Open Heaplit Developer Command Deck", "cheatsheet")
             };
         }
     }

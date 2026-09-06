@@ -13,7 +13,7 @@ using System.Text;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public enum CellSpecialization { General, Vision, Audio, Search, Logic, Performance, Benchmark, Symbolic }
 

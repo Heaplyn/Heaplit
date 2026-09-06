@@ -17,7 +17,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Win32;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class LlmSettingsOverlay : BaseOverlay
     {
@@ -376,7 +376,7 @@ namespace JarvisLauncher
             _customCmdPanel.Children.Add(cmdTypeCombo);
 
             _customCmdPanel.Children.Add(new TextBlock {
-                Text = "Tip: If arguments do not contain '{prompt}', Jarvis automatically pipes the full context to StandardInput (like Claude CLI / headless runners).",
+                Text = "Tip: If arguments do not contain '{prompt}', Heaplit automatically pipes the full context to StandardInput (like Claude CLI / headless runners).",
                 Foreground = Brushes.Gray, FontSize = 11, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 0, 0, 6)
             });
             root.Children.Add(_customCmdPanel);

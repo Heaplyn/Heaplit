@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class SystemStatsCommandHandler : ICommandHandler
     {

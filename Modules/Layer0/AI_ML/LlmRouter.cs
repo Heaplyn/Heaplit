@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class LlmRouter
     {
@@ -204,7 +204,7 @@ namespace JarvisLauncher
             }
 
             // 2. Greetings
-            if (Regex.IsMatch(lower, @"^(?:hi|hello|hey|greetings|morning|evening|afternoon|jarvis|hey jarvis|are you there|status)\b"))
+            if (Regex.IsMatch(lower, @"^(?:hi|hello|hey|greetings|morning|evening|afternoon|heaplit|hey heaplit|are you there|status)\b"))
             {
                 return $"At your service, Sir. All local subsystems, UI modules, and offline tools remain operational.\n\n" +
                        $"⚠️ **AI Connection Notice**\nYour cloud AI backends could not be reached:\n```\n{failureDetails}\n```\n" +
@@ -215,7 +215,7 @@ namespace JarvisLauncher
             if (lower.Contains("system status") || lower.Contains("pc status") || lower.Contains("memory") || lower.Contains("cpu"))
             {
                 long ramUsed = GC.GetTotalMemory(false) / (1024 * 1024);
-                return $"🖥️ **System Telemetry:**\n- Host: Windows PC\n- Jarvis Process Memory: ~{ramUsed} MB\n- Subsystems: Online\n- LLM Status: Offline (Check API credentials)\n\nDiagnostics summary:\n{failureDetails}";
+                return $"🖥️ **System Telemetry:**\n- Host: Windows PC\n- Heaplit Process Memory: ~{ramUsed} MB\n- Subsystems: Online\n- LLM Status: Offline (Check API credentials)\n\nDiagnostics summary:\n{failureDetails}";
             }
 
             // 4. Default graceful fallback
@@ -781,7 +781,7 @@ namespace JarvisLauncher
                 finalArgs = finalArgs.Replace("{prompt}", escaped).Replace("{PROMPT}", escaped);
             }
             finalArgs = finalArgs.Replace("{model}", s?.CUSTOM_LLM_MODEL ?? "")
-                                 .Replace("{system}", "Jarvis");
+                                 .Replace("{system}", "Heaplit");
 
             var psi = new ProcessStartInfo {
                 FileName = execFile,

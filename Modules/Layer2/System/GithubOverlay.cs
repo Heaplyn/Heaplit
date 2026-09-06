@@ -16,7 +16,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class GithubOverlay : BaseOverlay
     {
@@ -61,7 +61,7 @@ namespace JarvisLauncher
             _statusSummary = new TextBlock { Text = "Status: Calculating drift...", FontSize = 11, Foreground = Brushes.Gray, Margin = new Thickness(0, 4, 0, 0) };
             header.Children.Add(_statusSummary);
 
-            var openRepoBtn = CreateLinkButton("🔗 View on GitHub.com", "https://github.com/Heaplyn/Jarvis");
+            var openRepoBtn = CreateLinkButton("🔗 View on GitHub.com", "https://github.com/Heaplyn/Heaplit");
             header.Children.Add(openRepoBtn);
 
             Grid.SetRow(header, 0);

@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class VoiceStudioOverlay : BaseOverlay
     {
@@ -26,9 +26,9 @@ namespace JarvisLauncher
         private TextBlock _endlessCurrentWordText = null!;
         private TextBlock _endlessNextWordText = null!;
         private int _endlessWordIndex = 0;
-        private readonly string[] _endlessWordBank = { "Jarvis", "quantum", "protocol", "algorithm", "terminal", "powershell", "execute", "firewall", "security", "database", "optimizer", "subsystem", "network", "router", "telemetry", "diagnostics", "frequency", "satellite", "analyzer", "system", "command", "desktop", "downloads", "music", "playlist", "volume", "sticky", "notes", "calendar", "reminders", "focus", "pomodoro", "chunk", "dopamine", "process", "window", "screenshot", "clipboard", "tunnel", "cloudflare", "ngrok", "mobile", "bridge", "pairing", "codebase" };
+        private readonly string[] _endlessWordBank = { "Heaplit", "quantum", "protocol", "algorithm", "terminal", "powershell", "execute", "firewall", "security", "database", "optimizer", "subsystem", "network", "router", "telemetry", "diagnostics", "frequency", "satellite", "analyzer", "system", "command", "desktop", "downloads", "music", "playlist", "volume", "sticky", "notes", "calendar", "reminders", "focus", "pomodoro", "chunk", "dopamine", "process", "window", "screenshot", "clipboard", "tunnel", "cloudflare", "ngrok", "mobile", "bridge", "pairing", "codebase" };
 
-        public VoiceStudioOverlay() : base("🎙️ JARVIS VOICE STUDIO", 820, 600)
+        public VoiceStudioOverlay() : base("🎙️ HEAPLIT VOICE STUDIO", 820, 600)
         {
             var mainGrid = new Grid { Margin = new Thickness(10) };
             mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
@@ -45,7 +45,7 @@ namespace JarvisLauncher
             Grid.SetRow(tabControl, 0);
             mainGrid.Children.Add(tabControl);
 
-            _statusText = new TextBlock { Text = "Jarvis Systems Standby.", FontSize = 11, Foreground = Brushes.Gray, Margin = new Thickness(4, 6, 0, 0) };
+            _statusText = new TextBlock { Text = "Heaplit Systems Standby.", FontSize = 11, Foreground = Brushes.Gray, Margin = new Thickness(4, 6, 0, 0) };
             Grid.SetRow(_statusText, 1);
             mainGrid.Children.Add(_statusText);
 

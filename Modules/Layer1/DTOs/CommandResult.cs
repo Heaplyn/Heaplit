@@ -4,7 +4,7 @@
 
 using System;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class CommandResult
     {

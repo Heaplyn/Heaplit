@@ -1,7 +1,7 @@
 // Developer: heaplyn
 // Date: 2026-09-02
 // Summary: Agentic tools the model can invoke: surgical file edits (path-jailed) and
-//          self-configuration (changing Jarvis's own settings, with human confirmation).
+//          self-configuration (changing Heaplit's own settings, with human confirmation).
 //          Web search / fetch / download live in WebTools.cs.
 
 using System;
@@ -11,7 +11,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher.AiTools
+namespace HeaplitLauncher.AiTools
 {
     // @edit{path}{find}{replace} — replace the first occurrence of <find> with <replace> in a file.
     public class EditFileTool : IAiTool
@@ -35,7 +35,7 @@ namespace JarvisLauncher.AiTools
         }
     }
 
-    // @set{SETTING_NAME}{value} — Jarvis changes its own configuration (with human confirmation).
+    // @set{SETTING_NAME}{value} — Heaplit changes its own configuration (with human confirmation).
     public class SettingsControlTool : IAiTool
     {
         public string Tag => "SET";
@@ -50,7 +50,7 @@ namespace JarvisLauncher.AiTools
                 BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
             if (prop == null || !prop.CanWrite) return Task.FromResult($"[ERROR: no writable setting '{key}']\n");
 
-            if (!HumanConfirm.Ask($"Jarvis (AI) wants to change setting:\n\n{prop.Name} = {val}\n\nAllow?"))
+            if (!HumanConfirm.Ask($"Heaplit (AI) wants to change setting:\n\n{prop.Name} = {val}\n\nAllow?"))
                 return Task.FromResult($"[DENIED: user declined to change {prop.Name}]\n");
 
             try

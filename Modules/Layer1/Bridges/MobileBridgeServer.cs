@@ -23,7 +23,7 @@ using System.Runtime.InteropServices;
 // Resolve ambiguity between System.Drawing.Size and System.Windows.Size
 using Size = System.Drawing.Size;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class MobileBridgeServer
     {
@@ -36,7 +36,7 @@ namespace JarvisLauncher
         public static int Port => PortParam;
         public static string ServerUrl => $"http://{GetLocalIPAddress()}:{PortParam}/";
         public static string HostnameDomain => $"http://{Environment.MachineName.ToLower()}.local:{PortParam}/";
-        public static string JarvisDomain => $"http://jarvis.local:{PortParam}/";
+        public static string HeaplitDomain => $"http://heaplit.local:{PortParam}/";
 
         public static void Start(int PortNumber = 9000)
         {
@@ -199,14 +199,14 @@ namespace JarvisLauncher
                     // Security Check: If a secret is configured, all API requests must include it
                     string? providedSecret = null;
                     foreach (var header in Lines) {
-                        if (header.StartsWith("X-Jarvis-Secret:", StringComparison.OrdinalIgnoreCase))
+                        if (header.StartsWith("X-Heaplit-Secret:", StringComparison.OrdinalIgnoreCase))
                             providedSecret = header.Substring(16).Trim();
                     }
 
                     // SECURITY: every /api endpoint requires a configured, matching secret. Fail closed.
                     // No localhost bypass, no "empty secret = open server". The static UI shell
                     // (/, /index.html, /cmd, /bar, health) is allowed through so the page can load and
-                    // then authenticate its own API calls with the X-Jarvis-Secret header.
+                    // then authenticate its own API calls with the X-Heaplit-Secret header.
                     bool isApi = PathString.StartsWith("/api", StringComparison.OrdinalIgnoreCase);
                     if (isApi)
                     {
@@ -214,7 +214,7 @@ namespace JarvisLauncher
                         if (string.IsNullOrEmpty(configuredSecret))
                         {
                             await SendResponseAsync(Stream, 401, "Unauthorized",
-                                Encoding.UTF8.GetBytes("Server locked: set BACKUP_PC_SECRET in Jarvis settings to enable the mobile API."), "text/plain");
+                                Encoding.UTF8.GetBytes("Server locked: set BACKUP_PC_SECRET in Heaplit settings to enable the mobile API."), "text/plain");
                             return;
                         }
                         if (!FixedTimeEquals(providedSecret, configuredSecret))
@@ -228,7 +228,7 @@ namespace JarvisLauncher
                         if (IsFeatureBlocked(PathString, out string blockedFeature))
                         {
                             await SendResponseAsync(Stream, 403, "Forbidden",
-                                Encoding.UTF8.GetBytes($"'{blockedFeature}' is disabled. Enable it in Jarvis mobile settings."), "text/plain");
+                                Encoding.UTF8.GetBytes($"'{blockedFeature}' is disabled. Enable it in Heaplit mobile settings."), "text/plain");
                             return;
                         }
                     }
@@ -814,7 +814,7 @@ namespace JarvisLauncher
                     }
                     else
                     {
-                        await SendResponseAsync(Stream, 200, "OK", Encoding.UTF8.GetBytes("Jarvis Bridge Active"), "text/plain");
+                        await SendResponseAsync(Stream, 200, "OK", Encoding.UTF8.GetBytes("Heaplit Bridge Active"), "text/plain");
                     }
                 }
             }
@@ -857,7 +857,7 @@ namespace JarvisLauncher
                 HeaderBuilder.Append($"HTTP/1.1 {Code} {Status}\r\n");
                 HeaderBuilder.Append("Access-Control-Allow-Origin: *\r\n");
                 HeaderBuilder.Append("Access-Control-Allow-Methods: GET, POST, OPTIONS\r\n");
-                HeaderBuilder.Append("Access-Control-Allow-Headers: Content-Type, X-Jarvis-Secret\r\n");
+                HeaderBuilder.Append("Access-Control-Allow-Headers: Content-Type, X-Heaplit-Secret\r\n");
                 HeaderBuilder.Append($"Content-Type: {ContentType}\r\n");
                 HeaderBuilder.Append($"Content-Length: {(Body?.Length ?? 0)}\r\n");
 
@@ -904,7 +904,7 @@ namespace JarvisLauncher
                 catch { }
             }
 
-            CachedCmdHtml = "<html><body style='background:#030712;color:#fff;font-family:sans-serif;padding:20px;'>Jarvis Bridge Active, but MobileCommandBar.html was not found.</body></html>";
+            CachedCmdHtml = "<html><body style='background:#030712;color:#fff;font-family:sans-serif;padding:20px;'>Heaplit Bridge Active, but MobileCommandBar.html was not found.</body></html>";
             return CachedCmdHtml;
         }
 
@@ -932,7 +932,7 @@ namespace JarvisLauncher
                 catch { }
             }
 
-            CachedHtml = "<html><body style='background:#0b0f19;color:#fff;font-family:sans-serif;padding:20px;'>Jarvis Bridge Active, but MobileBridgeServer.html was not found.</body></html>";
+            CachedHtml = "<html><body style='background:#0b0f19;color:#fff;font-family:sans-serif;padding:20px;'>Heaplit Bridge Active, but MobileBridgeServer.html was not found.</body></html>";
             return CachedHtml;
         }
 
@@ -1092,7 +1092,7 @@ namespace JarvisLauncher
                     var Psi = new ProcessStartInfo
                     {
                         FileName = "netsh",
-                        Arguments = $"advfirewall firewall add rule name=\"Jarvis Mobile Hub\" dir=in action=allow protocol=TCP localport={PortParam} profile=any",
+                        Arguments = $"advfirewall firewall add rule name=\"Heaplit Mobile Hub\" dir=in action=allow protocol=TCP localport={PortParam} profile=any",
                         Verb = "runas",
                         UseShellExecute = true,
                         CreateNoWindow = false
@@ -1113,7 +1113,7 @@ namespace JarvisLauncher
                     var Psi = new ProcessStartInfo
                     {
                         FileName = "netsh",
-                        Arguments = $"advfirewall firewall add rule name=\"Jarvis Bridge\" dir=in action=allow protocol=TCP localport={PortNumber} profile=any",
+                        Arguments = $"advfirewall firewall add rule name=\"Heaplit Bridge\" dir=in action=allow protocol=TCP localport={PortNumber} profile=any",
                         UseShellExecute = false,
                         CreateNoWindow = true
                     };

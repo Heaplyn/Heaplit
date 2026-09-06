@@ -1,5 +1,5 @@
 // Developer: heaplyn
-// Part of the JARVIS Disassembler Suite — split into a ring-layered module set.
+// Part of the HEAPLIT Disassembler Suite — split into a ring-layered module set.
 // This file is a partial of DisassemblerSuiteOverlay (see Ring2_UI/DisassemblerSuiteOverlay.cs).
 
 using System;
@@ -21,7 +21,7 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public partial class DisassemblerSuiteOverlay : BaseOverlay
     {
@@ -304,7 +304,7 @@ namespace JarvisLauncher
                 string b64 = Convert.ToBase64String(pycBytes);
 
                 using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(60) };
-                client.DefaultRequestHeaders.Add("User-Agent", "JarvisLauncher/1.0");
+                client.DefaultRequestHeaders.Add("User-Agent", "HeaplitLauncher/1.0");
 
                 string jsonBody = System.Text.Json.JsonSerializer.Serialize(new { bytecode = b64, filename = Path.GetFileName(_loadedFilePath) });
                 var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
@@ -350,7 +350,7 @@ namespace JarvisLauncher
                 });
             }
 
-            Log("=== JARVIS AUTO-INSTALLER: Downloading decompiler tools...\n\n");
+            Log("=== HEAPLIT AUTO-INSTALLER: Downloading decompiler tools...\n\n");
 
             var tasks = new List<Task>();
 
@@ -426,7 +426,7 @@ namespace JarvisLauncher
                     try
                     {
                         using var client = new HttpClient();
-                        client.DefaultRequestHeaders.Add("User-Agent", "JarvisLauncher/1.0");
+                        client.DefaultRequestHeaders.Add("User-Agent", "HeaplitLauncher/1.0");
                         // Get latest release tag from GitHub API
                         string apiResp = await client.GetStringAsync("https://api.github.com/repos/skylot/jadx/releases/latest");
                         var doc = System.Text.Json.JsonDocument.Parse(apiResp);
@@ -477,7 +477,7 @@ namespace JarvisLauncher
                     try
                     {
                         using var client = new HttpClient();
-                        client.DefaultRequestHeaders.Add("User-Agent", "JarvisLauncher/1.0");
+                        client.DefaultRequestHeaders.Add("User-Agent", "HeaplitLauncher/1.0");
                         string apiResp = await client.GetStringAsync("https://api.github.com/repos/x64dbg/x64dbg/releases/latest");
                         var doc = System.Text.Json.JsonDocument.Parse(apiResp);
                         string? assetUrl = null;
@@ -515,7 +515,7 @@ namespace JarvisLauncher
                     try
                     {
                         using var client = new HttpClient();
-                        client.DefaultRequestHeaders.Add("User-Agent", "JarvisLauncher/1.0");
+                        client.DefaultRequestHeaders.Add("User-Agent", "HeaplitLauncher/1.0");
                         string apiResp = await client.GetStringAsync("https://api.github.com/repos/mentebinaria/retoolkit/releases/latest");
                         var doc = JsonDocument.Parse(apiResp);
                         string? assetUrl = null;

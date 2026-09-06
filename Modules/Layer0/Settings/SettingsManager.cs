@@ -7,7 +7,7 @@ using System.IO;
 using System.Text.Json;
 using System.Collections.Generic;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class TextStroke
     {
@@ -57,9 +57,9 @@ namespace JarvisLauncher
         public string HEADING_FONT_FAMILY { get; set; } = "";   // section headers / titles
         public string MONO_FONT_FAMILY { get; set; } = "";      // code / numeric / monospace (fallback Consolas)
         public string CHAT_FONT_FAMILY { get; set; } = "";      // AI chat message text
-        public bool IS_JARVIS_ENABLED { get; set; } = true;
+        public bool IS_HEAPLIT_ENABLED { get; set; } = true;
         public bool IS_VOICE_MODE_ACTIVE { get; set; } = true;
-        public bool ENABLE_WAKE_WORD { get; set; } = true;   // continuously listen for "Hey Jarvis" via LocalWakeWordDetector
+        public bool ENABLE_WAKE_WORD { get; set; } = true;   // continuously listen for "Hey Heaplit" via LocalWakeWordDetector
         public bool ENABLE_WINDOWS_APP_INDEXING { get; set; } = true;
         public int MAX_SEARCH_SUGGESTIONS { get; set; } = 10;
         public bool AUTO_FOCUS_SEARCH_ON_LAUNCH { get; set; } = true;
@@ -75,7 +75,7 @@ namespace JarvisLauncher
         public bool IS_AUTONOMOUS_MODE_ENABLED { get; set; } = false;
         public int AUTONOMOUS_INTERVAL_MINUTES { get; set; } = 2;
 
-        // --- PERCEPTION (Jarvis's "senses" fed into AI context) ---
+        // --- PERCEPTION (Heaplit's "senses" fed into AI context) ---
         public bool ENABLE_PERCEPTION_CONTEXT { get; set; } = true;   // inject active window / screen / files into prompts
         public bool ENABLE_SCREEN_PERCEPTION { get; set; } = true;    // run periodic screen captures for that context
         public int SCREEN_PERCEPTION_INTERVAL_SEC { get; set; } = 10;

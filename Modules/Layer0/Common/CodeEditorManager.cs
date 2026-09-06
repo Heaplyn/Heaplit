@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.Win32;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class CodeEditorManager
     {

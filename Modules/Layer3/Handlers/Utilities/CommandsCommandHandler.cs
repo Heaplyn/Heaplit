@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class CommandsCommandHandler : ICommandHandler
     {
@@ -35,7 +35,7 @@ namespace JarvisLauncher
             suggestions.Add(new CommandResult
             {
                 TITLE       = "View System Commands",
-                DESCRIPTION = "List all available Jarvis command actions, shortcuts, and parameter guidelines",
+                DESCRIPTION = "List all available Heaplit command actions, shortcuts, and parameter guidelines",
                 SIMILARITY  = similarity,
                 EXECUTE     = ShowCommandsList
             });
@@ -62,7 +62,7 @@ namespace JarvisLauncher
 
             var sb = new StringBuilder();
             sb.AppendLine("=========================================================================================");
-            sb.AppendLine("                           JARVIS LAUNCHER COMMAND HANDBOOK                              ");
+            sb.AppendLine("                           HEAPLIT LAUNCHER COMMAND HANDBOOK                              ");
             sb.AppendLine("=========================================================================================");
             sb.AppendLine(string.Format("{0,-24} {1,-38} {2}", "COMMAND", "DESCRIPTION", "EXAMPLE"));
             sb.AppendLine("-----------------------------------------------------------------------------------------");

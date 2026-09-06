@@ -13,7 +13,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class SyncFileEntry
     {
@@ -125,7 +125,7 @@ namespace JarvisLauncher
 
             var req = new HttpRequestMessage(HttpMethod.Get, url);
             if (!string.IsNullOrEmpty(set.BACKUP_PC_SECRET))
-                req.Headers.Add("X-Jarvis-Secret", set.BACKUP_PC_SECRET);
+                req.Headers.Add("X-Heaplit-Secret", set.BACKUP_PC_SECRET);
 
             var resp = await _http.SendAsync(req);
             if (!resp.IsSuccessStatusCode) return null;
@@ -141,7 +141,7 @@ namespace JarvisLauncher
 
             var req = new HttpRequestMessage(HttpMethod.Get, url);
             if (!string.IsNullOrEmpty(set.BACKUP_PC_SECRET))
-                req.Headers.Add("X-Jarvis-Secret", set.BACKUP_PC_SECRET);
+                req.Headers.Add("X-Heaplit-Secret", set.BACKUP_PC_SECRET);
 
             var resp = await _http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead);
             if (!resp.IsSuccessStatusCode) throw new Exception($"Server returned {resp.StatusCode}");

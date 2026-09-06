@@ -1,9 +1,9 @@
-# Jarvis Scripting & Automation Guide
+# Heaplit Scripting & Automation Guide
 
-Jarvis is designed to be a programmable environment. This guide explains how to use action chains, macros, and the AI shorthand protocol to automate your workflow.
+Heaplit is designed to be a programmable environment. This guide explains how to use action chains, macros, and the AI shorthand protocol to automate your workflow.
 
 ## 1. Command Chaining
-You can run multiple Jarvis commands in a single line using the pipe `|` or sequence `&&` operators.
+You can run multiple Heaplit commands in a single line using the pipe `|` or sequence `&&` operators.
 
 - **Pipeline (`|`)**: Runs commands simultaneously or in very rapid succession.
   - *Example*: `sysinfo | screenshot` (Shows specs and takes a capture).
@@ -24,20 +24,20 @@ Simply type the name of the macro in the HUD.
 Macros are stored as `.txt` files in the `Macros/` folder. You can edit them manually to add complex logic.
 
 ## 3. AI Shorthand Protocol (@)
-When interacting with the AI, it uses a high-speed "Concise Protocol" to act. You can also use these in your own prompts to Jarvis to be specific about what you want him to do.
+When interacting with the AI, it uses a high-speed "Concise Protocol" to act. You can also use these in your own prompts to Heaplit to be specific about what you want him to do.
 
 - **@rf{path}**: Read file contents into the AI context.
 - **@wf{path}{content}**: Write or create a file.
 - **@ps{cmd}**: Run a silent PowerShell script.
 - **@app{name}**: Find and launch a Windows application.
-- **@run{cmd}**: Execute a standard Jarvis HUD command.
+- **@run{cmd}**: Execute a standard Heaplit HUD command.
 - **@snap**: Capture the current screen for AI vision analysis.
 
 ## 4. Custom Data Processors (@proc)
-For advanced users, you can link your own Python or C++ programs to Jarvis.
+For advanced users, you can link your own Python or C++ programs to Heaplit.
 - **Tag**: `@proc{input}`
 - **Setup**: Define your binary path in **Settings -> LLM**.
-- Jarvis will pass the input as a CLI argument and read your program's output.
+- Heaplit will pass the input as a CLI argument and read your program's output.
 
 ---
 

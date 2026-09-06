@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace JarvisLauncher.AiTools
+namespace HeaplitLauncher.AiTools
 {
     public class MouseControlTool : IAiTool
     {

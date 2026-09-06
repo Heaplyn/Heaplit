@@ -4,7 +4,7 @@
 
 using System.Windows;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class TunnelOverlay
     {

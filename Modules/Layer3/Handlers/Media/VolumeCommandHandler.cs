@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using NAudio.CoreAudioApi;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class VolumeCommandHandler : ICommandHandler
     {

@@ -9,7 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class ProjectMapManager
     {

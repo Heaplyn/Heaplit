@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class UpdateCommandHandler : ICommandHandler
     {
@@ -62,7 +62,7 @@ namespace JarvisLauncher
             var log = new StringBuilder();
 
             log.AppendLine("===================================================");
-            log.AppendLine(force ? "           JARVIS FRESH SYNC ENGINE              " : "            JARVIS CODEBASE UPDATE ENGINE          ");
+            log.AppendLine(force ? "           HEAPLIT FRESH SYNC ENGINE              " : "            HEAPLIT CODEBASE UPDATE ENGINE          ");
             log.AppendLine("===================================================");
             log.AppendLine();
             log.AppendLine($"Working directory: {projectRoot}");
@@ -81,17 +81,17 @@ namespace JarvisLauncher
             {
                 log.AppendLine("⚠️ Repo not initialized. Running self-healing...");
                 await RunCommandAsync("git", "init", projectRoot);
-                await RunCommandAsync("git", "remote add origin https://github.com/Heaplyn/Jarvis.git", projectRoot);
+                await RunCommandAsync("git", "remote add origin https://github.com/Heaplyn/Heaplit.git", projectRoot);
                 await RunCommandAsync("git", "fetch", projectRoot);
                 await RunCommandAsync("git", "checkout -f -B main origin/main", projectRoot);
             }
 
             // 3. Remote Remapping
             string remoteUrl = (await RunCommandAsync("git", "remote get-url origin", projectRoot)).Trim();
-            if (!remoteUrl.Contains("Heaplyn/Jarvis"))
+            if (!remoteUrl.Contains("Heaplyn/Heaplit"))
             {
                 log.AppendLine("🔗 Relinking remote to official repository...");
-                await RunCommandAsync("git", "remote set-url origin https://github.com/Heaplyn/Jarvis.git", projectRoot);
+                await RunCommandAsync("git", "remote set-url origin https://github.com/Heaplyn/Heaplit.git", projectRoot);
             }
 
             string branchName = (await RunCommandAsync("git", "rev-parse --abbrev-ref HEAD", projectRoot)).Trim();

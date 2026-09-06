@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Windows;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class GameDevToolboxCommandHandler : ICommandHandler
     {

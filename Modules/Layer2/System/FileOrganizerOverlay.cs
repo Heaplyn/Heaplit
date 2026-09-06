@@ -11,7 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Controls.Primitives;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class FileOrganizerOverlay : BaseOverlay
     {
@@ -36,7 +36,7 @@ namespace JarvisLauncher
         }
 
         private FileOrganizerOverlay()
-            : base("📂 JARVIS FILE ORGANIZER", width: 560, height: 440)
+            : base("📂 HEAPLIT FILE ORGANIZER", width: 560, height: 440)
         {
             var mainGrid = new Grid { Margin = new Thickness(10) };
             mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // Path row

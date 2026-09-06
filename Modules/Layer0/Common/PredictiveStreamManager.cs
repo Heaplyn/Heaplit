@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class SystemEvent
     {
@@ -94,7 +94,7 @@ namespace JarvisLauncher
             sb.AppendLine($"Foreground: {activeWindow}");
 
             // The "Predictive" LLM pass
-            string prompt = "You are the Jarvis Predictive Core. Analyze this background data stream and foreground state.\n" +
+            string prompt = "You are the Heaplit Predictive Core. Analyze this background data stream and foreground state.\n" +
                             "1. Generate a 2-sentence 'INFO PASS' (A quick summary of what the user is currently doing).\n" +
                             "2. Generate a 'PREDICTION' (What is the user likely to do next or need help with?).\n\n" +
                             "DATA STREAM:\n" + sb.ToString() + "\n\n" +

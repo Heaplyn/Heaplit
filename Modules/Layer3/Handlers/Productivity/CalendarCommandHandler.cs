@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class CalendarCommandHandler : ICommandHandler
     {
@@ -37,7 +37,7 @@ namespace JarvisLauncher
                 suggestions.Add(new CommandResult
                 {
                     TITLE = $"📅 Create Event: \"{title}\" on {dateStr} at {timeStr}",
-                    DESCRIPTION = "Add a calendar event directly into the Jarvis Planner database",
+                    DESCRIPTION = "Add a calendar event directly into the Heaplit Planner database",
                     SIMILARITY = similarity + 1.0,
                     EXECUTE = () => CalendarOverlay.LogEvent(title, dateStr, timeStr)
                 });
@@ -48,7 +48,7 @@ namespace JarvisLauncher
             suggestions.Add(new CommandResult
             {
                 TITLE = "📅 Open Calendar Overlay",
-                DESCRIPTION = "Launch Jarvis visual Month Calendar and daily planners",
+                DESCRIPTION = "Launch Heaplit visual Month Calendar and daily planners",
                 SIMILARITY = similarity,
                 EXECUTE = () => CalendarOverlay.Open()
             });

@@ -7,7 +7,7 @@
 
 ## 1. ADVANCED WEB SCRAPING ENGINE (`WebScraperManager.cs`)
 
-[`WebScraperManager`](file:///c:/Users/Kyle/Downloads/Projects/Jarvis/Modules/Layer0/WebScraperManager.cs) is a self-contained Layer 0 web scraping engine utilizing `HtmlAgilityPack` and `System.Text.Json`.
+[`WebScraperManager`](file:///c:/Users/Kyle/Downloads/Projects/Heaplit/Modules/Layer0/WebScraperManager.cs) is a self-contained Layer 0 web scraping engine utilizing `HtmlAgilityPack` and `System.Text.Json`.
 
 ```mermaid
 flowchart TD
@@ -31,7 +31,7 @@ flowchart TD
 #### 1. `ScrapePageAsync(string url) -> Task<ScrapeResult>`
 Fetches static and server-rendered HTML pages, sanitizes DOM structures, and returns structured page metadata:
 - **Protocol Enforcement**: Automatically prepends `https://` if protocol scheme is omitted.
-- **Client Emulation**: Dispatches standard browser headers (`User-Agent: Mozilla/5.0 ... JarvisLauncher/2.0`, `Accept-Language`, `Accept: text/html...`).
+- **Client Emulation**: Dispatches standard browser headers (`User-Agent: Mozilla/5.0 ... HeaplitLauncher/2.0`, `Accept-Language`, `Accept: text/html...`).
 - **Metadata Extraction**:
   - Title: Extracts and cleans `//title`.
   - Description: Evaluates `//meta[@name='description']` and OpenGraph `//meta[@property='og:description']`.
@@ -73,13 +73,13 @@ Produces an aligned ASCII report containing summary headers, discovered heading 
 
 ## 2. MOBILE COMPANION & ANDROID ADB INTEGRATION
 
-Jarvis provides end-to-end smartphone connectivity through the Mobile Bridge Server, Public Tunnels, QR Code pairing, and Android Debug Bridge (ADB) automation.
+Heaplit provides end-to-end smartphone connectivity through the Mobile Bridge Server, Public Tunnels, QR Code pairing, and Android Debug Bridge (ADB) automation.
 
 ```mermaid
 flowchart TD
     Phone["Android / iOS Smartphone"] --> ConnMode{"Connection Path"}
     
-    ConnMode -- "Local Wi-Fi" --> Bridge["MobileBridgeServer (Port 9000)\n• http://<LAN-IP>:9000/\n• http://jarvis.local:9000/"]
+    ConnMode -- "Local Wi-Fi" --> Bridge["MobileBridgeServer (Port 9000)\n• http://<LAN-IP>:9000/\n• http://heaplit.local:9000/"]
     ConnMode -- "Remote / Cellular" --> Tunnels["Public Tunnel Engines"]
     
     Tunnels --> CF["Cloudflare Tunnels\n(cloudflared.exe / trycloudflare.com)"]
@@ -98,12 +98,12 @@ flowchart TD
 ```
 
 ### 2.1 Mobile Bridge Server Architecture (`MobileBridgeServer.cs`)
-[`MobileBridgeServer`](file:///c:/Users/Kyle/Downloads/Projects/Jarvis/Modules/Layer1/MobileBridgeServer.cs) provides a high-performance, permission-independent HTTP server built directly on `System.Net.Sockets.TcpListener`.
+[`MobileBridgeServer`](file:///c:/Users/Kyle/Downloads/Projects/Heaplit/Modules/Layer1/MobileBridgeServer.cs) provides a high-performance, permission-independent HTTP server built directly on `System.Net.Sockets.TcpListener`.
 
 - **Dual-Stack Socket Support**: Socket configured with `SocketOptionName.ReuseAddress = true` listening across IPv4 and IPv6 interfaces.
 - **Local Endpoints**:
   - `ServerUrl`: `http://{GetLocalIPAddress()}:{Port}/` (e.g. `http://192.168.1.150:9000/`)
-  - `JarvisDomain`: `http://jarvis.local:{Port}/`
+  - `HeaplitDomain`: `http://heaplit.local:{Port}/`
   - `HostnameDomain`: `http://{MachineName}.local:{Port}/`
 - **Configurable Port**: Defaults to port `9000`, adjustable dynamically via `SettingsManager.Current.MOBILE_PORT`.
 - **Firewall & Permissions Repair (`FixFirewallPermissionsAsync`)**: Automatically provisions Windows Firewall inbound rules for the configured port via PowerShell/netsh scripts.
@@ -112,9 +112,9 @@ flowchart TD
 
 ### 2.2 Public Tunnels Support (`CloudflareTunnelManager.cs` & `NgrokTunnelManager.cs`)
 
-When the phone is outside the local Wi-Fi network, Jarvis exposes its mobile interface via secure SSL encrypted public tunnels:
+When the phone is outside the local Wi-Fi network, Heaplit exposes its mobile interface via secure SSL encrypted public tunnels:
 
-#### 1. Cloudflare Tunnels ([`CloudflareTunnelManager.cs`](file:///c:/Users/Kyle/Downloads/Projects/Jarvis/Modules/Layer0/CloudflareTunnelManager.cs))
+#### 1. Cloudflare Tunnels ([`CloudflareTunnelManager.cs`](file:///c:/Users/Kyle/Downloads/Projects/Heaplit/Modules/Layer0/CloudflareTunnelManager.cs))
 - **Self-Healing Binary Download**: Automatically checks for `Data/Tools/cloudflared.exe`. If missing, downloads the official 64-bit Windows binary from GitHub releases with custom User-Agent headers.
 - **Orphan Process Cleanup**: Terminates old orphaned `cloudflared` instances prior to spin-up.
 - **Operational Modes**:
@@ -122,7 +122,7 @@ When the phone is outside the local Wi-Fi network, Jarvis exposes its mobile int
   - **Named Tunnel (Tokenized)**: If `Data/Tools/cloudflare_token.txt` exists, launches `tunnel run --token <token>` using custom configured hostnames (`cloudflare_domain.txt`).
 - **Failover**: If a named token fails, it cleanly logs the error, purges invalid token files, and falls back to a Quick Tunnel.
 
-#### 2. Ngrok Tunnels ([`NgrokTunnelManager.cs`](file:///c:/Users/Kyle/Downloads/Projects/Jarvis/Modules/Layer0/NgrokTunnelManager.cs))
+#### 2. Ngrok Tunnels ([`NgrokTunnelManager.cs`](file:///c:/Users/Kyle/Downloads/Projects/Heaplit/Modules/Layer0/NgrokTunnelManager.cs))
 - **Binary Provisioning & Version Check**: Auto-downloads and extracts `ngrok-v3-stable-windows-amd64.zip`. Validates that the binary version meets minimum requirements ($\ge 3.20.0$).
 - **Auth Token Registration**: Injects token from `Data/Tools/ngrok_token.txt` via `ngrok.exe authtoken <token>`.
 - **Tunnel Execution**: Launches `ngrok.exe http 127.0.0.1:{port} --log=stdout --log-format=json` and parses assigned `https://*.ngrok.io` endpoint.
@@ -134,7 +134,7 @@ When the phone is outside the local Wi-Fi network, Jarvis exposes its mobile int
 ---
 
 ### 2.3 QR Code Pairing & Mobile Remote Controls (`MobileOverlay.cs`)
-[`MobileOverlay`](file:///c:/Users/Kyle/Downloads/Projects/Jarvis/Modules/Layer2/MobileOverlay.cs) provides the centralized control hub:
+[`MobileOverlay`](file:///c:/Users/Kyle/Downloads/Projects/Heaplit/Modules/Layer2/MobileOverlay.cs) provides the centralized control hub:
 
 1. **Instant QR Code Pairing**:
    - **LAN IP QR Code**: Generates a scannable QR code of `MobileBridgeServer.ServerUrl` for instant on-network phone pairing.
@@ -150,7 +150,7 @@ When the phone is outside the local Wi-Fi network, Jarvis exposes its mobile int
 
 ### 2.4 Android Debug Bridge (ADB) Integration
 
-Jarvis coordinates ADB operations for physical and emulated Android hardware:
+Heaplit coordinates ADB operations for physical and emulated Android hardware:
 
 | Operation | Command Pipeline | Description |
 | :--- | :--- | :--- |

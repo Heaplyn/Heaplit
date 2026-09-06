@@ -8,7 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class VoiceStudioCommandHandler : ICommandHandler
     {
@@ -37,7 +37,7 @@ namespace JarvisLauncher
                 results.Add(new CommandResult
                 {
                     TITLE = "🔇 Disable Voice Interaction Mode",
-                    DESCRIPTION = "Stops Jarvis from responding to conversations, but keeps wake-word listening active for reactivation.",
+                    DESCRIPTION = "Stops Heaplit from responding to conversations, but keeps wake-word listening active for reactivation.",
                     SIMILARITY = 6.0,
                     EXECUTE = () =>
                     {

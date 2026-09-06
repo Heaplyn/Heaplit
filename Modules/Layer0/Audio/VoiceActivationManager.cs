@@ -13,25 +13,25 @@ using System.Speech.Recognition;
 using System.Threading;
 using System.Text.RegularExpressions;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class VoiceActivationManager : IVoiceActivationService
     {
         bool IVoiceActivationService.IsListening => LocalWakeWordDetector.IsListening;
 
         // Boot calls this via CoreRegistry.Interaction.Voice.Start(). Rather than buffer raw mic
-        // audio into a stream nobody reads (the old stub), drive the real "Hey Jarvis" wake-word
+        // audio into a stream nobody reads (the old stub), drive the real "Hey Heaplit" wake-word
         // engine so voice activation actually works. Gated by ENABLE_WAKE_WORD.
         void IVoiceActivationService.Start()
         {
             try {
                 if (!SettingsManager.Current.ENABLE_WAKE_WORD)
                 {
-                    DebugConsoleOverlay.Log("Voice", "Wake word disabled (ENABLE_WAKE_WORD = false). Say-\"Hey Jarvis\" listening not started.");
+                    DebugConsoleOverlay.Log("Voice", "Wake word disabled (ENABLE_WAKE_WORD = false). Say-\"Hey Heaplit\" listening not started.");
                     return;
                 }
                 LocalWakeWordDetector.Initialize();
-                DebugConsoleOverlay.Log("Voice", "Wake-word engine online — listening for \"Hey Jarvis\".");
+                DebugConsoleOverlay.Log("Voice", "Wake-word engine online — listening for \"Hey Heaplit\".");
             } catch { }
         }
 

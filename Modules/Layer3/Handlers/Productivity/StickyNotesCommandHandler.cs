@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class StickyNotesCommandHandler : ICommandHandler
     {
@@ -24,7 +24,7 @@ namespace JarvisLauncher
                 suggestions.Add(new CommandResult
                 {
                     TITLE = "🤖 Trigger AI Notes Curation",
-                    DESCRIPTION = "Have Jarvis review and organize your hierarchical notes and categories now",
+                    DESCRIPTION = "Have Heaplit review and organize your hierarchical notes and categories now",
                     SIMILARITY = (SearchUtil.BestSimilarity(query, "notes", "sticky", "stickynote", "stickynotes", "curate notes") + 5.0 * 0.01),
                     EXECUTE = () => _ = NotesCuratorManager.PerformAutonomousCurationAsync()
                 });

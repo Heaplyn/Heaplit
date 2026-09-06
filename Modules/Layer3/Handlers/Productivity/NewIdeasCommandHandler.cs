@@ -13,7 +13,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class MacroItem
     {
@@ -54,7 +54,7 @@ namespace JarvisLauncher
                 suggestions.Add(new CommandResult
                 {
                     TITLE = "💬 Get System Quote",
-                    DESCRIPTION = "Receive a proactive witty or philosophical remark from Jarvis",
+                    DESCRIPTION = "Receive a proactive witty or philosophical remark from Heaplit",
                     SIMILARITY = 2.0,
                     EXECUTE = () => GetSystemQuote()
                 });
@@ -502,10 +502,10 @@ namespace JarvisLauncher
         {
             Task.Run(async () =>
             {
-                string prompt = "Generate a single, short, witty, and slightly sassy philosophical or technical remark from Jarvis. Do not use tags.";
+                string prompt = "Generate a single, short, witty, and slightly sassy philosophical or technical remark from Heaplit. Do not use tags.";
                 string remark = await LlmRouter.AskAsync(prompt);
                 Application.Current.Dispatcher.Invoke(() => {
-                    TextOverlay.Show("🤖 Jarvis: " + remark, 5000);
+                    TextOverlay.Show("🤖 Heaplit: " + remark, 5000);
                     TtsManager.Speak(remark);
                 });
             });

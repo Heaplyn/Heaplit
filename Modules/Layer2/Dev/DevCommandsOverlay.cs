@@ -13,7 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class DevCommandsOverlay : BaseOverlay
     {
@@ -91,7 +91,7 @@ namespace JarvisLauncher
             });
         }
 
-        private DevCommandsOverlay() : base("🛠️ JARVIS DEVELOPER COMMAND DECK", width: 780, height: 520)
+        private DevCommandsOverlay() : base("🛠️ HEAPLIT DEVELOPER COMMAND DECK", width: 780, height: 520)
         {
             var mainGrid = new Grid { Margin = new Thickness(10) };
             mainGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(200) });

@@ -1,6 +1,6 @@
 // Developer: heaplyn
 // Date: 2026-09-03
-// Summary: High-performance Outlined Text control for Jarvis HUD.
+// Summary: High-performance Outlined Text control for Heaplit HUD.
 //          Supports N-Amount of layered strokes, Soft Gaussian Glow, Drop Shadows, Italics, Text Gradients, TextWrapping, and Wobbliness.
 //          Dynamic category-based profiling with graceful fallback and bulletproof null safety.
 
@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Threading;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class OutlinedText : Control
     {

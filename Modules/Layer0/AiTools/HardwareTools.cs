@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Management;
 
-namespace JarvisLauncher.AiTools
+namespace HeaplitLauncher.AiTools
 {
     public class HardwareMetricsTool : IAiTool
     {

@@ -2,13 +2,13 @@
 // Date: 2026-08-14
 // Summary: Workspace Code Memory Manager.
 //          Saves and loads code contexts the user is actively writing to Data/WorkspaceMemory.json.
-//          Enables Jarvis AI Companion to retain full context of the user's active code edits.
+//          Enables Heaplit AI Companion to retain full context of the user's active code edits.
 
 using System;
 using System.IO;
 using System.Text.Json;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class WorkspaceMemory
     {

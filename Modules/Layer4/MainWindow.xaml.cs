@@ -15,7 +15,7 @@ using System.Windows.Threading;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public partial class MainWindow : Window
     {

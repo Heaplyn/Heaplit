@@ -10,7 +10,7 @@ using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class OfflineCacheManager
     {
@@ -131,7 +131,7 @@ namespace JarvisLauncher
             }
 
             statusCallback?.Invoke($"✅ Pre-cache complete! Cached Vosk, Package Managers, and Dev Tools for 100% offline usage.");
-            TextOverlay.Show("📶 Jarvis is now 100% Ready For Offline Use!", 3500);
+            TextOverlay.Show("📶 Heaplit is now 100% Ready For Offline Use!", 3500);
         }
 
         private static void InstallToolSilently(string packageId, string friendlyName)

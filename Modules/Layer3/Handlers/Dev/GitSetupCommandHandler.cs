@@ -8,7 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class GitSetupCommandHandler : ICommandHandler
     {
@@ -46,7 +46,7 @@ namespace JarvisLauncher
                 MessageBox.Show($"Setup script not found. Checked locations:\n" +
                                 $"- {Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", "Layer0", "git_setup.bat")}\n" +
                                 $"- {Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Modules\Layer0\git_setup.bat"))}", 
-                                "Jarvis Git Setup Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                "Heaplit Git Setup Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -57,7 +57,7 @@ namespace JarvisLauncher
                     StartInfo = new ProcessStartInfo
                     {
                         FileName         = "cmd.exe",
-                        Arguments        = $"/c start \"Jarvis GitHub Setup Wizard\" \"{scriptPath}\"",
+                        Arguments        = $"/c start \"Heaplit GitHub Setup Wizard\" \"{scriptPath}\"",
                         WorkingDirectory = projectRoot,
                         UseShellExecute  = true, // Opens a new visible and interactive command window
                         CreateNoWindow   = false
@@ -67,7 +67,7 @@ namespace JarvisLauncher
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to launch setup wizard:\n{ex.Message}", "Jarvis Git Setup Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Failed to launch setup wizard:\n{ex.Message}", "Heaplit Git Setup Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

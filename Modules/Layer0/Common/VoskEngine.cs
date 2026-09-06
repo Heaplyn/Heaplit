@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Vosk;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class VoskEngine
     {

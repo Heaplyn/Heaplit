@@ -8,7 +8,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class SysInfoCommandHandler : ICommandHandler
     {

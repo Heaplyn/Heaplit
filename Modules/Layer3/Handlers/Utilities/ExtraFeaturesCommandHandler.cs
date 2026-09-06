@@ -10,7 +10,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class ExtraFeaturesCommandHandler : ICommandHandler
     {
@@ -169,7 +169,7 @@ namespace JarvisLauncher
                 suggestions.Add(new CommandResult
                 {
                     TITLE = isRunning ? $"🌐 Cloudflare Tunnel Active: {activeUrl}" : "🌐 Start Cloudflare Public Web Tunnel",
-                    DESCRIPTION = isRunning ? "Click to open public HTTPS URL in browser" : "Auto-downloads cloudflared.exe & hosts Jarvis Mobile App to the public web",
+                    DESCRIPTION = isRunning ? "Click to open public HTTPS URL in browser" : "Auto-downloads cloudflared.exe & hosts Heaplit Mobile App to the public web",
                     SIMILARITY = 3.5,
                     EXECUTE = () =>
                     {
@@ -211,7 +211,7 @@ namespace JarvisLauncher
                 suggestions.Add(new CommandResult
                 {
                     TITLE = ngrokRunning ? $"🌐 ngrok Tunnel Active: {ngrokUrl}" : "🌐 Start ngrok Public Web Tunnel",
-                    DESCRIPTION = ngrokRunning ? "Open public ngrok URL in browser" : "Auto-downloads ngrok.exe & hosts Jarvis Mobile App to the public web",
+                    DESCRIPTION = ngrokRunning ? "Open public ngrok URL in browser" : "Auto-downloads ngrok.exe & hosts Heaplit Mobile App to the public web",
                     SIMILARITY = 3.2,
                     EXECUTE = () =>
                     {
@@ -238,7 +238,7 @@ namespace JarvisLauncher
                 suggestions.Add(new CommandResult
                 {
                     TITLE = "🚀 Deploy Mobile Companion to Vercel (1-Click Free Hosting)",
-                    DESCRIPTION = "Get a permanent HTTPS URL (https://jarvis.vercel.app) that never expires or gets 502 errors",
+                    DESCRIPTION = "Get a permanent HTTPS URL (https://heaplit.vercel.app) that never expires or gets 502 errors",
                     SIMILARITY = 4.5,
                     EXECUTE = () => OpenWebBrowser("https://vercel.com/new")
                 });
@@ -247,7 +247,7 @@ namespace JarvisLauncher
 
             if (IsMatch(cmd, "mobile") || IsMatch(cmd, "phone"))
             {
-                string dnsUrl = MobileBridgeServer.JarvisDomain;
+                string dnsUrl = MobileBridgeServer.HeaplitDomain;
                 string ipUrl = MobileBridgeServer.ServerUrl;
                 string arg = parts.Length > 1 ? parts[1].Trim().ToLower() : "";
 
@@ -941,9 +941,9 @@ namespace JarvisLauncher
                 new CommandDesc("ping <host>", "Measure network latency / roundtrip response time", "ping google.com"),
                 new CommandDesc("uptime", "Display host PC running time in days, hours, & mins", "uptime"),
                 new CommandDesc("flushdns / dns", "Flush Windows DNS resolver cache", "flushdns"),
-                new CommandDesc("speak / tts <text>", "Synthesize and read text out loud via TTS", "speak Jarvis online"),
+                new CommandDesc("speak / tts <text>", "Synthesize and read text out loud via TTS", "speak Heaplit online"),
                 new CommandDesc("copy <text>", "Copy text directly to system clipboard", "copy hello world"),
-                new CommandDesc("tunnel / cloudflare", "Host Jarvis Mobile Web App to public HTTPS web via Cloudflare Tunnel", "tunnel"),
+                new CommandDesc("tunnel / cloudflare", "Host Heaplit Mobile Web App to public HTTPS web via Cloudflare Tunnel", "tunnel"),
                 new CommandDesc("mobile / phone", "Open the unified Mobile & Tunnel Hub for phone pairing & tunnel control", "mobile"),
                 new CommandDesc("mobile lockdown", "Instantly disable all remote phone capabilities (privacy panic button)", "mobile lockdown"),
                 new CommandDesc("mobile cloudflare/ngrok/none", "Set the preferred auto-start tunnel provider", "mobile ngrok"),

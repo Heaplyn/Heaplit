@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using System.Windows.Controls.Primitives;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class StickyNotesOverlay : BaseOverlay
     {
@@ -57,7 +57,7 @@ namespace JarvisLauncher
         }
 
         private StickyNotesOverlay()
-            : base("📌 JARVIS MULTI-NOTE WORKSPACE", width: 560, height: 420)
+            : base("📌 HEAPLIT MULTI-NOTE WORKSPACE", width: 560, height: 420)
         {
             EnsureNotesDirectory();
 
@@ -206,7 +206,7 @@ namespace JarvisLauncher
                 if (Directory.GetFiles(dir, "*.txt").Length == 0)
                 {
                     File.WriteAllText(Path.Combine(dir, "Welcome Note.txt"), 
-                        "Welcome to Jarvis Multi-Notes!\n\n" +
+                        "Welcome to Heaplit Multi-Notes!\n\n" +
                         "Here you can organize all your project instructions, brainstorm lists, or personal ideas.\n" +
                         "All changes are autosaved instantly. Typing 'notes' in the command bar brings this workspace up.");
                 }

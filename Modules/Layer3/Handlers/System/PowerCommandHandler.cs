@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class PowerCommandHandler : ICommandHandler
     {
@@ -72,7 +72,7 @@ namespace JarvisLauncher
 
                 var result = MessageBox.Show(
                     $"{message}\n\nAll unsaved work will be lost if you proceed.",
-                    $"⚠️ Jarvis Power Safety Confirmation - {state.ToUpper()}",
+                    $"⚠️ Heaplit Power Safety Confirmation - {state.ToUpper()}",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Warning,
                     MessageBoxResult.No

@@ -14,7 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Win32;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class MediaConverterOverlay : BaseOverlay
     {

@@ -12,7 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class RgbColorPickerOverlay : BaseOverlay
     {

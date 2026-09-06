@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class MusicPlaylistOverlay : BaseOverlay
     {
@@ -132,7 +132,7 @@ namespace JarvisLauncher
         }
 
         private MusicPlaylistOverlay()
-            : base("🎵 JARVIS MUSIC PLAYER & PLAYLIST ORGANIZER", width: 680, height: 520)
+            : base("🎵 HEAPLIT MUSIC PLAYER & PLAYLIST ORGANIZER", width: 680, height: 520)
         {
             // Load persistent state
             var state = PersistentStateManager.LoadState<MusicPlayerState>("MusicPlayer");
@@ -1055,7 +1055,7 @@ private void CopyTrackToFolder(MusicTrack track, MusicFolder destinationFolder)
                                 FileName = chromePath,
                                 Arguments = $"--app=\"{track.PathOrUrl}\" --new-window --remote-debugging-port=9222 " +
                                             $"--autoplay-policy=no-user-gesture-required --no-user-gesture-required-for-autoplay " +
-                                            $"--user-data-dir=\"{Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Jarvis", "ChromeDebugProfile")}\"",
+                                            $"--user-data-dir=\"{Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Heaplit", "ChromeDebugProfile")}\"",
                                 UseShellExecute = true
                             };
                             ChromeStreamTracker.MarkLaunchTime();
@@ -1071,7 +1071,7 @@ private void CopyTrackToFolder(MusicTrack track, MusicFolder destinationFolder)
                                 FileName = "msedge.exe",
                                 Arguments = $"--app=\"{track.PathOrUrl}\" --new-window --remote-debugging-port=9222 " +
                                             $"--autoplay-policy=no-user-gesture-required --no-user-gesture-required-for-autoplay " +
-                                            $"--user-data-dir=\"{Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Jarvis", "EdgeDebugProfile")}\"",
+                                            $"--user-data-dir=\"{Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Heaplit", "EdgeDebugProfile")}\"",
                                 UseShellExecute = true
                             };
                             ChromeStreamTracker.MarkLaunchTime();

@@ -9,7 +9,7 @@ using System.IO;
 using System.Text.Json;
 using System.Windows;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class WindowBoundsState
     {

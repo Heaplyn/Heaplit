@@ -10,7 +10,7 @@ using System.Text.Json;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class SpeakerProfile
     {

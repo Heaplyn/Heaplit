@@ -11,7 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Windows;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class OrganizationCommandsHandler : ICommandHandler
     {

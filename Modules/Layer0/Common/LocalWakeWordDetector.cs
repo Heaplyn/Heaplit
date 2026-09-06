@@ -10,7 +10,7 @@ using System.Speech.Recognition;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class LocalWakeWordDetector
     {
@@ -37,15 +37,15 @@ namespace JarvisLauncher
 
                     // 1. High-Priority Custom Choice Grammar (Reliable Wake Trigger)
                     var choices = new Choices();
-                    choices.Add(new string[] { "Jarvis", "Hey Jarvis", "OK Jarvis", "Hi Jarvis", "Computer" });
+                    choices.Add(new string[] { "Heaplit", "Hey Heaplit", "OK Heaplit", "Hi Heaplit", "Computer" });
 
                     var gb = new GrammarBuilder();
                     gb.Append(choices);
-                    var wakeGrammar = new Grammar(gb) { Name = "JarvisWakeTrigger", Priority = 1 };
+                    var wakeGrammar = new Grammar(gb) { Name = "HeaplitWakeTrigger", Priority = 1 };
                     _engine.LoadGrammar(wakeGrammar);
 
                     // 2. Free-Form Dictation Grammar for continuous sentences
-                    var dictationGrammar = new DictationGrammar { Name = "JarvisDictation", Priority = 0 };
+                    var dictationGrammar = new DictationGrammar { Name = "HeaplitDictation", Priority = 0 };
                     _engine.LoadGrammar(dictationGrammar);
 
                     _engine.SpeechRecognized += Engine_SpeechRecognized;
@@ -73,7 +73,7 @@ namespace JarvisLauncher
         {
             if (e.Result == null || string.IsNullOrWhiteSpace(e.Result.Text)) return;
 
-            // INTERRUPTION LOGIC: If Jarvis is speaking and we detect a strong speech hypothesis, stop him.
+            // INTERRUPTION LOGIC: If Heaplit is speaking and we detect a strong speech hypothesis, stop him.
             if (TtsManager.IsSpeakingOrEchoing && e.Result.Confidence > 0.65) // Increased from 0.6
             {
                 CheckForUserInterruption(e.Result.Text);
@@ -112,7 +112,7 @@ namespace JarvisLauncher
         {
             if (e.Result == null || string.IsNullOrWhiteSpace(e.Result.Text)) return;
 
-            // INTERRUPTION LOGIC: Recognized speech while Jarvis is talking instantly stops him.
+            // INTERRUPTION LOGIC: Recognized speech while Heaplit is talking instantly stops him.
             if (TtsManager.IsSpeakingOrEchoing && e.Result.Confidence > 0.6) // Increased from 0.5
             {
                 CheckForUserInterruption(e.Result.Text);
@@ -145,7 +145,7 @@ namespace JarvisLauncher
             string lower = text.ToLowerInvariant();
 
             // If the user says a wake word or common stop words, stop the AI immediately
-            bool isInterruptionPhrase = lower.Contains("jarvis") ||
+            bool isInterruptionPhrase = lower.Contains("heaplit") ||
                                         lower.Contains("stop") ||
                                         lower.Contains("wait") ||
                                         lower.Contains("listen") ||
@@ -154,7 +154,7 @@ namespace JarvisLauncher
             // Or if it's just a long enough sentence, assume the user is talking to us
             if (isInterruptionPhrase || lower.Split(' ').Length > 1)
             {
-                DebugConsoleOverlay.Log("Interruption", $"User interrupted Jarvis with: \"{text}\"");
+                DebugConsoleOverlay.Log("Interruption", $"User interrupted Heaplit with: \"{text}\"");
                 TtsManager.Stop();
 
                 // Also reset the accumulator so we start fresh with the new speech
@@ -167,10 +167,10 @@ namespace JarvisLauncher
             query = query.Trim();
             if (string.IsNullOrWhiteSpace(query)) return;
 
-            // FLEXIBLE TRIGGER: Accept any command if Jarvis was mentioned recently
+            // FLEXIBLE TRIGGER: Accept any command if Heaplit was mentioned recently
             string cleanQuery = query;
             bool hasWakeWord = false;
-            string[] wakeWords = new[] { "hey jarvis", "ok jarvis", "hi jarvis", "hello jarvis", "jarvis", "computer", "hey", "hi", "hello" };
+            string[] wakeWords = new[] { "hey heaplit", "ok heaplit", "hi heaplit", "hello heaplit", "heaplit", "computer", "hey", "hi", "hello" };
 
             foreach (var w in wakeWords)
             {
@@ -184,8 +184,8 @@ namespace JarvisLauncher
                 }
             }
 
-            // If no explicit wake word, but query contains "jarvis", consider it a match
-            if (!hasWakeWord && query.ToLowerInvariant().Contains("jarvis"))
+            // If no explicit wake word, but query contains "heaplit", consider it a match
+            if (!hasWakeWord && query.ToLowerInvariant().Contains("heaplit"))
             {
                 hasWakeWord = true;
             }
@@ -201,7 +201,7 @@ namespace JarvisLauncher
             if (cleanQuery.StartsWith("please ", StringComparison.OrdinalIgnoreCase)) cleanQuery = cleanQuery.Substring(7).Trim();
             if (cleanQuery.StartsWith("can you ", StringComparison.OrdinalIgnoreCase)) cleanQuery = cleanQuery.Substring(8).Trim();
 
-            // If user ONLY said "Jarvis" or "Hey Jarvis" without extra words, speak a brief prompt
+            // If user ONLY said "Heaplit" or "Hey Heaplit" without extra words, speak a brief prompt
             if (string.IsNullOrWhiteSpace(cleanQuery))
             {
                 TextOverlay.Show("🎙️ Yes? Listening...", 2000);
@@ -235,7 +235,7 @@ namespace JarvisLauncher
         private static string StripWakeWordPrefix(string statement)
         {
             string clean = statement.Trim();
-            string[] wakeWords = new[] { "hey jarvis", "ok jarvis", "hi jarvis", "hello jarvis", "jarvis", "computer" };
+            string[] wakeWords = new[] { "hey heaplit", "ok heaplit", "hi heaplit", "hello heaplit", "heaplit", "computer" };
             foreach (var w in wakeWords)
             {
                 if (clean.StartsWith(w, StringComparison.OrdinalIgnoreCase))
@@ -254,7 +254,7 @@ namespace JarvisLauncher
         private static bool IsStandaloneWakeWord(string text)
         {
             string lower = text.Trim().ToLowerInvariant();
-            string[] wakeWords = new[] { "jarvis", "hey jarvis", "ok jarvis", "hi jarvis", "hello jarvis", "computer" };
+            string[] wakeWords = new[] { "heaplit", "hey heaplit", "ok heaplit", "hi heaplit", "hello heaplit", "computer" };
             return wakeWords.Contains(lower);
         }
 
@@ -339,16 +339,16 @@ namespace JarvisLauncher
 
             var replacements = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
-                { "chart is", "jarvis" },
-                { "targets", "jarvis" },
-                { "target", "jarvis" },
-                { "chargers", "jarvis" },
-                { "harvest", "jarvis" },
-                { "chavis", "jarvis" },
-                { "garvis", "jarvis" },
-                { "jervis", "jarvis" },
-                { "huge", "jarvis" },
-                { "jawvis", "jarvis" },
+                { "chart is", "heaplit" },
+                { "targets", "heaplit" },
+                { "target", "heaplit" },
+                { "chargers", "heaplit" },
+                { "harvest", "heaplit" },
+                { "chavis", "heaplit" },
+                { "garvis", "heaplit" },
+                { "jervis", "heaplit" },
+                { "huge", "heaplit" },
+                { "jawvis", "heaplit" },
                 { "color eu", "how are you" },
                 { "color you", "how are you" }
             };
@@ -374,7 +374,7 @@ namespace JarvisLauncher
             if (string.IsNullOrWhiteSpace(text)) return false;
 
             string lower = text.Trim().ToLowerInvariant();
-            string[] wakeWords = new[] { "jarvis", "hey jarvis", "ok jarvis", "hi jarvis", "hello jarvis" };
+            string[] wakeWords = new[] { "heaplit", "hey heaplit", "ok heaplit", "hi heaplit", "hello heaplit" };
 
             foreach (var wake in wakeWords)
             {

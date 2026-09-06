@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class ProjectContextManager : IProjectContextService
     {
@@ -33,7 +33,7 @@ namespace JarvisLauncher
         public async Task<string> GetProjectSummaryAsync()
         {
             var sb = new StringBuilder();
-            sb.AppendLine("## JARVIS SYSTEM KNOWLEDGE: CURRENT PROJECT");
+            sb.AppendLine("## HEAPLIT SYSTEM KNOWLEDGE: CURRENT PROJECT");
             sb.AppendLine($"Project Root: {_rootPath}");
             sb.AppendLine(ProjectMapManager.BuildProjectTree(_rootPath, 2));
 

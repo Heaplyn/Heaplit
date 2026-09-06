@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Linq;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class GitCommandHandler : ICommandHandler
     {

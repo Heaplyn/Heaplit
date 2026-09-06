@@ -1,6 +1,6 @@
 // Developer: heaplyn
 // Summary: Teacher Studio — the GUI for the goal-aware Live Coding Tutor.
-//          The user types what they're working on / want to learn; JARVIS generates its OWN tailored
+//          The user types what they're working on / want to learn; HEAPLIT generates its OWN tailored
 //          triggers (on-screen conditions to watch for), the user can tweak them, then Save & Activate.
 //          The Live Coding Tutor then biases its screen-watching toward that goal.
 
@@ -10,7 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class TeacherStudioOverlay : BaseOverlay
     {
@@ -40,7 +40,7 @@ namespace JarvisLauncher
         private readonly Button _deactivateBtn;
         private readonly Button _testBtn;
 
-        private TeacherStudioOverlay() : base("🎓 JARVIS TEACHER STUDIO", width: 640, height: 660)
+        private TeacherStudioOverlay() : base("🎓 HEAPLIT TEACHER STUDIO", width: 640, height: 660)
         {
             var grid = new Grid { Margin = new Thickness(14) };
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // intro
@@ -53,7 +53,7 @@ namespace JarvisLauncher
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // status
 
             var intro = CreateLabel(
-                "Describe what you're working on or want to learn. JARVIS will generate its own triggers — the " +
+                "Describe what you're working on or want to learn. HEAPLIT will generate its own triggers — the " +
                 "on-screen situations it should watch for — then coach you live (speaks tips + pops the chat).", 11, false);
             intro.TextWrapping = TextWrapping.Wrap;
             intro.Margin = new Thickness(0, 0, 0, 10);
@@ -104,7 +104,7 @@ namespace JarvisLauncher
             Grid.SetRow(btnRow, 4);
             grid.Children.Add(btnRow);
 
-            var planLabel = CreateLabel("🤖 JARVIS-GENERATED WATCH PLAN (editable):", 11, true);
+            var planLabel = CreateLabel("🤖 HEAPLIT-GENERATED WATCH PLAN (editable):", 11, true);
             BaseOverlay.SetLabelForeground(planLabel, Brushes.Cyan);
             Grid.SetRow(planLabel, 5);
             grid.Children.Add(planLabel);
@@ -117,7 +117,7 @@ namespace JarvisLauncher
             _planBox.FontFamily = new FontFamily("Consolas");
             _planBox.FontSize = 11.5;
             _planBox.Text = TeacherGoalContext.Active ? TeacherGoalContext.BuildEditablePlan()
-                : "// Click 'GENERATE TRIGGERS' to have JARVIS build a watch plan for your goal.";
+                : "// Click 'GENERATE TRIGGERS' to have HEAPLIT build a watch plan for your goal.";
             Grid.SetRow(_planBox, 6);
             grid.Children.Add(_planBox);
 
@@ -193,7 +193,7 @@ namespace JarvisLauncher
             }
             LiveCodingTutorEngine.Start();
 
-            SetStatus("● Active — JARVIS is now tutoring toward your goal.", Brushes.LightGreen);
+            SetStatus("● Active — HEAPLIT is now tutoring toward your goal.", Brushes.LightGreen);
             TextOverlay.Show("🎓 Teacher goal activated", 2500);
         }
 

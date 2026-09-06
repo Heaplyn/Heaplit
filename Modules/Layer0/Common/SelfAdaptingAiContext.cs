@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public static class SelfAdaptingAiContext
     {
@@ -18,7 +18,7 @@ namespace JarvisLauncher
             sb.AppendLine("## DYNAMIC HUD TELEMETRY & USER ENVIRONMENT");
 
             // 0. SELF-REFERENTIAL UNDERSTANDING
-            sb.AppendLine("- My Identity: I am the Jarvis HUD Assistant, a custom-built C# .NET desktop overlay.");
+            sb.AppendLine("- My Identity: I am the Heaplit HUD Assistant, a custom-built C# .NET desktop overlay.");
             sb.AppendLine($"- Local Time: {DateTime.Now:F}");
             sb.AppendLine("- Active Capabilities: Real-time screen analysis, file manipulation, script execution, mobile pairing, and system control.");
             sb.AppendLine("- System State: Fully integrated with Windows shell and specialized developer tools.");

@@ -13,7 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Microsoft.Win32;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class DecompiledProjectOverlay : BaseOverlay
     {
@@ -187,7 +187,7 @@ namespace JarvisLauncher
 
         private async System.Threading.Tasks.Task ProvisionAsync()
         {
-            if (!HumanConfirm.Ask("Download the FREE reverse-engineering engines (Ghidra, RetDec, x64dbg) from their official GitHub releases into Jarvis's tools folder?\n\nThis downloads and unpacks several hundred MB.", "Provision Decompilers"))
+            if (!HumanConfirm.Ask("Download the FREE reverse-engineering engines (Ghidra, RetDec, x64dbg) from their official GitHub releases into Heaplit's tools folder?\n\nThis downloads and unpacks several hundred MB.", "Provision Decompilers"))
             { Status("Provisioning cancelled."); return; }
             Status("📥 Downloading free engines…");
             _cts?.Cancel(); _cts = new CancellationTokenSource();

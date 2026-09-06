@@ -1,8 +1,8 @@
-# JARVIS CODING FUNDAMENTALS, TESTING & TOKEN CHEATSHEET
+# HEAPLIT CODING FUNDAMENTALS, TESTING & TOKEN CHEATSHEET
 
 ## CODING FUNDAMENTALS (C# & WPF)
 
-### 1. SOLID Principles in Jarvis
+### 1. SOLID Principles in Heaplit
 - **Single Responsibility (SRP)**: Sibling modules in Layer 0 must perform exactly one function (e.g. only audio extraction or only scraping). Never mix UI with backend operations.
 - **Open/Closed (OCP)**: Command Parser relies on registering command handlers. To add features, write new handlers—never modify the core parser routing loop.
 - **Interface Segregation (ISP)**: Implement minimal interfaces (like `IAiTool` or `ICommandHandler`).

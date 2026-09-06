@@ -1,7 +1,7 @@
 using System;
 using System.Windows;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public partial class LoadingWindow : Window
     {

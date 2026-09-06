@@ -8,7 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public class InputPromptOverlay : BaseOverlay
     {
@@ -25,7 +25,7 @@ namespace JarvisLauncher
         }
 
         private InputPromptOverlay(string promptMessage, Action<string> onSubmit, string defaultText)
-            : base("JARVIS INPUT REQUIRED", width: 420, height: 130)
+            : base("HEAPLIT INPUT REQUIRED", width: 420, height: 130)
         {
             _onSubmit = onSubmit;
 

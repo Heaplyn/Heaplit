@@ -18,7 +18,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace JarvisLauncher
+namespace HeaplitLauncher
 {
     public enum DecompilerEngine { Auto, Ida, Ghidra, RetDec }
 
@@ -250,10 +250,10 @@ namespace JarvisLauncher
             string scriptDir = Path.Combine(work, "scripts");
             Directory.CreateDirectory(scriptDir);
             string outC = Path.Combine(work, "out.c");
-            File.WriteAllText(Path.Combine(scriptDir, "JarvisDecompileToC.java"), GhidraScript);
+            File.WriteAllText(Path.Combine(scriptDir, "HeaplitDecompileToC.java"), GhidraScript);
 
-            string args = $"\"{work}\" JarvisProj -import \"{bin}\" " +
-                          $"-scriptPath \"{scriptDir}\" -postScript JarvisDecompileToC.java \"{outC}\" -deleteProject";
+            string args = $"\"{work}\" HeaplitProj -import \"{bin}\" " +
+                          $"-scriptPath \"{scriptDir}\" -postScript HeaplitDecompileToC.java \"{outC}\" -deleteProject";
             await RunProcessAsync(headless, args, ct, timeoutMs: 480000);
 
             string code = File.Exists(outC) ? await File.ReadAllTextAsync(outC, ct) : "";
@@ -359,7 +359,7 @@ namespace JarvisLauncher
         private static HttpClient NewClient()
         {
             var c = new HttpClient { Timeout = TimeSpan.FromMinutes(15) };
-            c.DefaultRequestHeaders.Add("User-Agent", "JarvisLauncher/1.0");
+            c.DefaultRequestHeaders.Add("User-Agent", "HeaplitLauncher/1.0");
             return c;
         }
 
@@ -502,7 +502,7 @@ import ghidra.program.model.listing.FunctionIterator;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 
-public class JarvisDecompileToC extends GhidraScript {
+public class HeaplitDecompileToC extends GhidraScript {
     public void run() throws Exception {
         String[] args = getScriptArgs();
         String out = (args.length > 0) ? args[0] : ""out.c"";
