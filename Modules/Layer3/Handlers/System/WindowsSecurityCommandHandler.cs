@@ -40,6 +40,10 @@ namespace HeaplitLauncher
                    query.StartsWith("sfc") ||
                    query.StartsWith("downloaddef") ||
                    query.StartsWith("reinstalldef") ||
+                   query.Contains("stealth") ||
+                   query.Contains("cloak") ||
+                   query.Contains("disguise") ||
+                   query.Contains("covert") ||
                    query.Contains("bios") ||
                    query.Contains("uefi") ||
                    query.Contains("flash") ||
@@ -52,6 +56,7 @@ namespace HeaplitLauncher
                    SearchUtil.IsClose(first, "firewall") ||
                    SearchUtil.IsClose(first, "malware") ||
                    SearchUtil.IsClose(first, "registry") ||
+                   SearchUtil.IsClose(first, "stealth") ||
                    SearchUtil.IsClose(first, "bios") ||
                    SearchUtil.IsClose(first, "msert");
         }
@@ -62,12 +67,28 @@ namespace HeaplitLauncher
             query = query.Trim().ToLowerInvariant();
 
             double baseSim = 4.5;
-            if (query.Contains("fix") || query.Contains("restore") || query.Contains("reenable") || query.Contains("malware") || query.Contains("download") || query.Contains("reinstall") || query.Contains("reg") || query.Contains("appx") || query.Contains("bios") || query.Contains("flash") || query.Contains("usb"))
+            if (query.Contains("fix") || query.Contains("restore") || query.Contains("reenable") || query.Contains("malware") || query.Contains("download") || query.Contains("reinstall") || query.Contains("reg") || query.Contains("appx") || query.Contains("bios") || query.Contains("flash") || query.Contains("usb") || query.Contains("stealth"))
             {
                 baseSim = 5.5;
             }
 
-            // 0. Restart to BIOS (Restore with Flash Drive / USB Boot)
+            // 0a. Stealth Reinstall Defender (Disguised Package & Binary Name)
+            if (query.Contains("stealth") || query.Contains("cloak") || query.Contains("disguise") || query.Contains("covert") || query.Contains("name") || query.Contains("package") || query.Contains("reinstall") || SearchUtil.IsClose(query, "stealth"))
+            {
+                results.Add(new CommandResult
+                {
+                    TITLE = "🥷 Stealth Reinstall Defender (Disguised Package & Name)",
+                    DESCRIPTION = "Reinstalls Defender under a decoy package name (AppHealthBroker) and cloaked binaries (WinSysBrokerHost.exe) so malware cannot find or kill it",
+                    SIMILARITY = baseSim + 1.25,
+                    EXECUTE = () =>
+                    {
+                        WindowsSecurityHealerOverlay.ShowOverlay();
+                        _ = WindowsSecurityManager.DeployStealthDefenderCloakAsync();
+                    }
+                });
+            }
+
+            // 0b. Restart to BIOS (Restore with Flash Drive / USB Boot)
             if (query.Contains("bios") || query.Contains("flash") || query.Contains("usb") || query.Contains("restore") || query.Contains("recover") || query.Contains("boot") || SearchUtil.IsClose(query, "bios"))
             {
                 results.Add(new CommandResult

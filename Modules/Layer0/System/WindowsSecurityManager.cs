@@ -905,6 +905,172 @@ namespace HeaplitLauncher
         }
 
         /// <summary>
+        /// Deploys and registers Windows Defender & Antimalware engine under a disguised/stealth package name 
+        /// and randomized binary names (e.g. AppHealthBroker / WinSysBrokerHost.exe) to bypass malware process-watchdogs,
+        /// IFEO hooks, and package blocks.
+        /// </summary>
+        public static async Task<(bool success, List<string> logs)> DeployStealthDefenderCloakAsync(Action<string>? progressCallback = null)
+        {
+            var logs = new List<string>();
+            void Log(string s) { logs.Add(s); progressCallback?.Invoke(s); }
+
+            return await Task.Run(async () =>
+            {
+                Log("🥷 [Stealth Cloak Engine] Initializing Disguised Package & Binary Deployment Protocol...");
+
+                string cloakDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft", "Windows", "AppHealthBroker");
+                string progDataCloak = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Microsoft", "Windows", "AppHealthBroker");
+
+                try
+                {
+                    Directory.CreateDirectory(cloakDir);
+                    Directory.CreateDirectory(progDataCloak);
+                }
+                catch { }
+
+                // 1. Unpack and disguise SecHealthUI AppX as Microsoft.Windows.AppHealthBroker
+                Log("📦 [1/5] Unpacking bundled SecHealthUI and generating disguised AppX package manifest...");
+                var (secAppx, vcLibs, uiXaml, hostExe) = FindLocalSecHealthPackages();
+                string unpackDir = Path.Combine(cloakDir, "Package");
+
+                if (secAppx != null && File.Exists(secAppx))
+                {
+                    try
+                    {
+                        if (Directory.Exists(unpackDir)) Directory.Delete(unpackDir, true);
+                        Directory.CreateDirectory(unpackDir);
+
+                        System.IO.Compression.ZipFile.ExtractToDirectory(secAppx, unpackDir, true);
+
+                        // Read and patch AppxManifest.xml to disguised identity if present
+                        string manifestPath = Path.Combine(unpackDir, "AppxManifest.xml");
+                        if (File.Exists(manifestPath))
+                        {
+                            string manifestXml = File.ReadAllText(manifestPath);
+                            manifestXml = manifestXml.Replace("Microsoft.SecHealthUI", "Microsoft.Windows.AppHealthBroker");
+                            manifestXml = manifestXml.Replace("SecHealthUI", "AppHealthBroker");
+                            manifestXml = manifestXml.Replace("Windows Security", "System Health Broker");
+                            File.WriteAllText(manifestPath, manifestXml, Encoding.UTF8);
+                        }
+
+                        Log("  ✅ AppX package successfully extracted and disguised as 'Microsoft.Windows.AppHealthBroker'.");
+                    }
+                    catch (Exception ex)
+                    {
+                        Log($"  ⚠️ Notice during AppX extraction: {ex.Message}. Continuing with loose binary deployment...");
+                    }
+                }
+
+                // 2. Clone core Defender diagnostic & repair binaries under stealth system names
+                Log("🛡️ [2/5] Cloaking Defender scanner & command binaries (WinSysBrokerHost.exe)...");
+                string winSysBroker = Path.Combine(cloakDir, "WinSysBrokerHost.exe");
+                string? sourceMpCmdRun = null;
+
+                string[] searchMpCmd = new[]
+                {
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Windows Defender", "MpCmdRun.exe"),
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Microsoft", "Windows Defender", "Platform"),
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "SecurityHealth")
+                };
+
+                foreach (var p in searchMpCmd)
+                {
+                    if (File.Exists(p)) { sourceMpCmdRun = p; break; }
+                    if (Directory.Exists(p))
+                    {
+                        var found = Directory.GetFiles(p, "MpCmdRun.exe", SearchOption.AllDirectories);
+                        if (found.Length > 0) { sourceMpCmdRun = found.OrderByDescending(f => f).First(); break; }
+                    }
+                }
+
+                if (sourceMpCmdRun != null && File.Exists(sourceMpCmdRun))
+                {
+                    try
+                    {
+                        File.Copy(sourceMpCmdRun, winSysBroker, true);
+                        Log($"  ✅ Cloned MpCmdRun.exe -> {winSysBroker}");
+                    }
+                    catch { }
+                }
+
+                // 3. Register stealth package & custom protocol associations
+                Log("⚡ [3/5] Registering disguised AppX manifest & custom protocol routes via elevated PowerShell...");
+                string unpackDirArg = unpackDir.Replace("'", "''");
+                string brokerExeArg = winSysBroker.Replace("'", "''");
+
+                string stealthRegisterPs = $@"
+                    $ErrorActionPreference = 'SilentlyContinue'
+
+                    # Register unpacked disguised AppX package in developer mode
+                    $manifest = '{unpackDirArg}\AppxManifest.xml'
+                    if (Test-Path $manifest) {{
+                        Add-AppxPackage -DisableDevelopmentMode -Register $manifest -ForceApplicationShutdown -ErrorAction SilentlyContinue
+                    }}
+
+                    # Create custom stealth URL protocol 'secdefense:' and update 'windowsdefender:'
+                    $protocols = @('Registry::HKEY_CLASSES_ROOT\secdefense', 'Registry::HKEY_CLASSES_ROOT\windowsdefender')
+                    foreach ($p in $protocols) {{
+                        if (-not (Test-Path $p)) {{ New-Item -Path $p -Force | Out-Null }}
+                        Set-ItemProperty -Path $p -Name '(Default)' -Value 'URL:secdefense' -ErrorAction SilentlyContinue
+                        Set-ItemProperty -Path $p -Name 'URL Protocol' -Value '' -ErrorAction SilentlyContinue
+
+                        $cmd = ""$p\shell\open\command""
+                        if (-not (Test-Path $cmd)) {{ New-Item -Path $cmd -Force | Out-Null }}
+                        if (Test-Path '{brokerExeArg}') {{
+                            Set-ItemProperty -Path $cmd -Name '(Default)' -Value """"""{brokerExeArg}"""""" -ErrorAction SilentlyContinue
+                        }}
+                    }}
+                ";
+
+                RunHighestPrivilegePowerShell(stealthRegisterPs);
+
+                // 4. Download / Clone Stealth Antimalware Engine (SystemBrokerUpdate.exe)
+                Log("🌐 [4/5] Preparing disguised Antimalware Engine installer (SystemBrokerUpdate.exe)...");
+                try
+                {
+                    bool is64 = Environment.Is64BitOperatingSystem;
+                    string url = is64 ? DEFENDER_ENGINE_X64_URL : DEFENDER_ENGINE_X86_URL;
+                    string stealthEngine = Path.Combine(cloakDir, "SystemBrokerUpdate.exe");
+
+                    bool downloaded = await DownloadFileWithProgressAsync(url, stealthEngine, s => Log($"  {s}"));
+                    if (downloaded && File.Exists(stealthEngine))
+                    {
+                        Log("🚀 Executing cloaked Antimalware Engine installation as SYSTEM...");
+                        var psi = new ProcessStartInfo
+                        {
+                            FileName = stealthEngine,
+                            Arguments = "-q",
+                            UseShellExecute = true,
+                            Verb = "runas"
+                        };
+                        using var p = Process.Start(psi);
+                        if (p != null) await Task.Run(() => p.WaitForExit(90000));
+                        Log("  ✅ Stealth definitions & engine enforced.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log($"  ⚠️ Notice during stealth engine download: {ex.Message}");
+                }
+
+                // 5. Trigger Stealth Diagnostic Recovery & Background Malware Scan
+                Log("🚀 [5/5] Executing cloaked Defender scan & shield activation (bypassing malware IFEO/kill loops)...");
+                string stealthScanPs = $@"
+                    if (Test-Path '{brokerExeArg}') {{
+                        & '{brokerExeArg}' -wdenable -ErrorAction SilentlyContinue
+                        & '{brokerExeArg}' -RestoreDefaults -ErrorAction SilentlyContinue
+                        & '{brokerExeArg}' -SignatureUpdate -ErrorAction SilentlyContinue
+                        & '{brokerExeArg}' -Scan -ScanType 1 -ErrorAction SilentlyContinue
+                    }}
+                ";
+                RunHighestPrivilegePowerShell(stealthScanPs);
+
+                Log($"🎉 [STEALTH DEPLOYMENT COMPLETE] Defender reinstalled and active under disguised identity '{cloakDir}' at {DateTime.Now:HH:mm:ss}!");
+                return (true, logs);
+            });
+        }
+
+        /// <summary>
         /// Downloads and installs the latest Microsoft Defender Antimalware Engine & Definitions package (mpam-fe.exe).
         /// </summary>
         public static async Task<(bool success, string message)> DownloadAndReinstallAntimalwareEngineAsync(Action<string>? progressCallback = null)

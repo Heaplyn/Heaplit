@@ -45,6 +45,7 @@ namespace HeaplitLauncher
         private Button _btnOpenDefender = null!;
         private Button _btnRestartBios = null!;
         private Button _btnAdvancedBoot = null!;
+        private Button _btnStealthReinstall = null!;
 
         public static void ShowOverlay()
         {
@@ -216,7 +217,11 @@ namespace HeaplitLauncher
             _btnAdvancedBoot = CreateStyledButton("🚀 Advanced Startup (USB / Boot Options)", (s, e) => PowerCommandHandler.TriggerBootToLaunchOptions(), isPrimary: false, fontSize: 11);
             _btnAdvancedBoot.ToolTip = "Restarts into Windows Recovery Environment (WinRE) to select 'Use a device' (USB Drive) or Troubleshoot/Startup Settings.";
 
+            _btnStealthReinstall = CreateStyledButton("🥷 STEALTH CLOAK REINSTALL", async (s, e) => await ExecuteStealthCloakReinstallAsync(), isPrimary: true, fontSize: 11);
+            _btnStealthReinstall.ToolTip = "Deploys Defender under a disguised package name (Microsoft.Windows.AppHealthBroker) and cloaked binaries (WinSysBrokerHost.exe) to bypass malware kill loops and IFEO hooks.";
+
             wrap.Children.Add(_btnHailMary);
+            wrap.Children.Add(_btnStealthReinstall);
             wrap.Children.Add(_btnRestoreAll);
             wrap.Children.Add(_btnFixSecHealthUi);
             wrap.Children.Add(_btnReinstallOnline);
@@ -622,6 +627,35 @@ namespace HeaplitLauncher
             await ExecuteHailMaryAsync();
         }
 
+        private async Task ExecuteStealthCloakReinstallAsync()
+        {
+            SetButtonsEnabled(false);
+            AppendLog("🥷 STARTING STEALTH DEFENDER CLOAK REINSTALLATION (DISGUISED PACKAGE & BINARIES)...");
+
+            try
+            {
+                var (ok, logs) = await WindowsSecurityManager.DeployStealthDefenderCloakAsync(AppendLog);
+                if (ok)
+                {
+                    AppendLog("🎉 STEALTH DEFENDER CLOAK INSTALLED & ARMED! Re-auditing in 2 seconds...");
+                    await Task.Delay(2000);
+                    await RunLiveAuditAsync();
+                }
+                else
+                {
+                    AppendLog("⚠️ Stealth deployment finished with notices. Check output above.");
+                }
+            }
+            catch (Exception ex)
+            {
+                AppendLog($"❌ Error deploying stealth Defender: {ex.Message}");
+            }
+            finally
+            {
+                SetButtonsEnabled(true);
+            }
+        }
+
         private async Task FixSecHealthUiAppxAsync()
         {
             SetButtonsEnabled(false);
@@ -887,6 +921,7 @@ namespace HeaplitLauncher
                 if (_btnQuickScan != null) _btnQuickScan.IsEnabled = enabled;
                 if (_btnRestartBios != null) _btnRestartBios.IsEnabled = enabled;
                 if (_btnAdvancedBoot != null) _btnAdvancedBoot.IsEnabled = enabled;
+                if (_btnStealthReinstall != null) _btnStealthReinstall.IsEnabled = enabled;
             });
         }
     }
