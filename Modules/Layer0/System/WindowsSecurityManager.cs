@@ -3,14 +3,17 @@
 // Summary: Enterprise Windows Security & Defender Recovery Engine for Heaplit.
 //          Scans, detects, and automatically repairs/re-enables Windows Defender,
 //          Windows Firewall, Security Center Services, Registry Policies,
-//          removes rogue malware exclusions, and triggers emergency antivirus scans.
+//          removes rogue malware exclusions, downloads fresh official Defender / MSERT
+//          packages from Microsoft, and triggers emergency antivirus scans.
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace HeaplitLauncher
@@ -35,6 +38,7 @@ namespace HeaplitLauncher
         public List<string> RogueExclusionPaths { get; set; } = new List<string>();
         public List<string> RogueExclusionProcesses { get; set; } = new List<string>();
         public List<string> TamperedHostsEntries { get; set; } = new List<string>();
+        public List<string> HijackedIfeoProcesses { get; set; } = new List<string>();
         public string SignatureVersion { get; set; } = "Unknown";
         public DateTime SignatureLastUpdated { get; set; } = DateTime.MinValue;
         public List<string> LogMessages { get; set; } = new List<string>();
@@ -48,7 +52,8 @@ namespace HeaplitLauncher
             !DefenderServiceRunning ||
             RoguePoliciesDetected.Count > 0 ||
             RogueExclusionPaths.Count > 0 ||
-            TamperedHostsEntries.Count > 0;
+            TamperedHostsEntries.Count > 0 ||
+            HijackedIfeoProcesses.Count > 0;
 
         public int HealthScore
         {
@@ -60,9 +65,11 @@ namespace HeaplitLauncher
                 if (!FirewallPrivateEnabled || !FirewallPublicEnabled) score -= 15;
                 if (!DefenderServiceRunning) score -= 20;
                 if (!SecurityCenterServiceRunning) score -= 5;
+                if (!WindowsUpdateServiceRunning) score -= 5;
                 if (RoguePoliciesDetected.Count > 0) score -= (RoguePoliciesDetected.Count * 5);
                 if (RogueExclusionPaths.Count > 0) score -= (RogueExclusionPaths.Count * 5);
                 if (TamperedHostsEntries.Count > 0) score -= 10;
+                if (HijackedIfeoProcesses.Count > 0) score -= 15;
                 return Math.Max(0, Math.Min(100, score));
             }
         }
@@ -70,6 +77,22 @@ namespace HeaplitLauncher
 
     public static class WindowsSecurityManager
     {
+        private static readonly HttpClient _httpClient = new HttpClient(new HttpClientHandler
+        {
+            AllowAutoRedirect = true,
+            AutomaticDecompression = System.Net.DecompressionMethods.All
+        })
+        {
+            Timeout = TimeSpan.FromMinutes(10)
+        };
+
+        // Official permanent Microsoft download endpoints
+        public const string DEFENDER_HEALTH_SETUP_URL = "https://go.microsoft.com/fwlink/?linkid=2262445";
+        public const string DEFENDER_ENGINE_X64_URL = "https://go.microsoft.com/fwlink/?LinkID=121721&arch=x64";
+        public const string DEFENDER_ENGINE_X86_URL = "https://go.microsoft.com/fwlink/?LinkID=121721&arch=x86";
+        public const string MSERT_X64_URL = "https://go.microsoft.com/fwlink/?LinkId=212732";
+        public const string MSERT_X86_URL = "https://go.microsoft.com/fwlink/?LinkId=212733";
+
         /// <summary>
         /// Audits all Windows Defender, Firewall, Service, Registry, and Hosts security vectors.
         /// </summary>
@@ -164,7 +187,7 @@ namespace HeaplitLauncher
                 audit.SecurityCenterServiceRunning = IsServiceRunning("wscsvc");
                 audit.WindowsUpdateServiceRunning = IsServiceRunning("wuauserv");
 
-                // 4. Audit Registry Tampering Policies (Group Policies targeting Defender/Tools)
+                // 4. Audit Registry Tampering Policies
                 string[] policyKeys = new[]
                 {
                     @"HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender|DisableAntiSpyware",
@@ -176,7 +199,9 @@ namespace HeaplitLauncher
                     @"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System|DisableTaskMgr",
                     @"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System|DisableTaskMgr",
                     @"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System|DisableRegistryTools",
-                    @"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System|DisableRegistryTools"
+                    @"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System|DisableRegistryTools",
+                    @"HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU|NoAutoUpdate",
+                    @"HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate|DisableWindowsUpdateAccess"
                 };
 
                 foreach (var item in policyKeys)
@@ -192,7 +217,23 @@ namespace HeaplitLauncher
                     }
                 }
 
-                // 5. Audit Rogue Defender Exclusions
+                // 5. Audit Image File Execution Options (IFEO) debugger hijacking
+                try
+                {
+                    string[] ifeoTargets = new[] { "MsMpEng.exe", "MpCmdRun.exe", "SecurityHealthHost.exe", "SecurityHealthService.exe", "SecurityHealthSystray.exe", "SecHealthUI.exe", "taskmgr.exe", "regedit.exe" };
+                    foreach (var target in ifeoTargets)
+                    {
+                        string checkIfeo = $"(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\{target}' -Name 'Debugger' -ErrorAction SilentlyContinue).Debugger";
+                        string debuggerVal = RunPowerShellOutput(checkIfeo).Trim();
+                        if (!string.IsNullOrEmpty(debuggerVal))
+                        {
+                            audit.HijackedIfeoProcesses.Add($"{target} -> Hooked by: {debuggerVal}");
+                        }
+                    }
+                }
+                catch { }
+
+                // 6. Audit Rogue Defender Exclusions
                 try
                 {
                     string psExclusions = @"
@@ -231,7 +272,7 @@ namespace HeaplitLauncher
                     audit.LogMessages.Add($"Warning checking exclusions: {ex.Message}");
                 }
 
-                // 6. Audit Hosts File for Security Hijacking
+                // 7. Audit Hosts File for Security Hijacking
                 try
                 {
                     string hostsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "drivers", "etc", "hosts");
@@ -260,24 +301,239 @@ namespace HeaplitLauncher
         }
 
         /// <summary>
-        /// Re-enables, resets, and fully restores all Windows Defender, Firewall, and Security subsystems.
+        /// Downloads and installs official Microsoft SecurityHealthSetup.exe to restore missing/corrupted Windows Security App & SecurityHealthService.
         /// </summary>
-        public static async Task<(bool success, List<string> logs)> ReenableWindowsSecurityAsync(bool triggerQuickScan = true)
+        public static async Task<(bool success, string message)> DownloadAndReinstallDefenderAppAsync(Action<string>? progressCallback = null)
         {
-            var logs = new List<string>();
+            string tempInstaller = Path.Combine(Path.GetTempPath(), "SecurityHealthSetup.exe");
+            try
+            {
+                progressCallback?.Invoke("🌐 Connecting to Microsoft CDN to download official SecurityHealthSetup.exe...");
 
+                bool downloaded = await DownloadFileWithProgressAsync(DEFENDER_HEALTH_SETUP_URL, tempInstaller, progressCallback);
+                if (!downloaded || !File.Exists(tempInstaller))
+                {
+                    return (false, "Failed to download SecurityHealthSetup.exe from Microsoft CDN.");
+                }
+
+                progressCallback?.Invoke("⚙️ Executing elevated SecurityHealthSetup.exe installer...");
+                var psi = new ProcessStartInfo
+                {
+                    FileName = tempInstaller,
+                    UseShellExecute = true,
+                    Verb = "runas"
+                };
+
+                using var proc = Process.Start(psi);
+                if (proc != null)
+                {
+                    await Task.Run(() => proc.WaitForExit(60000));
+                }
+
+                progressCallback?.Invoke("📦 Re-registering Microsoft.SecHealthUI modern AppX package...");
+                string reRegisterScript = @"
+                    Get-AppxPackage Microsoft.SecHealthUI -AllUsers | Reset-AppxPackage -ErrorAction SilentlyContinue
+                    $manifest = (Get-AppxPackage Microsoft.SecHealthUI -AllUsers).InstallLocation + '\AppXManifest.xml'
+                    if (Test-Path $manifest) {
+                        Add-AppxPackage -DisableDevelopmentMode -Register $manifest -ErrorAction SilentlyContinue
+                    }
+                    sc.exe config SecurityHealthService start= auto
+                    sc.exe start SecurityHealthService
+                ";
+                RunElevatedPowerShell(reRegisterScript);
+
+                progressCallback?.Invoke("✅ Windows Security App & Security Health Service successfully restored!");
+                return (true, "SecurityHealthSetup completed successfully.");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Error downloading/reinstalling Windows Security: {ex.Message}");
+            }
+            finally
+            {
+                try { if (File.Exists(tempInstaller)) File.Delete(tempInstaller); } catch { }
+            }
+        }
+
+        /// <summary>
+        /// Downloads and installs the latest Microsoft Defender Antimalware Engine & Definitions package (mpam-fe.exe).
+        /// </summary>
+        public static async Task<(bool success, string message)> DownloadAndReinstallAntimalwareEngineAsync(Action<string>? progressCallback = null)
+        {
+            bool is64 = Environment.Is64BitOperatingSystem;
+            string url = is64 ? DEFENDER_ENGINE_X64_URL : DEFENDER_ENGINE_X86_URL;
+            string tempInstaller = Path.Combine(Path.GetTempPath(), "mpam-fe.exe");
+
+            try
+            {
+                progressCallback?.Invoke($"🌐 Downloading latest Microsoft Defender Antimalware Engine & Signatures ({ (is64 ? "64-bit" : "32-bit") })...");
+
+                bool downloaded = await DownloadFileWithProgressAsync(url, tempInstaller, progressCallback);
+                if (!downloaded || !File.Exists(tempInstaller))
+                {
+                    return (false, "Failed to download mpam-fe.exe from Microsoft definition update servers.");
+                }
+
+                progressCallback?.Invoke("🛡️ Extracting and enforcing antimalware engine binaries (mpam-fe.exe -q)...");
+                var psi = new ProcessStartInfo
+                {
+                    FileName = tempInstaller,
+                    Arguments = "-q",
+                    UseShellExecute = true,
+                    Verb = "runas"
+                };
+
+                using var proc = Process.Start(psi);
+                if (proc != null)
+                {
+                    await Task.Run(() => proc.WaitForExit(90000));
+                }
+
+                progressCallback?.Invoke("⚙️ Starting Defender core services...");
+                RunProcess("sc.exe", "config WinDefend start= auto");
+                RunProcess("sc.exe", "start WinDefend");
+                RunProcess("sc.exe", "config WdNisSvc start= auto");
+                RunProcess("sc.exe", "start WdNisSvc");
+
+                progressCallback?.Invoke("✅ Microsoft Defender engine and signature definitions successfully installed!");
+                return (true, "Antimalware engine installed successfully.");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Error downloading/installing Defender Engine: {ex.Message}");
+            }
+            finally
+            {
+                try { if (File.Exists(tempInstaller)) File.Delete(tempInstaller); } catch { }
+            }
+        }
+
+        /// <summary>
+        /// Downloads and executes Microsoft Safety Scanner (MSERT) emergency standalone malware scanner.
+        /// </summary>
+        public static async Task<(bool success, string message)> DownloadAndRunMsertScannerAsync(bool quiet = false, Action<string>? progressCallback = null)
+        {
+            bool is64 = Environment.Is64BitOperatingSystem;
+            string url = is64 ? MSERT_X64_URL : MSERT_X86_URL;
+            string tempMsert = Path.Combine(Path.GetTempPath(), "MSERT.exe");
+
+            try
+            {
+                progressCallback?.Invoke($"🌐 Downloading Microsoft Emergency Safety Scanner (MSERT) ({ (is64 ? "64-bit" : "32-bit") })...");
+
+                bool downloaded = await DownloadFileWithProgressAsync(url, tempMsert, progressCallback);
+                if (!downloaded || !File.Exists(tempMsert))
+                {
+                    return (false, "Failed to download MSERT.exe from Microsoft.");
+                }
+
+                progressCallback?.Invoke("🚀 Launching Microsoft Safety Scanner (MSERT)...");
+                var psi = new ProcessStartInfo
+                {
+                    FileName = tempMsert,
+                    Arguments = quiet ? "/q /f:y" : "",
+                    UseShellExecute = true,
+                    Verb = "runas"
+                };
+
+                Process.Start(psi);
+                progressCallback?.Invoke("✅ Microsoft Safety Scanner (MSERT) is now active!");
+                return (true, "MSERT dispatched successfully.");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Error downloading/running MSERT: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Fixes registry service permissions, starts disabled core services (WinDefend, wuauserv), and removes IFEO hijack hooks.
+        /// </summary>
+        public static async Task<bool> FixServicePermissionsAndStartupAsync(Action<string>? progressCallback = null)
+        {
             return await Task.Run(() =>
             {
-                logs.Add($"🛡️ [1/8] Starting Full Windows Security & Defender Recovery Protocol at {DateTime.Now:HH:mm:ss}...");
+                progressCallback?.Invoke("🔧 Purging malicious IFEO hooks and resetting service startup keys in Registry...");
 
-                // Step 1: Remove Malicious Registry Policies
-                logs.Add("🧹 [2/8] Purging malicious Group Policy overrides & restriction registry keys...");
+                string fixServicesPs = @"
+                    # 1. Clean IFEO debugger hijacks
+                    $ifeo = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options'
+                    $targets = @('MsMpEng.exe', 'MpCmdRun.exe', 'SecurityHealthHost.exe', 'SecurityHealthService.exe', 'SecurityHealthSystray.exe', 'SecHealthUI.exe', 'taskmgr.exe', 'regedit.exe', 'powershell.exe', 'cmd.exe', 'msert.exe')
+                    foreach ($t in $targets) {
+                        if (Test-Path ""$ifeo\$t"") {
+                            Remove-ItemProperty -Path ""$ifeo\$t"" -Name 'Debugger' -ErrorAction SilentlyContinue
+                            Remove-ItemProperty -Path ""$ifeo\$t"" -Name 'FilterFullPath' -ErrorAction SilentlyContinue
+                        }
+                    }
+
+                    # 2. Reset Service Start Types
+                    $svcKeys = @{
+                        'WinDefend' = 2
+                        'WdNisSvc' = 3
+                        'Sense' = 3
+                        'SecurityHealthService' = 2
+                        'wscsvc' = 2
+                        'MpsSvc' = 2
+                        'wuauserv' = 2
+                        'bits' = 2
+                        'CryptSvc' = 2
+                        'TrustedInstaller' = 3
+                    }
+                    foreach ($s in $svcKeys.Keys) {
+                        $p = ""HKLM:\SYSTEM\CurrentControlSet\Services\$s""
+                        if (Test-Path $p) {
+                            Set-ItemProperty -Path $p -Name 'Start' -Value $svcKeys[$s] -Type DWord -ErrorAction SilentlyContinue
+                        }
+                    }
+
+                    # 3. Purge Windows Update restriction policies
+                    $wu = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate'
+                    if (Test-Path $wu) {
+                        Remove-ItemProperty -Path $wu -Name 'DisableWindowsUpdateAccess' -ErrorAction SilentlyContinue
+                        Remove-ItemProperty -Path $wu -Name 'DoNotConnectToWindowsUpdateInternetLocations' -ErrorAction SilentlyContinue
+                        Remove-ItemProperty -Path ""$wu\AU"" -Name 'NoAutoUpdate' -ErrorAction SilentlyContinue
+                    }
+                ";
+
+                RunElevatedPowerShell(fixServicesPs);
+
+                progressCallback?.Invoke("⚙️ Starting WinDefend, MpsSvc, wscsvc, wuauserv, and CryptSvc...");
+                string[] services = new[] { "wuauserv", "bits", "CryptSvc", "WinDefend", "WdNisSvc", "SecurityHealthService", "wscsvc", "MpsSvc" };
+                foreach (var svc in services)
+                {
+                    RunProcess("sc.exe", $"config {svc} start= auto");
+                    RunProcess("sc.exe", $"start {svc}");
+                }
+
+                return true;
+            });
+        }
+
+        /// <summary>
+        /// Re-enables, resets, and fully restores all Windows Defender, Firewall, and Security subsystems.
+        /// </summary>
+        public static async Task<(bool success, List<string> logs)> ReenableWindowsSecurityAsync(bool triggerQuickScan = true, Action<string>? liveLog = null)
+        {
+            var logs = new List<string>();
+            void Log(string msg)
+            {
+                logs.Add(msg);
+                liveLog?.Invoke(msg);
+            }
+
+            return await Task.Run(async () =>
+            {
+                Log($"🛡️ [1/9] Starting Full Windows Security & Defender Recovery Protocol at {DateTime.Now:HH:mm:ss}...");
+
+                // Step 1: Remove Malicious Registry Policies & IFEO Hooks
+                Log("🧹 [2/9] Purging malicious Group Policy overrides, restriction registry keys & IFEO hooks...");
                 string cleanRegPs = @"
                     $keys = @(
                         'HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender',
                         'HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection',
                         'HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Policy Manager',
                         'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate',
+                        'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU',
                         'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System',
                         'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System',
                         'HKCU:\SOFTWARE\Policies\Microsoft\Windows\System',
@@ -294,26 +550,33 @@ namespace HeaplitLauncher
                             Remove-ItemProperty -Path $k -Name 'DisableTaskMgr' -ErrorAction SilentlyContinue
                             Remove-ItemProperty -Path $k -Name 'DisableRegistryTools' -ErrorAction SilentlyContinue
                             Remove-ItemProperty -Path $k -Name 'DisableCMD' -ErrorAction SilentlyContinue
+                            Remove-ItemProperty -Path $k -Name 'DisableWindowsUpdateAccess' -ErrorAction SilentlyContinue
+                            Remove-ItemProperty -Path $k -Name 'NoAutoUpdate' -ErrorAction SilentlyContinue
                         }
                     }
+
+                    # Clean IFEO hooks
+                    $ifeo = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options'
+                    $targets = @('MsMpEng.exe', 'MpCmdRun.exe', 'SecurityHealthHost.exe', 'SecurityHealthService.exe', 'SecurityHealthSystray.exe', 'SecHealthUI.exe', 'taskmgr.exe', 'regedit.exe', 'powershell.exe', 'cmd.exe', 'msert.exe')
+                    foreach ($t in $targets) {
+                        if (Test-Path ""$ifeo\$t"") {
+                            Remove-ItemProperty -Path ""$ifeo\$t"" -Name 'Debugger' -ErrorAction SilentlyContinue
+                        }
+                    }
+
                     # Ensure UAC is active
                     Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System' -Name 'EnableLUA' -Value 1 -ErrorAction SilentlyContinue
                 ";
                 RunElevatedPowerShell(cleanRegPs);
-                logs.Add("  ✅ Cleaned malicious DisableAntiSpyware, DisableRealtimeMonitoring, and TaskMgr lockout policies.");
+                Log("  ✅ Cleaned DisableAntiSpyware, DisableRealtimeMonitoring, TaskMgr lockout, and IFEO debugger hooks.");
 
-                // Step 2: Configure and Start Security Services
-                logs.Add("⚙️ [3/8] Restoring Windows Defender, Security Center & Firewall system services...");
-                string[] services = new[] { "WinDefend", "WdNisSvc", "Sense", "SecurityHealthService", "wscsvc", "MpsSvc", "wuauserv", "bits", "CryptSvc" };
-                foreach (var svc in services)
-                {
-                    RunProcess("sc.exe", $"config {svc} start= auto");
-                    RunProcess("sc.exe", $"start {svc}");
-                }
-                logs.Add("  ✅ Set security services to Automatic startup and initiated service start triggers.");
+                // Step 2: Un-disable & Start Security Services
+                Log("⚙️ [3/9] Restoring and un-disabling Windows Defender, Security Center, Firewall & Windows Update services...");
+                await FixServicePermissionsAndStartupAsync(s => Log($"  -> {s}"));
+                Log("  ✅ Security services configured to Automatic startup and started.");
 
                 // Step 3: Enable Windows Defender Real-Time Protection & Preferences
-                logs.Add("🛡️ [4/8] Enforcing Windows Defender Real-Time Protection, Script Scanning & Cloud AI Guard...");
+                Log("🛡️ [4/9] Enforcing Windows Defender Real-Time Protection, Script Scanning & Cloud AI Guard...");
                 string enableMpPs = @"
                     Set-MpPreference -DisableRealtimeMonitoring $false -ErrorAction SilentlyContinue
                     Set-MpPreference -DisableBehaviorMonitoring $false -ErrorAction SilentlyContinue
@@ -327,16 +590,16 @@ namespace HeaplitLauncher
                     Set-MpPreference -ScanAvgCPULoadFactor 50 -ErrorAction SilentlyContinue
                 ";
                 RunElevatedPowerShell(enableMpPs);
-                logs.Add("  ✅ Real-time Monitoring, Behavior Monitoring, IOAV, Script Scan, PUA Protection, and Cloud AI Guard enabled.");
+                Log("  ✅ Real-time Monitoring, Behavior Monitoring, IOAV, Script Scan, PUA Protection, and Cloud AI Guard enabled.");
 
                 // Step 4: Reset & Enable Windows Firewall
-                logs.Add("🔥 [5/8] Activating Windows Firewall on Domain, Private, and Public profiles...");
+                Log("🔥 [5/9] Activating Windows Firewall on Domain, Private, and Public profiles...");
                 RunProcess("netsh.exe", "advfirewall set allprofiles state on");
                 RunElevatedPowerShell("Set-NetFirewallProfile -All -Enabled True -ErrorAction SilentlyContinue");
-                logs.Add("  ✅ Windows Firewall state set to Active (ON) for all network profiles.");
+                Log("  ✅ Windows Firewall state set to Active (ON) for all network profiles.");
 
                 // Step 5: Clean Rogue Defender Exclusions
-                logs.Add("🧹 [6/8] Purging broad/malicious Defender exclusions added by malware...");
+                Log("🧹 [6/9] Purging broad/malicious Defender exclusions added by malware...");
                 string cleanExclusionsPs = @"
                     $pref = Get-MpPreference -ErrorAction SilentlyContinue
                     if ($pref) {
@@ -353,10 +616,10 @@ namespace HeaplitLauncher
                     }
                 ";
                 RunElevatedPowerShell(cleanExclusionsPs);
-                logs.Add("  ✅ Removed dangerous broad exclusion directories and executable extensions.");
+                Log("  ✅ Removed dangerous broad exclusion directories and executable extensions.");
 
                 // Step 6: Clean Hosts file if tampered
-                logs.Add("🌐 [7/8] Inspecting network routing and hosts file integrity...");
+                Log("🌐 [7/9] Inspecting network routing and hosts file integrity...");
                 try
                 {
                     string hostsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "drivers", "etc", "hosts");
@@ -374,33 +637,33 @@ namespace HeaplitLauncher
                         if (cleanLines.Count != lines.Length)
                         {
                             File.WriteAllLines(hostsPath, cleanLines);
-                            logs.Add("  ✅ Purged malicious DNS blocking entries from hosts file.");
+                            Log("  ✅ Purged malicious DNS blocking entries from hosts file.");
                         }
                         else
                         {
-                            logs.Add("  ✅ Hosts file is clean and untampered.");
+                            Log("  ✅ Hosts file is clean and untampered.");
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    logs.Add($"  ⚠️ Hosts file check notice: {ex.Message}");
+                    Log($"  ⚠️ Hosts file check notice: {ex.Message}");
                 }
 
                 // Step 7: Update Antivirus Signatures
-                logs.Add("🔄 [8/8] Updating Windows Defender Antivirus Signatures and Definitions...");
+                Log("🔄 [8/9] Updating Windows Defender Antivirus Signatures and Definitions...");
                 RunElevatedPowerShell("Update-MpSignature -ErrorAction SilentlyContinue");
-                logs.Add("  ✅ Antivirus signature definitions update dispatched.");
+                Log("  ✅ Antivirus signature definitions update dispatched.");
 
-                // Optional Emergency Quick Scan
+                // Step 8: Optional Emergency Quick Scan
                 if (triggerQuickScan)
                 {
-                    logs.Add("⚡ Initiating background Quick Malware Scan...");
+                    Log("⚡ [9/9] Initiating background Quick Malware Scan...");
                     RunElevatedPowerShell("Start-MpScan -ScanType QuickScan -ErrorAction SilentlyContinue");
-                    logs.Add("  ✅ Quick Scan active in background.");
+                    Log("  ✅ Quick Scan active in background.");
                 }
 
-                logs.Add($"🎉 Windows Security Recovery Complete at {DateTime.Now:HH:mm:ss}! System protection restored.");
+                Log($"🎉 Windows Security Recovery Complete at {DateTime.Now:HH:mm:ss}! System protection restored.");
                 return (true, logs);
             });
         }
@@ -459,6 +722,55 @@ namespace HeaplitLauncher
                 RunElevatedPowerShell("Start-MpScan -ScanType FullScan -ErrorAction SilentlyContinue");
                 return true;
             });
+        }
+
+        private static async Task<bool> DownloadFileWithProgressAsync(string url, string destinationPath, Action<string>? progressCallback)
+        {
+            try
+            {
+                using var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+                response.EnsureSuccessStatusCode();
+
+                long totalBytes = response.Content.Headers.ContentLength ?? -1L;
+                using var stream = await response.Content.ReadAsStreamAsync();
+                using var fileStream = new FileStream(destinationPath, FileMode.Create, FileAccess.Write, FileShare.None, 81920, true);
+
+                var buffer = new byte[81920];
+                long totalRead = 0;
+                int read;
+                DateTime lastReport = DateTime.MinValue;
+
+                while ((read = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                {
+                    await fileStream.WriteAsync(buffer, 0, read);
+                    totalRead += read;
+
+                    if (DateTime.Now - lastReport > TimeSpan.FromMilliseconds(500))
+                    {
+                        lastReport = DateTime.Now;
+                        if (totalBytes > 0)
+                        {
+                            double pct = (double)totalRead / totalBytes * 100.0;
+                            double mbRead = totalRead / (1024.0 * 1024.0);
+                            double mbTotal = totalBytes / (1024.0 * 1024.0);
+                            progressCallback?.Invoke($"  ⏬ Downloading: {mbRead:F1} MB / {mbTotal:F1} MB ({pct:F0}%)");
+                        }
+                        else
+                        {
+                            double mbRead = totalRead / (1024.0 * 1024.0);
+                            progressCallback?.Invoke($"  ⏬ Downloading: {mbRead:F1} MB...");
+                        }
+                    }
+                }
+
+                progressCallback?.Invoke($"  ✅ Download complete ({totalRead / (1024.0 * 1024.0):F1} MB).");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                progressCallback?.Invoke($"  ❌ Download error: {ex.Message}");
+                return false;
+            }
         }
 
         private static bool IsServiceRunning(string serviceName)

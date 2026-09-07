@@ -2,7 +2,8 @@
 // Date: 2026-09-07
 // Summary: Interactive Glassmorphic Overlay for Windows Defender & Security Healing.
 //          Audits real-time security state, repairs registry locks, cleans malware exclusions,
-//          restarts security services, re-enables Firewall, and triggers emergency antivirus scans.
+//          restarts security services, downloads fresh official Defender packages & MSERT from Microsoft,
+//          re-enables Firewall, and triggers emergency antivirus scans.
 
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,9 @@ namespace HeaplitLauncher
         private StackPanel _statusCardsPanel = null!;
         private TextBox _logConsoleBox = null!;
         private Button _btnRestoreAll = null!;
+        private Button _btnReinstallOnline = null!;
+        private Button _btnMsertScanner = null!;
+        private Button _btnFixServices = null!;
         private Button _btnAudit = null!;
         private Button _btnClearExclusions = null!;
         private Button _btnUpdateSigs = null!;
@@ -53,7 +57,7 @@ namespace HeaplitLauncher
         }
 
         private WindowsSecurityHealerOverlay()
-            : base("🛡️ HEAPLIT WINDOWS SECURITY HEALER & MALWARE RECOVERY", width: 860, height: 680)
+            : base("🛡️ HEAPLIT WINDOWS SECURITY HEALER & MALWARE RECOVERY", width: 920, height: 720)
         {
             this.Closed += (s, e) => _instance = null;
 
@@ -109,7 +113,7 @@ namespace HeaplitLauncher
 
             var grid = new Grid();
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(180, GridUnitType.Pixel) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(200, GridUnitType.Pixel) });
 
             var infoStack = new StackPanel();
             infoStack.Children.Add(CreateHeader("🛡️ Windows Security Posture & Healing Hub", category: "Headers"));
@@ -161,7 +165,16 @@ namespace HeaplitLauncher
             var wrap = new WrapPanel { Margin = new Thickness(0, 0, 0, 4) };
 
             _btnRestoreAll = CreateStyledButton("⚡ 1-Click Restore All Security", async (s, e) => await ExecuteFullRestoreAsync(), isPrimary: true);
-            _btnRestoreAll.ToolTip = "Purges rogue malware registry policies, resets Defender & Firewall, restarts security services, and triggers scan.";
+            _btnRestoreAll.ToolTip = "Purges rogue malware registry policies & IFEO hooks, fixes service start types, resets Defender & Firewall, and triggers scan.";
+
+            _btnReinstallOnline = CreateStyledButton("🌐 Reinstall Defender (Online Download)", async (s, e) => await DownloadAndReinstallDefenderOnlineAsync(), isPrimary: true);
+            _btnReinstallOnline.ToolTip = "Downloads official Microsoft SecurityHealthSetup.exe and mpam-fe.exe antimalware engine directly from Microsoft CDN.";
+
+            _btnMsertScanner = CreateStyledButton("🛡️ Microsoft Safety Scanner (MSERT)", async (s, e) => await DownloadAndRunMsertAsync());
+            _btnMsertScanner.ToolTip = "Downloads and runs Microsoft Emergency Safety Scanner standalone tool directly from Microsoft.";
+
+            _btnFixServices = CreateStyledButton("🔧 Fix Disabled Services & IFEO", async (s, e) => await FixServicesAndIfeoAsync());
+            _btnFixServices.ToolTip = "Un-disables WinDefend and wuauserv services in Registry and strips IFEO debugger hooks.";
 
             _btnAudit = CreateStyledButton("🔍 Re-Audit Security", async (s, e) => await RunLiveAuditAsync());
             _btnAudit.ToolTip = "Scans all security subsystems and updates the status cards.";
@@ -179,6 +192,9 @@ namespace HeaplitLauncher
             _btnOpenDefender.ToolTip = "Launches the official Windows Security Control Center.";
 
             wrap.Children.Add(_btnRestoreAll);
+            wrap.Children.Add(_btnReinstallOnline);
+            wrap.Children.Add(_btnMsertScanner);
+            wrap.Children.Add(_btnFixServices);
             wrap.Children.Add(_btnAudit);
             wrap.Children.Add(_btnClearExclusions);
             wrap.Children.Add(_btnUpdateSigs);
@@ -345,7 +361,7 @@ namespace HeaplitLauncher
             ));
 
             // 3. Security Services Card
-            bool servicesAll = audit.DefenderServiceRunning && audit.FirewallServiceRunning && audit.SecurityCenterServiceRunning;
+            bool servicesAll = audit.DefenderServiceRunning && audit.FirewallServiceRunning && audit.SecurityCenterServiceRunning && audit.WindowsUpdateServiceRunning;
             _statusCardsPanel.Children.Add(CreateVectorCard(
                 "⚙️ Security & System Services",
                 servicesAll,
@@ -378,7 +394,27 @@ namespace HeaplitLauncher
                 policyDetails
             ));
 
-            // 5. Rogue Exclusions Card
+            // 5. IFEO Debugger Hijacking Card
+            bool ifeoClean = audit.HijackedIfeoProcesses.Count == 0;
+            var ifeoDetails = new List<(string, bool, string)>();
+            if (ifeoClean)
+            {
+                ifeoDetails.Add(("IFEO Process Hooks", true, "No Image File Execution Options debugger hooks blocking Defender / Tools."));
+            }
+            else
+            {
+                foreach (var hook in audit.HijackedIfeoProcesses)
+                {
+                    ifeoDetails.Add(($"Hijack: {hook}", false, "Malware IFEO hook preventing process launch"));
+                }
+            }
+            _statusCardsPanel.Children.Add(CreateVectorCard(
+                "🪝 Process Execution & IFEO Integrity",
+                ifeoClean,
+                ifeoDetails
+            ));
+
+            // 6. Rogue Exclusions Card
             bool exclusionsClean = audit.RogueExclusionPaths.Count == 0 && audit.RogueExclusionProcesses.Count == 0;
             var exclusionDetails = new List<(string, bool, string)>();
             if (exclusionsClean)
@@ -402,7 +438,7 @@ namespace HeaplitLauncher
                 exclusionDetails
             ));
 
-            // 6. Network & Hosts File Card
+            // 7. Network & Hosts File Card
             bool hostsClean = audit.TamperedHostsEntries.Count == 0;
             var hostsDetails = new List<(string, bool, string)>();
             if (hostsClean)
@@ -516,12 +552,7 @@ namespace HeaplitLauncher
 
             try
             {
-                var (success, logs) = await WindowsSecurityManager.ReenableWindowsSecurityAsync(triggerQuickScan: true);
-                foreach (var line in logs)
-                {
-                    AppendLog(line);
-                }
-
+                var (success, logs) = await WindowsSecurityManager.ReenableWindowsSecurityAsync(triggerQuickScan: true, liveLog: AppendLog);
                 if (success)
                 {
                     AppendLog("🎉 Windows Security Restoration applied successfully! Re-auditing in 2 seconds...");
@@ -536,6 +567,83 @@ namespace HeaplitLauncher
             catch (Exception ex)
             {
                 AppendLog($"❌ Error executing restoration: {ex.Message}");
+            }
+            finally
+            {
+                SetButtonsEnabled(true);
+            }
+        }
+
+        private async Task DownloadAndReinstallDefenderOnlineAsync()
+        {
+            SetButtonsEnabled(false);
+            AppendLog("🌐 STARTING ONLINE MICROSOFT DEFENDER REINSTALLATION PROTOCOL...");
+
+            try
+            {
+                // 1. Download and run SecurityHealthSetup
+                AppendLog("Phase 1/2: Downloading official Microsoft SecurityHealthSetup.exe...");
+                var (appOk, appMsg) = await WindowsSecurityManager.DownloadAndReinstallDefenderAppAsync(AppendLog);
+                AppendLog($"SecurityHealthSetup result: {appMsg}");
+
+                // 2. Download and install mpam-fe antimalware engine
+                AppendLog("Phase 2/2: Downloading official Microsoft Antimalware Engine & Definitions...");
+                var (engOk, engMsg) = await WindowsSecurityManager.DownloadAndReinstallAntimalwareEngineAsync(AppendLog);
+                AppendLog($"Antimalware engine result: {engMsg}");
+
+                // 3. Run full remediation
+                AppendLog("Phase 3: Restoring services and policies...");
+                await WindowsSecurityManager.FixServicePermissionsAndStartupAsync(AppendLog);
+
+                AppendLog("🎉 Online Microsoft Defender Reinstallation finished! Re-auditing in 2 seconds...");
+                await Task.Delay(2000);
+                await RunLiveAuditAsync();
+            }
+            catch (Exception ex)
+            {
+                AppendLog($"❌ Error in online reinstallation: {ex.Message}");
+            }
+            finally
+            {
+                SetButtonsEnabled(true);
+            }
+        }
+
+        private async Task DownloadAndRunMsertAsync()
+        {
+            SetButtonsEnabled(false);
+            AppendLog("🛡️ DOWNLOADING & LAUNCHING MICROSOFT SAFETY SCANNER (MSERT)...");
+
+            try
+            {
+                var (ok, msg) = await WindowsSecurityManager.DownloadAndRunMsertScannerAsync(quiet: false, AppendLog);
+                AppendLog(ok ? "✅ Microsoft Safety Scanner launched successfully!" : $"⚠️ Failed to launch MSERT: {msg}");
+            }
+            catch (Exception ex)
+            {
+                AppendLog($"❌ Error launching MSERT: {ex.Message}");
+            }
+            finally
+            {
+                SetButtonsEnabled(true);
+            }
+        }
+
+        private async Task FixServicesAndIfeoAsync()
+        {
+            SetButtonsEnabled(false);
+            AppendLog("🔧 Un-disabling services and stripping IFEO hooks...");
+
+            try
+            {
+                bool ok = await WindowsSecurityManager.FixServicePermissionsAndStartupAsync(AppendLog);
+                AppendLog(ok ? "✅ Service configurations updated and services started." : "⚠️ Failed to configure services.");
+                await Task.Delay(2000);
+                await RunLiveAuditAsync();
+            }
+            catch (Exception ex)
+            {
+                AppendLog($"❌ Error fixing services: {ex.Message}");
             }
             finally
             {
@@ -634,6 +742,9 @@ namespace HeaplitLauncher
             Application.Current.Dispatcher.Invoke(() =>
             {
                 if (_btnRestoreAll != null) _btnRestoreAll.IsEnabled = enabled;
+                if (_btnReinstallOnline != null) _btnReinstallOnline.IsEnabled = enabled;
+                if (_btnMsertScanner != null) _btnMsertScanner.IsEnabled = enabled;
+                if (_btnFixServices != null) _btnFixServices.IsEnabled = enabled;
                 if (_btnAudit != null) _btnAudit.IsEnabled = enabled;
                 if (_btnClearExclusions != null) _btnClearExclusions.IsEnabled = enabled;
                 if (_btnUpdateSigs != null) _btnUpdateSigs.IsEnabled = enabled;
