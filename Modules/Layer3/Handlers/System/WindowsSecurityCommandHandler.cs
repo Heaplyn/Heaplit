@@ -2,7 +2,7 @@
 // Date: 2026-09-07
 // Summary: Command Handler for Windows Defender & Security Remediation.
 //          Enables quick search triggers for security audit, malware recovery,
-//          re-enabling disabled Defender/Firewall, downloading official Defender from Microsoft,
+//          administrator PowerShell registry fixing, downloading official Defender from Microsoft,
 //          running Microsoft Safety Scanner (MSERT), and purging rogue exclusions.
 
 using System;
@@ -29,6 +29,8 @@ namespace HeaplitLauncher
                    query.StartsWith("antivirus") ||
                    query.StartsWith("malware") ||
                    query.StartsWith("fixsec") ||
+                   query.StartsWith("fixreg") ||
+                   query.StartsWith("fixregistry") ||
                    query.StartsWith("restoresec") ||
                    query.StartsWith("reenablesec") ||
                    query.StartsWith("msert") ||
@@ -40,6 +42,7 @@ namespace HeaplitLauncher
                    SearchUtil.IsClose(first, "antivirus") ||
                    SearchUtil.IsClose(first, "firewall") ||
                    SearchUtil.IsClose(first, "malware") ||
+                   SearchUtil.IsClose(first, "registry") ||
                    SearchUtil.IsClose(first, "msert");
         }
 
@@ -49,7 +52,7 @@ namespace HeaplitLauncher
             query = query.Trim().ToLowerInvariant();
 
             double baseSim = 4.5;
-            if (query.Contains("fix") || query.Contains("restore") || query.Contains("reenable") || query.Contains("malware") || query.Contains("download") || query.Contains("reinstall"))
+            if (query.Contains("fix") || query.Contains("restore") || query.Contains("reenable") || query.Contains("malware") || query.Contains("download") || query.Contains("reinstall") || query.Contains("reg"))
             {
                 baseSim = 5.5;
             }
@@ -63,7 +66,20 @@ namespace HeaplitLauncher
                 EXECUTE = () => WindowsSecurityHealerOverlay.ShowOverlay()
             });
 
-            // 2. Download & Reinstall Defender from Microsoft Cloud
+            // 2. Fix Registry as Administrator via PowerShell
+            results.Add(new CommandResult
+            {
+                TITLE = "🔑 Fix Registry Policies (Admin PowerShell)",
+                DESCRIPTION = "Purge DisableAntiSpyware, TaskMgr lockouts, IFEO debugger hooks, and WSUS hijacking via elevated PowerShell",
+                SIMILARITY = baseSim + 0.95,
+                EXECUTE = () =>
+                {
+                    WindowsSecurityHealerOverlay.ShowOverlay();
+                    _ = WindowsSecurityManager.FixAllRegistryPoliciesElevatedAsync();
+                }
+            });
+
+            // 3. Download & Reinstall Defender from Microsoft Cloud
             results.Add(new CommandResult
             {
                 TITLE = "🌐 Download & Reinstall Microsoft Defender (Cloud)",
@@ -81,7 +97,7 @@ namespace HeaplitLauncher
                 }
             });
 
-            // 3. Microsoft Emergency Safety Scanner (MSERT)
+            // 4. Microsoft Emergency Safety Scanner (MSERT)
             results.Add(new CommandResult
             {
                 TITLE = "🛡️ Run Microsoft Safety Scanner (MSERT)",
@@ -94,7 +110,7 @@ namespace HeaplitLauncher
                 }
             });
 
-            // 4. Immediate 1-Click Restore
+            // 5. Immediate 1-Click Restore
             results.Add(new CommandResult
             {
                 TITLE = "⚡ 1-Click Restore & Re-Enable Windows Security",
@@ -107,7 +123,7 @@ namespace HeaplitLauncher
                 }
             });
 
-            // 5. Purge Rogue Defender Exclusions
+            // 6. Purge Rogue Defender Exclusions
             results.Add(new CommandResult
             {
                 TITLE = "🧹 Purge Rogue Defender Exclusions",
@@ -120,7 +136,7 @@ namespace HeaplitLauncher
                 }
             });
 
-            // 6. Update Defender Antivirus Definitions
+            // 7. Update Defender Antivirus Definitions
             results.Add(new CommandResult
             {
                 TITLE = "🔄 Update Windows Defender Signatures",
@@ -133,7 +149,7 @@ namespace HeaplitLauncher
                 }
             });
 
-            // 7. Run Antivirus Quick Scan
+            // 8. Run Antivirus Quick Scan
             results.Add(new CommandResult
             {
                 TITLE = "🚀 Run Defender Antivirus Quick Scan",
@@ -155,9 +171,9 @@ namespace HeaplitLauncher
             {
                 new CommandDesc
                 {
-                    COMMAND_NAME = "security / defender / fixsecurity / downloaddefender",
-                    COMMAND_DESCRIPTION = "Audits, downloads and re-enables Windows Defender, Firewall, and cleans malware tampering",
-                    COMMAND_EXAMPLE = "security"
+                    COMMAND_NAME = "security / defender / fixsecurity / fixregistry / downloaddefender",
+                    COMMAND_DESCRIPTION = "Audits, downloads, and re-enables Windows Defender, Firewall, and cleans malware registry tampering via Administrator PowerShell",
+                    COMMAND_EXAMPLE = "fixregistry"
                 }
             };
         }

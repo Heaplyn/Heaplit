@@ -1,8 +1,8 @@
 // Developer: heaplyn
 // Date: 2026-09-07
 // Summary: Interactive Glassmorphic Overlay for Windows Defender & Security Healing.
-//          Audits real-time security state, repairs registry locks, cleans malware exclusions,
-//          restarts security services, downloads fresh official Defender packages & MSERT from Microsoft,
+//          Audits real-time security state, repairs registry locks via elevated PowerShell as Administrator,
+//          cleans malware exclusions, restarts security services, downloads fresh official Defender packages & MSERT from Microsoft,
 //          re-enables Firewall, and triggers emergency antivirus scans.
 
 using System;
@@ -32,6 +32,7 @@ namespace HeaplitLauncher
         private Button _btnRestoreAll = null!;
         private Button _btnReinstallOnline = null!;
         private Button _btnMsertScanner = null!;
+        private Button _btnFixRegistry = null!;
         private Button _btnFixServices = null!;
         private Button _btnAudit = null!;
         private Button _btnClearExclusions = null!;
@@ -57,7 +58,7 @@ namespace HeaplitLauncher
         }
 
         private WindowsSecurityHealerOverlay()
-            : base("🛡️ HEAPLIT WINDOWS SECURITY HEALER & MALWARE RECOVERY", width: 920, height: 720)
+            : base("🛡️ HEAPLIT WINDOWS SECURITY HEALER & MALWARE RECOVERY", width: 940, height: 720)
         {
             this.Closed += (s, e) => _instance = null;
 
@@ -173,8 +174,11 @@ namespace HeaplitLauncher
             _btnMsertScanner = CreateStyledButton("🛡️ Microsoft Safety Scanner (MSERT)", async (s, e) => await DownloadAndRunMsertAsync());
             _btnMsertScanner.ToolTip = "Downloads and runs Microsoft Emergency Safety Scanner standalone tool directly from Microsoft.";
 
-            _btnFixServices = CreateStyledButton("🔧 Fix Disabled Services & IFEO", async (s, e) => await FixServicesAndIfeoAsync());
-            _btnFixServices.ToolTip = "Un-disables WinDefend and wuauserv services in Registry and strips IFEO debugger hooks.";
+            _btnFixRegistry = CreateStyledButton("🔑 Fix Registry (Admin PowerShell)", async (s, e) => await FixRegistryPoliciesAsync());
+            _btnFixRegistry.ToolTip = "Executes elevated PowerShell as Administrator to purge DisableAntiSpyware, TaskMgr lockouts, IFEO hooks, and WSUS hijacking.";
+
+            _btnFixServices = CreateStyledButton("🔧 Fix Disabled Services", async (s, e) => await FixServicesAndIfeoAsync());
+            _btnFixServices.ToolTip = "Un-disables WinDefend and wuauserv services in Registry and starts them.";
 
             _btnAudit = CreateStyledButton("🔍 Re-Audit Security", async (s, e) => await RunLiveAuditAsync());
             _btnAudit.ToolTip = "Scans all security subsystems and updates the status cards.";
@@ -194,6 +198,7 @@ namespace HeaplitLauncher
             wrap.Children.Add(_btnRestoreAll);
             wrap.Children.Add(_btnReinstallOnline);
             wrap.Children.Add(_btnMsertScanner);
+            wrap.Children.Add(_btnFixRegistry);
             wrap.Children.Add(_btnFixServices);
             wrap.Children.Add(_btnAudit);
             wrap.Children.Add(_btnClearExclusions);
@@ -574,6 +579,28 @@ namespace HeaplitLauncher
             }
         }
 
+        private async Task FixRegistryPoliciesAsync()
+        {
+            SetButtonsEnabled(false);
+            AppendLog("🔑 EXECUTING ADMINISTRATOR POWERSHELL REGISTRY POLICY OVERHAUL...");
+
+            try
+            {
+                var (ok, logs) = await WindowsSecurityManager.FixAllRegistryPoliciesElevatedAsync(AppendLog);
+                AppendLog(ok ? "✅ Registry policies fixed successfully as Administrator!" : "⚠️ Registry repair completed with notices.");
+                await Task.Delay(2000);
+                await RunLiveAuditAsync();
+            }
+            catch (Exception ex)
+            {
+                AppendLog($"❌ Error repairing registry: {ex.Message}");
+            }
+            finally
+            {
+                SetButtonsEnabled(true);
+            }
+        }
+
         private async Task DownloadAndReinstallDefenderOnlineAsync()
         {
             SetButtonsEnabled(false);
@@ -592,7 +619,7 @@ namespace HeaplitLauncher
                 AppendLog($"Antimalware engine result: {engMsg}");
 
                 // 3. Run full remediation
-                AppendLog("Phase 3: Restoring services and policies...");
+                AppendLog("Phase 3: Restoring services and policies via Administrator PowerShell...");
                 await WindowsSecurityManager.FixServicePermissionsAndStartupAsync(AppendLog);
 
                 AppendLog("🎉 Online Microsoft Defender Reinstallation finished! Re-auditing in 2 seconds...");
@@ -632,7 +659,7 @@ namespace HeaplitLauncher
         private async Task FixServicesAndIfeoAsync()
         {
             SetButtonsEnabled(false);
-            AppendLog("🔧 Un-disabling services and stripping IFEO hooks...");
+            AppendLog("🔧 Un-disabling services and stripping IFEO hooks via Administrator PowerShell...");
 
             try
             {
@@ -744,6 +771,7 @@ namespace HeaplitLauncher
                 if (_btnRestoreAll != null) _btnRestoreAll.IsEnabled = enabled;
                 if (_btnReinstallOnline != null) _btnReinstallOnline.IsEnabled = enabled;
                 if (_btnMsertScanner != null) _btnMsertScanner.IsEnabled = enabled;
+                if (_btnFixRegistry != null) _btnFixRegistry.IsEnabled = enabled;
                 if (_btnFixServices != null) _btnFixServices.IsEnabled = enabled;
                 if (_btnAudit != null) _btnAudit.IsEnabled = enabled;
                 if (_btnClearExclusions != null) _btnClearExclusions.IsEnabled = enabled;
