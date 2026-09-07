@@ -2,8 +2,8 @@
 // Date: 2026-09-07
 // Summary: Command Handler for Windows Defender & Security Remediation.
 //          Enables quick search triggers for security audit, malware recovery,
-//          administrator PowerShell registry fixing, downloading official Defender from Microsoft,
-//          running Microsoft Safety Scanner (MSERT), and purging rogue exclusions.
+//          fixing SecHealthUI / "You'll need a new app" error, administrator PowerShell registry fixing,
+//          downloading official Defender from Microsoft, running MSERT, DISM/SFC repair, and purging rogue exclusions.
 
 using System;
 using System.Collections.Generic;
@@ -29,12 +29,15 @@ namespace HeaplitLauncher
                    query.StartsWith("antivirus") ||
                    query.StartsWith("malware") ||
                    query.StartsWith("fixsec") ||
+                   query.StartsWith("fixappx") ||
                    query.StartsWith("fixreg") ||
                    query.StartsWith("fixregistry") ||
                    query.StartsWith("restoresec") ||
                    query.StartsWith("reenablesec") ||
                    query.StartsWith("msert") ||
                    query.StartsWith("safetyscan") ||
+                   query.StartsWith("dism") ||
+                   query.StartsWith("sfc") ||
                    query.StartsWith("downloaddef") ||
                    query.StartsWith("reinstalldef") ||
                    SearchUtil.IsClose(first, "security") ||
@@ -52,7 +55,7 @@ namespace HeaplitLauncher
             query = query.Trim().ToLowerInvariant();
 
             double baseSim = 4.5;
-            if (query.Contains("fix") || query.Contains("restore") || query.Contains("reenable") || query.Contains("malware") || query.Contains("download") || query.Contains("reinstall") || query.Contains("reg"))
+            if (query.Contains("fix") || query.Contains("restore") || query.Contains("reenable") || query.Contains("malware") || query.Contains("download") || query.Contains("reinstall") || query.Contains("reg") || query.Contains("appx"))
             {
                 baseSim = 5.5;
             }
@@ -66,7 +69,20 @@ namespace HeaplitLauncher
                 EXECUTE = () => WindowsSecurityHealerOverlay.ShowOverlay()
             });
 
-            // 2. Fix Registry as Administrator via PowerShell
+            // 2. Fix "You'll need a new app" (SecHealthUI AppX & Dependencies)
+            results.Add(new CommandResult
+            {
+                TITLE = "🩹 Fix \"You'll need a new app to open windowsdefender\"",
+                DESCRIPTION = "Re-register Microsoft.SecHealthUI, VCLibs, and UI.Xaml AppX packages and fix protocol handler",
+                SIMILARITY = baseSim + 0.98,
+                EXECUTE = () =>
+                {
+                    WindowsSecurityHealerOverlay.ShowOverlay();
+                    _ = WindowsSecurityManager.RepairWindowsSecurityAppXAsync();
+                }
+            });
+
+            // 3. Fix Registry as Administrator via PowerShell
             results.Add(new CommandResult
             {
                 TITLE = "🔑 Fix Registry Policies (Admin PowerShell)",
@@ -79,7 +95,7 @@ namespace HeaplitLauncher
                 }
             });
 
-            // 3. Download & Reinstall Defender from Microsoft Cloud
+            // 4. Download & Reinstall Defender from Microsoft Cloud
             results.Add(new CommandResult
             {
                 TITLE = "🌐 Download & Reinstall Microsoft Defender (Cloud)",
@@ -93,11 +109,12 @@ namespace HeaplitLauncher
                         await WindowsSecurityManager.DownloadAndReinstallDefenderAppAsync();
                         await WindowsSecurityManager.DownloadAndReinstallAntimalwareEngineAsync();
                         await WindowsSecurityManager.FixServicePermissionsAndStartupAsync();
+                        await WindowsSecurityManager.RepairWindowsSecurityAppXAsync();
                     });
                 }
             });
 
-            // 4. Microsoft Emergency Safety Scanner (MSERT)
+            // 5. Microsoft Emergency Safety Scanner (MSERT)
             results.Add(new CommandResult
             {
                 TITLE = "🛡️ Run Microsoft Safety Scanner (MSERT)",
@@ -110,7 +127,20 @@ namespace HeaplitLauncher
                 }
             });
 
-            // 5. Immediate 1-Click Restore
+            // 6. DISM & SFC System File Repair
+            results.Add(new CommandResult
+            {
+                TITLE = "🔍 Run DISM & SFC System Image Repair",
+                DESCRIPTION = "Repair corrupted Windows system files and component store via DISM /Online /Cleanup-Image /RestoreHealth",
+                SIMILARITY = baseSim + 0.82,
+                EXECUTE = () =>
+                {
+                    WindowsSecurityHealerOverlay.ShowOverlay();
+                    _ = WindowsSecurityManager.RunDismAndSfcRepairAsync();
+                }
+            });
+
+            // 7. Immediate 1-Click Restore
             results.Add(new CommandResult
             {
                 TITLE = "⚡ 1-Click Restore & Re-Enable Windows Security",
@@ -123,7 +153,7 @@ namespace HeaplitLauncher
                 }
             });
 
-            // 6. Purge Rogue Defender Exclusions
+            // 8. Purge Rogue Defender Exclusions
             results.Add(new CommandResult
             {
                 TITLE = "🧹 Purge Rogue Defender Exclusions",
@@ -136,7 +166,7 @@ namespace HeaplitLauncher
                 }
             });
 
-            // 7. Update Defender Antivirus Definitions
+            // 9. Update Defender Antivirus Definitions
             results.Add(new CommandResult
             {
                 TITLE = "🔄 Update Windows Defender Signatures",
@@ -149,7 +179,7 @@ namespace HeaplitLauncher
                 }
             });
 
-            // 8. Run Antivirus Quick Scan
+            // 10. Run Antivirus Quick Scan
             results.Add(new CommandResult
             {
                 TITLE = "🚀 Run Defender Antivirus Quick Scan",
@@ -171,9 +201,9 @@ namespace HeaplitLauncher
             {
                 new CommandDesc
                 {
-                    COMMAND_NAME = "security / defender / fixsecurity / fixregistry / downloaddefender",
-                    COMMAND_DESCRIPTION = "Audits, downloads, and re-enables Windows Defender, Firewall, and cleans malware registry tampering via Administrator PowerShell",
-                    COMMAND_EXAMPLE = "fixregistry"
+                    COMMAND_NAME = "security / defender / fixsecurity / fixappx / fixregistry / downloaddefender",
+                    COMMAND_DESCRIPTION = "Audits, downloads, and re-enables Windows Defender, repairs SecHealthUI AppX & protocol, fixes registry as Admin",
+                    COMMAND_EXAMPLE = "fixappx"
                 }
             };
         }

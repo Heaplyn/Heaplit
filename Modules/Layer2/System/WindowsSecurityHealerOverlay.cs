@@ -2,6 +2,7 @@
 // Date: 2026-09-07
 // Summary: Interactive Glassmorphic Overlay for Windows Defender & Security Healing.
 //          Audits real-time security state, repairs registry locks via elevated PowerShell as Administrator,
+//          repairs broken SecHealthUI AppX & "You'll need a new app to open this windowsdefender link" errors,
 //          cleans malware exclusions, restarts security services, downloads fresh official Defender packages & MSERT from Microsoft,
 //          re-enables Firewall, and triggers emergency antivirus scans.
 
@@ -30,10 +31,12 @@ namespace HeaplitLauncher
         private StackPanel _statusCardsPanel = null!;
         private TextBox _logConsoleBox = null!;
         private Button _btnRestoreAll = null!;
+        private Button _btnFixSecHealthUi = null!;
         private Button _btnReinstallOnline = null!;
         private Button _btnMsertScanner = null!;
         private Button _btnFixRegistry = null!;
         private Button _btnFixServices = null!;
+        private Button _btnDismSfc = null!;
         private Button _btnAudit = null!;
         private Button _btnClearExclusions = null!;
         private Button _btnUpdateSigs = null!;
@@ -58,7 +61,7 @@ namespace HeaplitLauncher
         }
 
         private WindowsSecurityHealerOverlay()
-            : base("🛡️ HEAPLIT WINDOWS SECURITY HEALER & MALWARE RECOVERY", width: 940, height: 720)
+            : base("🛡️ HEAPLIT WINDOWS SECURITY HEALER & MALWARE RECOVERY", width: 980, height: 740)
         {
             this.Closed += (s, e) => _instance = null;
 
@@ -168,6 +171,9 @@ namespace HeaplitLauncher
             _btnRestoreAll = CreateStyledButton("⚡ 1-Click Restore All Security", async (s, e) => await ExecuteFullRestoreAsync(), isPrimary: true);
             _btnRestoreAll.ToolTip = "Purges rogue malware registry policies & IFEO hooks, fixes service start types, resets Defender & Firewall, and triggers scan.";
 
+            _btnFixSecHealthUi = CreateStyledButton("🩹 Fix \"You'll need a new app\" (SecHealthUI)", async (s, e) => await FixSecHealthUiAppxAsync(), isPrimary: true);
+            _btnFixSecHealthUi.ToolTip = "Re-registers SecHealthUI, VCLibs, and UI.Xaml AppX dependencies and fixes the windowsdefender: protocol association.";
+
             _btnReinstallOnline = CreateStyledButton("🌐 Reinstall Defender (Online Download)", async (s, e) => await DownloadAndReinstallDefenderOnlineAsync(), isPrimary: true);
             _btnReinstallOnline.ToolTip = "Downloads official Microsoft SecurityHealthSetup.exe and mpam-fe.exe antimalware engine directly from Microsoft CDN.";
 
@@ -179,6 +185,9 @@ namespace HeaplitLauncher
 
             _btnFixServices = CreateStyledButton("🔧 Fix Disabled Services", async (s, e) => await FixServicesAndIfeoAsync());
             _btnFixServices.ToolTip = "Un-disables WinDefend and wuauserv services in Registry and starts them.";
+
+            _btnDismSfc = CreateStyledButton("🔍 DISM / SFC Repair", async (s, e) => await RunDismSfcRepairAsync());
+            _btnDismSfc.ToolTip = "Runs DISM /Online /Cleanup-Image /RestoreHealth and sfc /scannow to fix corrupted Windows system files.";
 
             _btnAudit = CreateStyledButton("🔍 Re-Audit Security", async (s, e) => await RunLiveAuditAsync());
             _btnAudit.ToolTip = "Scans all security subsystems and updates the status cards.";
@@ -192,14 +201,16 @@ namespace HeaplitLauncher
             _btnQuickScan = CreateStyledButton("🚀 Run Quick Scan", async (s, e) => await TriggerQuickScanAsync());
             _btnQuickScan.ToolTip = "Starts a background Windows Defender Quick Malware Scan.";
 
-            _btnOpenDefender = CreateStyledButton("🛡️ Open Defender App", (s, e) => OpenWindowsDefenderApp());
-            _btnOpenDefender.ToolTip = "Launches the official Windows Security Control Center.";
+            _btnOpenDefender = CreateStyledButton("🛡️ Open Defender App", async (s, e) => await OpenWindowsDefenderAppAsync());
+            _btnOpenDefender.ToolTip = "Launches the official Windows Security Control Center with intelligent multi-tiered fallback.";
 
             wrap.Children.Add(_btnRestoreAll);
+            wrap.Children.Add(_btnFixSecHealthUi);
             wrap.Children.Add(_btnReinstallOnline);
             wrap.Children.Add(_btnMsertScanner);
             wrap.Children.Add(_btnFixRegistry);
             wrap.Children.Add(_btnFixServices);
+            wrap.Children.Add(_btnDismSfc);
             wrap.Children.Add(_btnAudit);
             wrap.Children.Add(_btnClearExclusions);
             wrap.Children.Add(_btnUpdateSigs);
@@ -320,7 +331,7 @@ namespace HeaplitLauncher
             {
                 _healthScoreBar.Foreground = Brushes.Gold;
                 _healthScoreText.Foreground = Brushes.Gold;
-                _healthStatusSummary.Text = "⚠️ Warning: Some security services or firewall profiles are degraded or disabled.";
+                _healthStatusSummary.Text = "⚠️ Warning: Some security services, AppX packages, or firewall profiles are degraded or disabled.";
                 _healthStatusSummary.Foreground = Brushes.Yellow;
             }
             else
@@ -352,7 +363,19 @@ namespace HeaplitLauncher
                 extraInfo: $"Signature Version: {audit.SignatureVersion}"
             ));
 
-            // 2. Windows Firewall Card
+            // 2. Windows Security App & AppX Package Card
+            _statusCardsPanel.Children.Add(CreateVectorCard(
+                "📦 Windows Security App (SecHealthUI) & Protocol",
+                audit.SecHealthUiAppxRegistered,
+                new List<(string, bool, string)>
+                {
+                    ("Microsoft.SecHealthUI AppX", audit.SecHealthUiAppxRegistered, "Handles 'windowsdefender:' protocol and Security Center GUI"),
+                    ("AppX Dependencies", audit.SecHealthUiAppxRegistered, "Microsoft.VCLibs and Microsoft.UI.Xaml runtime bridges")
+                },
+                extraInfo: audit.SecHealthUiAppxRegistered ? "AppX package registered" : "Missing / Unregistered -> Causes 'You'll need a new app' popup"
+            ));
+
+            // 3. Windows Firewall Card
             bool firewallAll = audit.FirewallDomainEnabled && audit.FirewallPrivateEnabled && audit.FirewallPublicEnabled;
             _statusCardsPanel.Children.Add(CreateVectorCard(
                 "🔥 Windows Defender Firewall Profiles",
@@ -365,7 +388,7 @@ namespace HeaplitLauncher
                 }
             ));
 
-            // 3. Security Services Card
+            // 4. Security Services Card
             bool servicesAll = audit.DefenderServiceRunning && audit.FirewallServiceRunning && audit.SecurityCenterServiceRunning && audit.WindowsUpdateServiceRunning;
             _statusCardsPanel.Children.Add(CreateVectorCard(
                 "⚙️ Security & System Services",
@@ -379,7 +402,7 @@ namespace HeaplitLauncher
                 }
             ));
 
-            // 4. Registry Policy Tampering Card
+            // 5. Registry Policy Tampering Card
             bool policiesClean = audit.RoguePoliciesDetected.Count == 0;
             var policyDetails = new List<(string, bool, string)>();
             if (policiesClean)
@@ -399,7 +422,7 @@ namespace HeaplitLauncher
                 policyDetails
             ));
 
-            // 5. IFEO Debugger Hijacking Card
+            // 6. IFEO Debugger Hijacking Card
             bool ifeoClean = audit.HijackedIfeoProcesses.Count == 0;
             var ifeoDetails = new List<(string, bool, string)>();
             if (ifeoClean)
@@ -419,7 +442,7 @@ namespace HeaplitLauncher
                 ifeoDetails
             ));
 
-            // 6. Rogue Exclusions Card
+            // 7. Rogue Exclusions Card
             bool exclusionsClean = audit.RogueExclusionPaths.Count == 0 && audit.RogueExclusionProcesses.Count == 0;
             var exclusionDetails = new List<(string, bool, string)>();
             if (exclusionsClean)
@@ -443,7 +466,7 @@ namespace HeaplitLauncher
                 exclusionDetails
             ));
 
-            // 7. Network & Hosts File Card
+            // 8. Network & Hosts File Card
             bool hostsClean = audit.TamperedHostsEntries.Count == 0;
             var hostsDetails = new List<(string, bool, string)>();
             if (hostsClean)
@@ -579,6 +602,28 @@ namespace HeaplitLauncher
             }
         }
 
+        private async Task FixSecHealthUiAppxAsync()
+        {
+            SetButtonsEnabled(false);
+            AppendLog("🩹 REPAIRING SECHEALTHUI & 'YOU'LL NEED A NEW APP' ERROR...");
+
+            try
+            {
+                var (ok, logs) = await WindowsSecurityManager.RepairWindowsSecurityAppXAsync(AppendLog);
+                AppendLog(ok ? "🎉 SecHealthUI and protocol registration repaired successfully!" : "⚠️ Repair completed with notices.");
+                await Task.Delay(2000);
+                await RunLiveAuditAsync();
+            }
+            catch (Exception ex)
+            {
+                AppendLog($"❌ Error repairing SecHealthUI: {ex.Message}");
+            }
+            finally
+            {
+                SetButtonsEnabled(true);
+            }
+        }
+
         private async Task FixRegistryPoliciesAsync()
         {
             SetButtonsEnabled(false);
@@ -609,18 +654,19 @@ namespace HeaplitLauncher
             try
             {
                 // 1. Download and run SecurityHealthSetup
-                AppendLog("Phase 1/2: Downloading official Microsoft SecurityHealthSetup.exe...");
+                AppendLog("Phase 1/3: Downloading official Microsoft SecurityHealthSetup.exe...");
                 var (appOk, appMsg) = await WindowsSecurityManager.DownloadAndReinstallDefenderAppAsync(AppendLog);
                 AppendLog($"SecurityHealthSetup result: {appMsg}");
 
                 // 2. Download and install mpam-fe antimalware engine
-                AppendLog("Phase 2/2: Downloading official Microsoft Antimalware Engine & Definitions...");
+                AppendLog("Phase 2/3: Downloading official Microsoft Antimalware Engine & Definitions...");
                 var (engOk, engMsg) = await WindowsSecurityManager.DownloadAndReinstallAntimalwareEngineAsync(AppendLog);
                 AppendLog($"Antimalware engine result: {engMsg}");
 
                 // 3. Run full remediation
-                AppendLog("Phase 3: Restoring services and policies via Administrator PowerShell...");
+                AppendLog("Phase 3/3: Restoring services, AppX packages and policies...");
                 await WindowsSecurityManager.FixServicePermissionsAndStartupAsync(AppendLog);
+                await WindowsSecurityManager.RepairWindowsSecurityAppXAsync(AppendLog);
 
                 AppendLog("🎉 Online Microsoft Defender Reinstallation finished! Re-auditing in 2 seconds...");
                 await Task.Delay(2000);
@@ -671,6 +717,27 @@ namespace HeaplitLauncher
             catch (Exception ex)
             {
                 AppendLog($"❌ Error fixing services: {ex.Message}");
+            }
+            finally
+            {
+                SetButtonsEnabled(true);
+            }
+        }
+
+        private async Task RunDismSfcRepairAsync()
+        {
+            SetButtonsEnabled(false);
+            AppendLog("🔍 STARTING DISM & SFC SYSTEM IMAGE REPAIR...");
+
+            try
+            {
+                var (ok, msg) = await WindowsSecurityManager.RunDismAndSfcRepairAsync(AppendLog);
+                AppendLog(ok ? "✅ System component store repair dispatched." : $"⚠️ DISM/SFC notice: {msg}");
+                await RunLiveAuditAsync();
+            }
+            catch (Exception ex)
+            {
+                AppendLog($"❌ Error running DISM/SFC: {ex.Message}");
             }
             finally
             {
@@ -742,26 +809,49 @@ namespace HeaplitLauncher
             }
         }
 
-        private void OpenWindowsDefenderApp()
+        private async Task OpenWindowsDefenderAppAsync()
         {
+            AppendLog("Attempting multi-tiered launch of Windows Defender Security Center...");
+
+            // Method 1: Try Direct SecurityHealthHost in System32\SecurityHealth
             try
             {
-                AppendLog("Opening Windows Defender Security Center...");
-                Process.Start(new ProcessStartInfo
+                string shBase = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "SecurityHealth");
+                if (Directory.Exists(shBase))
                 {
-                    FileName = "windowsdefender:",
-                    UseShellExecute = true
-                });
-            }
-            catch (Exception ex)
-            {
-                AppendLog($"Could not launch windowsdefender: protocol: {ex.Message}");
-                try
-                {
-                    Process.Start(new ProcessStartInfo { FileName = "ms-settings:windowsdefender", UseShellExecute = true });
+                    var hostExes = Directory.GetFiles(shBase, "SecurityHealthHost.exe", SearchOption.AllDirectories);
+                    if (hostExes.Length > 0)
+                    {
+                        string latestHost = hostExes.OrderByDescending(f => f).First();
+                        AppendLog($"Launching via SecurityHealthHost: {latestHost}...");
+                        Process.Start(new ProcessStartInfo { FileName = latestHost, UseShellExecute = true });
+                        return;
+                    }
                 }
-                catch { }
             }
+            catch { }
+
+            // Method 2: Try windowsdefender: URL protocol
+            try
+            {
+                AppendLog("Launching via windowsdefender: URL protocol...");
+                Process.Start(new ProcessStartInfo { FileName = "windowsdefender:", UseShellExecute = true });
+                return;
+            }
+            catch { }
+
+            // Method 3: Try ms-settings:windowsdefender
+            try
+            {
+                AppendLog("Launching via ms-settings:windowsdefender...");
+                Process.Start(new ProcessStartInfo { FileName = "ms-settings:windowsdefender", UseShellExecute = true });
+                return;
+            }
+            catch { }
+
+            // Method 4: If all fail, auto-trigger SecHealthUI repair
+            AppendLog("⚠️ All direct launch mechanisms failed. Auto-triggering SecHealthUI AppX repair...");
+            await FixSecHealthUiAppxAsync();
         }
 
         private void SetButtonsEnabled(bool enabled)
@@ -769,10 +859,12 @@ namespace HeaplitLauncher
             Application.Current.Dispatcher.Invoke(() =>
             {
                 if (_btnRestoreAll != null) _btnRestoreAll.IsEnabled = enabled;
+                if (_btnFixSecHealthUi != null) _btnFixSecHealthUi.IsEnabled = enabled;
                 if (_btnReinstallOnline != null) _btnReinstallOnline.IsEnabled = enabled;
                 if (_btnMsertScanner != null) _btnMsertScanner.IsEnabled = enabled;
                 if (_btnFixRegistry != null) _btnFixRegistry.IsEnabled = enabled;
                 if (_btnFixServices != null) _btnFixServices.IsEnabled = enabled;
+                if (_btnDismSfc != null) _btnDismSfc.IsEnabled = enabled;
                 if (_btnAudit != null) _btnAudit.IsEnabled = enabled;
                 if (_btnClearExclusions != null) _btnClearExclusions.IsEnabled = enabled;
                 if (_btnUpdateSigs != null) _btnUpdateSigs.IsEnabled = enabled;

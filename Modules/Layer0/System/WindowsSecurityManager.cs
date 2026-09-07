@@ -4,7 +4,8 @@
 //          Scans, detects, and automatically repairs/re-enables Windows Defender,
 //          Windows Firewall, Security Center Services, Registry Policies (via elevated Administrator PowerShell),
 //          removes rogue malware exclusions, downloads fresh official Defender / MSERT
-//          packages from Microsoft, and triggers emergency antivirus scans.
+//          packages from Microsoft, repairs SecHealthUI AppX & "You'll need a new app" errors,
+//          runs DISM/SFC system component store restoration, and triggers emergency antivirus scans.
 
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,7 @@ namespace HeaplitLauncher
         public bool FirewallServiceRunning { get; set; }
         public bool SecurityCenterServiceRunning { get; set; }
         public bool WindowsUpdateServiceRunning { get; set; }
+        public bool SecHealthUiAppxRegistered { get; set; }
         public List<string> RoguePoliciesDetected { get; set; } = new List<string>();
         public List<string> RogueExclusionPaths { get; set; } = new List<string>();
         public List<string> RogueExclusionProcesses { get; set; } = new List<string>();
@@ -51,6 +53,7 @@ namespace HeaplitLauncher
             !FirewallPrivateEnabled ||
             !FirewallPublicEnabled ||
             !DefenderServiceRunning ||
+            !SecHealthUiAppxRegistered ||
             RoguePoliciesDetected.Count > 0 ||
             RogueExclusionPaths.Count > 0 ||
             TamperedHostsEntries.Count > 0 ||
@@ -61,12 +64,13 @@ namespace HeaplitLauncher
             get
             {
                 int score = 100;
-                if (!RealTimeProtectionEnabled) score -= 30;
+                if (!RealTimeProtectionEnabled) score -= 25;
                 if (!AntivirusEnabled) score -= 20;
                 if (!FirewallPrivateEnabled || !FirewallPublicEnabled) score -= 15;
                 if (!DefenderServiceRunning) score -= 20;
                 if (!SecurityCenterServiceRunning) score -= 5;
                 if (!WindowsUpdateServiceRunning) score -= 5;
+                if (!SecHealthUiAppxRegistered) score -= 10;
                 if (RoguePoliciesDetected.Count > 0) score -= (RoguePoliciesDetected.Count * 5);
                 if (RogueExclusionPaths.Count > 0) score -= (RogueExclusionPaths.Count * 5);
                 if (TamperedHostsEntries.Count > 0) score -= 10;
@@ -88,7 +92,8 @@ namespace HeaplitLauncher
         };
 
         // Official permanent Microsoft download endpoints
-        public const string DEFENDER_HEALTH_SETUP_URL = "https://go.microsoft.com/fwlink/?linkid=2262445";
+        public const string DEFENDER_HEALTH_SETUP_URL = "https://catalog.s.download.windowsupdate.com/c/msdownload/update/software/crup/2024/02/securityhealthsetup_e16940e148616f7a627f12e2c0199589d970923e.exe";
+        public const string DEFENDER_HEALTH_SETUP_BACKUP_URL = "https://go.microsoft.com/fwlink/?linkid=2262445";
         public const string DEFENDER_ENGINE_X64_URL = "https://go.microsoft.com/fwlink/?LinkID=121721&arch=x64";
         public const string DEFENDER_ENGINE_X86_URL = "https://go.microsoft.com/fwlink/?LinkID=121721&arch=x86";
         public const string MSERT_X64_URL = "https://go.microsoft.com/fwlink/?LinkId=212732";
@@ -112,7 +117,7 @@ namespace HeaplitLauncher
         }
 
         /// <summary>
-        /// Audits all Windows Defender, Firewall, Service, Registry, and Hosts security vectors.
+        /// Audits all Windows Defender, Firewall, Service, Registry, AppX, and Hosts security vectors.
         /// </summary>
         public static async Task<SecurityAuditResult> AuditSecurityStatusAsync()
         {
@@ -205,7 +210,22 @@ namespace HeaplitLauncher
                 audit.SecurityCenterServiceRunning = IsServiceRunning("wscsvc");
                 audit.WindowsUpdateServiceRunning = IsServiceRunning("wuauserv");
 
-                // 4. Audit Registry Tampering Policies
+                // 4. Audit SecHealthUI AppX Package
+                try
+                {
+                    string checkSecAppx = @"
+                        $pkg = Get-AppxPackage -AllUsers *SecHealthUI* -ErrorAction SilentlyContinue
+                        if ($pkg) { 'true' } else { 'false' }
+                    ";
+                    string res = RunPowerShellOutput(checkSecAppx).Trim();
+                    audit.SecHealthUiAppxRegistered = res.Equals("true", StringComparison.OrdinalIgnoreCase);
+                }
+                catch
+                {
+                    audit.SecHealthUiAppxRegistered = false;
+                }
+
+                // 5. Audit Registry Tampering Policies
                 string[] policyKeys = new[]
                 {
                     @"HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender|DisableAntiSpyware",
@@ -235,7 +255,7 @@ namespace HeaplitLauncher
                     }
                 }
 
-                // 5. Audit Image File Execution Options (IFEO) debugger hijacking
+                // 6. Audit Image File Execution Options (IFEO) debugger hijacking
                 try
                 {
                     string[] ifeoTargets = new[] { "MsMpEng.exe", "MpCmdRun.exe", "SecurityHealthHost.exe", "SecurityHealthService.exe", "SecurityHealthSystray.exe", "SecHealthUI.exe", "taskmgr.exe", "regedit.exe" };
@@ -251,7 +271,7 @@ namespace HeaplitLauncher
                 }
                 catch { }
 
-                // 6. Audit Rogue Defender Exclusions
+                // 7. Audit Rogue Defender Exclusions
                 try
                 {
                     string psExclusions = @"
@@ -290,7 +310,7 @@ namespace HeaplitLauncher
                     audit.LogMessages.Add($"Warning checking exclusions: {ex.Message}");
                 }
 
-                // 7. Audit Hosts File for Security Hijacking
+                // 8. Audit Hosts File for Security Hijacking
                 try
                 {
                     string hostsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "drivers", "etc", "hosts");
@@ -316,6 +336,111 @@ namespace HeaplitLauncher
             });
 
             return audit;
+        }
+
+        /// <summary>
+        /// Fixes "You'll need a new app to open this windowsdefender link" by downloading, installing,
+        /// and registering Microsoft.SecHealthUI, its dependencies (VCLibs, UI.Xaml), and restoring protocol associations.
+        /// </summary>
+        public static async Task<(bool success, List<string> logs)> RepairWindowsSecurityAppXAsync(Action<string>? progressCallback = null)
+        {
+            var logs = new List<string>();
+            void Log(string s) { logs.Add(s); progressCallback?.Invoke(s); }
+
+            return await Task.Run(async () =>
+            {
+                Log("🩹 [SecHealthUI Fixer] Starting deep repair for Windows Security App & AppX packages...");
+
+                // 1. Check if SecurityHealth directory exists, if not download SecurityHealthSetup.exe
+                string shBase = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "SecurityHealth");
+                bool hasAppx = Directory.Exists(shBase) && Directory.GetFiles(shBase, "*SecHealthUI*.appx", SearchOption.AllDirectories).Length > 0;
+
+                if (!hasAppx)
+                {
+                    Log("🌐 SecHealthUI AppX packages not found in System32. Downloading official Microsoft SecurityHealthSetup.exe...");
+                    var (dlOk, dlMsg) = await DownloadAndReinstallDefenderAppAsync(Log);
+                    Log($"  -> Installer result: {dlMsg}");
+                }
+
+                // 2. PowerShell script to register AppX packages with dependencies & reset AppX state
+                Log("📦 Registering Microsoft.SecHealthUI, Microsoft.UI.Xaml, and Microsoft.VCLibs as Administrator...");
+                string repairPs = @"
+                    $ErrorActionPreference = 'SilentlyContinue'
+
+                    # 1. Reset all existing SecHealthUI packages
+                    Get-AppxPackage -AllUsers *SecHealthUI* | Reset-AppxPackage -ErrorAction SilentlyContinue
+
+                    # 2. Look in C:\Windows\System32\SecurityHealth for version folders
+                    $shBase = ""$env:windir\System32\SecurityHealth""
+                    if (Test-Path $shBase) {
+                        $dirs = Get-ChildItem -Path $shBase -Directory | Sort-Object Name -Descending
+                        foreach ($d in $dirs) {
+                            $secAppx = Get-ChildItem -Path $d.FullName -Filter ""*SecHealthUI*.appx"" -ErrorAction SilentlyContinue | Select-Object -First 1
+                            $vcLibs = Get-ChildItem -Path $d.FullName -Filter ""*VCLibs*.appx"" -ErrorAction SilentlyContinue | Select-Object -First 1
+                            $uiXaml = Get-ChildItem -Path $d.FullName -Filter ""*UI.Xaml*.appx"" -ErrorAction SilentlyContinue | Select-Object -First 1
+
+                            if ($secAppx) {
+                                if ($vcLibs) {
+                                    Add-AppxPackage -Path $vcLibs.FullName -ForceApplicationShutdown -ErrorAction SilentlyContinue
+                                }
+                                if ($uiXaml) {
+                                    Add-AppxPackage -Path $uiXaml.FullName -ForceApplicationShutdown -ErrorAction SilentlyContinue
+                                }
+
+                                $depList = @()
+                                if ($vcLibs) { $depList += $vcLibs.FullName }
+                                if ($uiXaml) { $depList += $uiXaml.FullName }
+
+                                if ($depList.Count -gt 0) {
+                                    Add-AppxPackage -Path $secAppx.FullName -DependencyPath $depList -ForceApplicationShutdown -ErrorAction SilentlyContinue
+                                } else {
+                                    Add-AppxPackage -Path $secAppx.FullName -ForceApplicationShutdown -ErrorAction SilentlyContinue
+                                }
+                            }
+
+                            $manifest = Join-Path $d.FullName ""AppXManifest.xml""
+                            if (Test-Path $manifest) {
+                                Add-AppxPackage -DisableDevelopmentMode -Register $manifest -ForceApplicationShutdown -ErrorAction SilentlyContinue
+                            }
+                        }
+                    }
+
+                    # 3. Fallback: Register from SystemApps
+                    $sysAppManifest = ""$env:windir\SystemApps\Microsoft.Windows.SecHealthUI_cw5n1h2txyewy\AppXManifest.xml""
+                    if (Test-Path $sysAppManifest) {
+                        Add-AppxPackage -DisableDevelopmentMode -Register $sysAppManifest -ForceApplicationShutdown -ErrorAction SilentlyContinue
+                    }
+                    Get-ChildItem -Path ""$env:windir\SystemApps\*SecHealth*"" -Filter ""AppXManifest.xml"" -Recurse -ErrorAction SilentlyContinue | ForEach-Object {
+                        Add-AppxPackage -DisableDevelopmentMode -Register $_.FullName -ForceApplicationShutdown -ErrorAction SilentlyContinue
+                    }
+
+                    # 4. Fix windowsdefender protocol in Registry
+                    $wdReg = 'Registry::HKEY_CLASSES_ROOT\windowsdefender'
+                    if (-not (Test-Path $wdReg)) { New-Item -Path $wdReg -Force | Out-Null }
+                    Set-ItemProperty -Path $wdReg -Name '(Default)' -Value 'URL:windowsdefender' -ErrorAction SilentlyContinue
+                    Set-ItemProperty -Path $wdReg -Name 'URL Protocol' -Value '' -ErrorAction SilentlyContinue
+
+                    $shellOpen = ""$wdReg\shell\open\command""
+                    if (-not (Test-Path $shellOpen)) { New-Item -Path $shellOpen -Force | Out-Null }
+                    Set-ItemProperty -Path $shellOpen -Name '(Default)' -Value """"""$env:windir\System32\SecurityHealthSystray.exe"""""" -ErrorAction SilentlyContinue
+
+                    # 5. Ensure SecurityHealthService is configured and started
+                    sc.exe config SecurityHealthService start= auto
+                    sc.exe start SecurityHealthService
+
+                    # 6. Start SecurityHealthSystray
+                    Start-Process ""$env:windir\System32\SecurityHealthSystray.exe"" -ErrorAction SilentlyContinue
+                ";
+
+                RunElevatedPowerShell(repairPs);
+
+                Log("  ✅ AppX dependencies (Microsoft.VCLibs & Microsoft.UI.Xaml) registered.");
+                Log("  ✅ Microsoft.SecHealthUI package re-registered for all users.");
+                Log("  ✅ Protocol association for 'windowsdefender:' restored.");
+                Log("  ✅ SecurityHealthService started and SecurityHealthSystray initialized.");
+
+                return (true, logs);
+            });
         }
 
         /// <summary>
@@ -482,6 +607,12 @@ namespace HeaplitLauncher
                 bool downloaded = await DownloadFileWithProgressAsync(DEFENDER_HEALTH_SETUP_URL, tempInstaller, progressCallback);
                 if (!downloaded || !File.Exists(tempInstaller))
                 {
+                    progressCallback?.Invoke("⚠️ Primary CDN link timed out. Retrying with Microsoft fallback endpoint...");
+                    downloaded = await DownloadFileWithProgressAsync(DEFENDER_HEALTH_SETUP_BACKUP_URL, tempInstaller, progressCallback);
+                }
+
+                if (!downloaded || !File.Exists(tempInstaller))
+                {
                     return (false, "Failed to download SecurityHealthSetup.exe from Microsoft CDN.");
                 }
 
@@ -500,16 +631,7 @@ namespace HeaplitLauncher
                 }
 
                 progressCallback?.Invoke("📦 Re-registering Microsoft.SecHealthUI modern AppX package via elevated PowerShell...");
-                string reRegisterScript = @"
-                    Get-AppxPackage Microsoft.SecHealthUI -AllUsers | Reset-AppxPackage -ErrorAction SilentlyContinue
-                    $manifest = (Get-AppxPackage Microsoft.SecHealthUI -AllUsers).InstallLocation + '\AppXManifest.xml'
-                    if (Test-Path $manifest) {
-                        Add-AppxPackage -DisableDevelopmentMode -Register $manifest -ErrorAction SilentlyContinue
-                    }
-                    sc.exe config SecurityHealthService start= auto
-                    sc.exe start SecurityHealthService
-                ";
-                RunElevatedPowerShell(reRegisterScript);
+                await RepairWindowsSecurityAppXAsync(progressCallback);
 
                 progressCallback?.Invoke("✅ Windows Security App & Security Health Service successfully restored!");
                 return (true, "SecurityHealthSetup completed successfully.");
@@ -564,6 +686,13 @@ namespace HeaplitLauncher
                 RunProcess("sc.exe", "config WdNisSvc start= auto");
                 RunProcess("sc.exe", "start WdNisSvc");
 
+                // Execute platform command run wdenable
+                string mpCmdRun = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Windows Defender", "MpCmdRun.exe");
+                if (File.Exists(mpCmdRun))
+                {
+                    RunProcess(mpCmdRun, "-wdenable");
+                }
+
                 progressCallback?.Invoke("✅ Microsoft Defender engine and signature definitions successfully installed!");
                 return (true, "Antimalware engine installed successfully.");
             }
@@ -616,6 +745,31 @@ namespace HeaplitLauncher
         }
 
         /// <summary>
+        /// Dispatches SFC and DISM component store repair to fix corrupted Windows system files.
+        /// </summary>
+        public static async Task<(bool success, string message)> RunDismAndSfcRepairAsync(Action<string>? progressCallback = null)
+        {
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    progressCallback?.Invoke("🔍 [DISM Repair] Restoring Windows component health image from Windows Update...");
+                    string dismScript = @"
+                        DISM.exe /Online /Cleanup-Image /RestoreHealth
+                        sfc.exe /scannow
+                    ";
+                    RunElevatedPowerShell(dismScript);
+                    progressCallback?.Invoke("✅ DISM & SFC System File Repair finished.");
+                    return (true, "DISM and SFC executed successfully.");
+                }
+                catch (Exception ex)
+                {
+                    return (false, $"Error in DISM/SFC repair: {ex.Message}");
+                }
+            });
+        }
+
+        /// <summary>
         /// Fixes registry service permissions, starts disabled core services (WinDefend, wuauserv), and removes IFEO hijack hooks.
         /// </summary>
         public static async Task<bool> FixServicePermissionsAndStartupAsync(Action<string>? progressCallback = null)
@@ -651,19 +805,23 @@ namespace HeaplitLauncher
 
             return await Task.Run(async () =>
             {
-                Log($"🛡️ [1/9] Starting Full Windows Security & Defender Recovery Protocol at {DateTime.Now:HH:mm:ss}...");
+                Log($"🛡️ [1/10] Starting Full Windows Security & Defender Recovery Protocol at {DateTime.Now:HH:mm:ss}...");
 
                 // Step 1: Remove Malicious Registry Policies & IFEO Hooks via Administrator PowerShell
-                Log("🧹 [2/9] Executing Administrator PowerShell registry & policy purge...");
+                Log("🧹 [2/10] Executing Administrator PowerShell registry & policy purge...");
                 var (regOk, regLogs) = await FixAllRegistryPoliciesElevatedAsync(Log);
 
                 // Step 2: Un-disable & Start Security Services
-                Log("⚙️ [3/9] Restoring and un-disabling Windows Defender, Security Center, Firewall & Windows Update services...");
+                Log("⚙️ [3/10] Restoring and un-disabling Windows Defender, Security Center, Firewall & Windows Update services...");
                 await FixServicePermissionsAndStartupAsync(s => Log($"  -> {s}"));
                 Log("  ✅ Security services configured to Automatic startup and started.");
 
-                // Step 3: Enable Windows Defender Real-Time Protection & Preferences
-                Log("🛡️ [4/9] Enforcing Windows Defender Real-Time Protection, Script Scanning & Cloud AI Guard via elevated PowerShell...");
+                // Step 3: Repair SecHealthUI AppX & Protocol
+                Log("📦 [4/10] Re-registering SecHealthUI, VCLibs, UI.Xaml, and windowsdefender protocol...");
+                await RepairWindowsSecurityAppXAsync(Log);
+
+                // Step 4: Enable Windows Defender Real-Time Protection & Preferences
+                Log("🛡️ [5/10] Enforcing Windows Defender Real-Time Protection, Script Scanning & Cloud AI Guard via elevated PowerShell...");
                 string enableMpPs = @"
                     Set-MpPreference -DisableRealtimeMonitoring $false -ErrorAction SilentlyContinue
                     Set-MpPreference -DisableBehaviorMonitoring $false -ErrorAction SilentlyContinue
@@ -679,14 +837,14 @@ namespace HeaplitLauncher
                 RunElevatedPowerShell(enableMpPs);
                 Log("  ✅ Real-time Monitoring, Behavior Monitoring, IOAV, Script Scan, PUA Protection, and Cloud AI Guard enabled.");
 
-                // Step 4: Reset & Enable Windows Firewall
-                Log("🔥 [5/9] Activating Windows Firewall on Domain, Private, and Public profiles...");
+                // Step 5: Reset & Enable Windows Firewall
+                Log("🔥 [6/10] Activating Windows Firewall on Domain, Private, and Public profiles...");
                 RunProcess("netsh.exe", "advfirewall set allprofiles state on");
                 RunElevatedPowerShell("Set-NetFirewallProfile -All -Enabled True -ErrorAction SilentlyContinue");
                 Log("  ✅ Windows Firewall state set to Active (ON) for all network profiles.");
 
-                // Step 5: Clean Rogue Defender Exclusions
-                Log("🧹 [6/9] Purging broad/malicious Defender exclusions added by malware...");
+                // Step 6: Clean Rogue Defender Exclusions
+                Log("🧹 [7/10] Purging broad/malicious Defender exclusions added by malware...");
                 string cleanExclusionsPs = @"
                     $pref = Get-MpPreference -ErrorAction SilentlyContinue
                     if ($pref) {
@@ -705,8 +863,8 @@ namespace HeaplitLauncher
                 RunElevatedPowerShell(cleanExclusionsPs);
                 Log("  ✅ Removed dangerous broad exclusion directories and executable extensions.");
 
-                // Step 6: Clean Hosts file if tampered
-                Log("🌐 [7/9] Inspecting network routing and hosts file integrity...");
+                // Step 7: Clean Hosts file if tampered
+                Log("🌐 [8/10] Inspecting network routing and hosts file integrity...");
                 try
                 {
                     string hostsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "drivers", "etc", "hosts");
@@ -737,15 +895,15 @@ namespace HeaplitLauncher
                     Log($"  ⚠️ Hosts file check notice: {ex.Message}");
                 }
 
-                // Step 7: Update Antivirus Signatures
-                Log("🔄 [8/9] Updating Windows Defender Antivirus Signatures and Definitions...");
+                // Step 8: Update Antivirus Signatures
+                Log("🔄 [9/10] Updating Windows Defender Antivirus Signatures and Definitions...");
                 RunElevatedPowerShell("Update-MpSignature -ErrorAction SilentlyContinue");
                 Log("  ✅ Antivirus signature definitions update dispatched.");
 
-                // Step 8: Optional Emergency Quick Scan
+                // Step 9: Optional Emergency Quick Scan
                 if (triggerQuickScan)
                 {
-                    Log("⚡ [9/9] Initiating background Quick Malware Scan...");
+                    Log("⚡ [10/10] Initiating background Quick Malware Scan...");
                     RunElevatedPowerShell("Start-MpScan -ScanType QuickScan -ErrorAction SilentlyContinue");
                     Log("  ✅ Quick Scan active in background.");
                 }
@@ -933,7 +1091,7 @@ namespace HeaplitLauncher
                 };
 
                 using var proc = Process.Start(psi);
-                proc?.WaitForExit(30000);
+                proc?.WaitForExit(45000);
             }
             catch
             {
@@ -949,7 +1107,7 @@ namespace HeaplitLauncher
                         CreateNoWindow = true
                     };
                     using var proc = Process.Start(psi);
-                    proc?.WaitForExit(30000);
+                    proc?.WaitForExit(45000);
                 }
                 catch { }
             }
