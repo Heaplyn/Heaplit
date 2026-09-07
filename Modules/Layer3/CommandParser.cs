@@ -117,8 +117,8 @@ namespace HeaplitLauncher
                 (name.Contains("volume") || name.Contains("mute") || name.Contains("music") || name.Contains("playlist") || name.Contains("tts") || name.Contains("voice") || name.Contains("ffmpeg") || name.Contains("sound")))
                 return true;
 
-            if ((query.Contains("git") || query.Contains("code") || query.Contains("edit") || query.Contains("build") || query.Contains("decompile") || query.Contains("disassembl") || query.Contains("hex") || query.Contains("bin") || query.Contains("cli") || query.Contains("ps") || query.Contains("power")) &&
-                (name.Contains("git") || name.Contains("code") || name.Contains("edit") || name.Contains("build") || name.Contains("decompile") || name.Contains("disassembl") || name.Contains("cli") || name.Contains("powershell") || name.Contains("dev")))
+            if ((query.Contains("git") || query.Contains("import") || query.Contains("clone") || query.Contains("repo") || query.Contains("github") || query.Contains("gitlab") || query.Contains("bitbucket") || query.Contains("code") || query.Contains("edit") || query.Contains("build") || query.Contains("decompile") || query.Contains("disassembl") || query.Contains("hex") || query.Contains("bin") || query.Contains("cli") || query.Contains("ps") || query.Contains("power")) &&
+                (name.Contains("git") || name.Contains("import") || name.Contains("clone") || name.Contains("repo") || name.Contains("code") || name.Contains("edit") || name.Contains("build") || name.Contains("decompile") || name.Contains("disassembl") || name.Contains("cli") || name.Contains("powershell") || name.Contains("dev")))
                 return true;
 
             if ((query.Contains("note") || query.Contains("todo") || query.Contains("task") || query.Contains("calendar") || query.Contains("timer") || query.Contains("remind") || query.Contains("focus") || query.Contains("adhd") || query.Contains("clean")) &&

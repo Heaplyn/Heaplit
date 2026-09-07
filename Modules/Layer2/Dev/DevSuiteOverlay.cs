@@ -72,11 +72,21 @@ namespace HeaplitLauncher
             searchGrid.Children.Add(searchBtn);
             headerStack.Children.Add(searchGrid);
 
+            var btnRow = new WrapPanel { Margin = new Thickness(0, 10, 0, 0) };
+
             var batchBtn = CreateStyledButton("📥 INSTALL ALL MISSING TOOLS IN SUITE", (s, e) => {
                 DevSuiteManager.InstallAllMissing();
             }, isPrimary: true, fontSize: 11);
-            batchBtn.Margin = new Thickness(0, 10, 0, 0);
-            headerStack.Children.Add(batchBtn);
+            batchBtn.Margin = new Thickness(0, 0, 8, 4);
+            btnRow.Children.Add(batchBtn);
+
+            var repoImportBtn = CreateStyledButton("🚀 IMPORT REPO & SMART SETUP", (s, e) => {
+                UniversalRepoImporterOverlay.ShowOverlay();
+            }, isPrimary: false, fontSize: 11);
+            repoImportBtn.Margin = new Thickness(0, 0, 0, 4);
+            btnRow.Children.Add(repoImportBtn);
+
+            headerStack.Children.Add(btnRow);
 
             Grid.SetRow(headerStack, 0);
             mainGrid.Children.Add(headerStack);
