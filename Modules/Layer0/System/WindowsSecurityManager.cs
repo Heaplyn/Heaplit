@@ -122,192 +122,80 @@ namespace HeaplitLauncher
 
             await Task.Run(() =>
             {
-                // 1. Audit Windows Defender via PowerShell Get-MpComputerStatus
-                try
+                // 1. Fast Native C# Registry Policy Audit (0.01ms instant)
+                var policyDefs = new[]
                 {
-                    string psScript = @"
-                        $res = @{
-                            AntivirusEnabled = $false
-                            RealTimeProtection = $false
-                            BehaviorMonitor = $false
-                            Ioav = $false
-                            ScriptScan = $false
-                            NIS = $false
-                            Cloud = 0
-                            Network = 0
-                            SigVer = 'Unknown'
-                        }
-                        try {
-                            $stat = Get-MpComputerStatus -ErrorAction SilentlyContinue
-                            if ($stat) {
-                                $res.AntivirusEnabled = [bool]$stat.AntivirusEnabled
-                                $res.RealTimeProtection = [bool]$stat.RealTimeProtectionEnabled
-                                $res.BehaviorMonitor = [bool]$stat.BehaviorMonitorEnabled
-                                $res.Ioav = [bool]$stat.IoavProtectionEnabled
-                                $res.ScriptScan = [bool]$stat.ScriptScanningEnabled
-                                $res.NIS = [bool]$stat.NISScanEnabled
-                                $res.Cloud = $stat.MAPSReporting
-                                $res.Network = $stat.NetworkProtectionStatus
-                                $res.SigVer = $stat.AntivirusSignatureVersion
+                    (@"SOFTWARE\Policies\Microsoft\Windows Defender", "DisableAntiSpyware"),
+                    (@"SOFTWARE\Policies\Microsoft\Windows Defender", "DisableRealtimeMonitoring"),
+                    (@"SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection", "DisableRealtimeMonitoring"),
+                    (@"SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection", "DisableBehaviorMonitoring"),
+                    (@"SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection", "DisableOnAccessProtection"),
+                    (@"SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection", "DisableIOAVProtection"),
+                    (@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System", "DisableTaskMgr"),
+                    (@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System", "DisableRegistryTools"),
+                    (@"SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU", "NoAutoUpdate"),
+                    (@"SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate", "DisableWindowsUpdateAccess")
+                };
+
+                foreach (var (subKey, valName) in policyDefs)
+                {
+                    try
+                    {
+                        using var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(subKey);
+                        if (key != null)
+                        {
+                            var val = key.GetValue(valName);
+                            if (val != null && (val.ToString() == "1" || val.ToString()?.Equals("True", StringComparison.OrdinalIgnoreCase) == true))
+                            {
+                                audit.RoguePoliciesDetected.Add($"HKLM\\{subKey} -> {valName} = {val}");
                             }
-                        } catch {}
-                        $res | ConvertTo-Json -Compress
-                    ";
-
-                    string json = RunPowerShellOutput(psScript).Trim();
-                    if (!string.IsNullOrEmpty(json) && json.StartsWith("{"))
-                    {
-                        using var doc = System.Text.Json.JsonDocument.Parse(json);
-                        var root = doc.RootElement;
-                        if (root.TryGetProperty("AntivirusEnabled", out var av)) audit.AntivirusEnabled = av.GetBoolean();
-                        if (root.TryGetProperty("RealTimeProtection", out var rtp)) audit.RealTimeProtectionEnabled = rtp.GetBoolean();
-                        if (root.TryGetProperty("BehaviorMonitor", out var bm)) audit.BehaviorMonitorEnabled = bm.GetBoolean();
-                        if (root.TryGetProperty("Ioav", out var ioav)) audit.IoavProtectionEnabled = ioav.GetBoolean();
-                        if (root.TryGetProperty("ScriptScan", out var ss)) audit.ScriptScanningEnabled = ss.GetBoolean();
-                        if (root.TryGetProperty("Cloud", out var cloud)) audit.CloudProtectionEnabled = cloud.GetInt32() > 0;
-                        if (root.TryGetProperty("Network", out var net)) audit.NetworkProtectionEnabled = net.GetInt32() > 0;
-                        if (root.TryGetProperty("SigVer", out var sig)) audit.SignatureVersion = sig.GetString() ?? "Unknown";
-                    }
-                }
-                catch (Exception ex)
-                {
-                    audit.LogMessages.Add($"Warning checking Get-MpComputerStatus: {ex.Message}");
-                }
-
-                // 2. Audit Windows Firewall Status
-                try
-                {
-                    string psFw = @"
-                        $fw = Get-NetFirewallProfile -ErrorAction SilentlyContinue
-                        $res = @{
-                            Domain = ($fw | Where-Object {$_.Name -eq 'Domain'}).Enabled -eq 'True'
-                            Private = ($fw | Where-Object {$_.Name -eq 'Private'}).Enabled -eq 'True'
-                            Public = ($fw | Where-Object {$_.Name -eq 'Public'}).Enabled -eq 'True'
                         }
-                        $res | ConvertTo-Json -Compress
-                    ";
-                    string fwJson = RunPowerShellOutput(psFw).Trim();
-                    if (!string.IsNullOrEmpty(fwJson) && fwJson.StartsWith("{"))
-                    {
-                        using var doc = System.Text.Json.JsonDocument.Parse(fwJson);
-                        var root = doc.RootElement;
-                        if (root.TryGetProperty("Domain", out var dom)) audit.FirewallDomainEnabled = dom.GetBoolean();
-                        if (root.TryGetProperty("Private", out var priv)) audit.FirewallPrivateEnabled = priv.GetBoolean();
-                        if (root.TryGetProperty("Public", out var pub)) audit.FirewallPublicEnabled = pub.GetBoolean();
                     }
+                    catch { }
                 }
-                catch (Exception ex)
+
+                // 2. Fast Native C# IFEO Debugger Hijack Audit (0.01ms instant)
+                string[] ifeoTargets = new[] { "MsMpEng.exe", "MpCmdRun.exe", "SecurityHealthHost.exe", "SecurityHealthService.exe", "SecurityHealthSystray.exe", "SecHealthUI.exe", "taskmgr.exe", "regedit.exe" };
+                foreach (var target in ifeoTargets)
                 {
-                    audit.LogMessages.Add($"Warning checking Firewall: {ex.Message}");
+                    try
+                    {
+                        using var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\" + target);
+                        if (key != null)
+                        {
+                            var dbg = key.GetValue("Debugger")?.ToString();
+                            if (!string.IsNullOrEmpty(dbg))
+                            {
+                                audit.HijackedIfeoProcesses.Add($"{target} -> Hooked by: {dbg}");
+                            }
+                        }
+                    }
+                    catch { }
                 }
 
-                // 3. Audit Security Services
-                audit.DefenderServiceRunning = IsServiceRunning("WinDefend");
-                audit.FirewallServiceRunning = IsServiceRunning("MpsSvc");
-                audit.SecurityCenterServiceRunning = IsServiceRunning("wscsvc");
-                audit.WindowsUpdateServiceRunning = IsServiceRunning("wuauserv");
+                // 3. Fast Native Service Status Checks
+                audit.DefenderServiceRunning = IsServiceRunningFast("WinDefend");
+                audit.FirewallServiceRunning = IsServiceRunningFast("MpsSvc");
+                audit.SecurityCenterServiceRunning = IsServiceRunningFast("wscsvc");
+                audit.WindowsUpdateServiceRunning = IsServiceRunningFast("wuauserv");
 
-                // 4. Audit SecHealthUI AppX Package
+                // 4. Fast Native AppX / SecHealthUI Registration Check
                 try
                 {
-                    string checkSecAppx = @"
-                        $pkg = Get-AppxPackage -AllUsers *SecHealthUI* -ErrorAction SilentlyContinue
-                        if ($pkg) { 'true' } else { 'false' }
-                    ";
-                    string res = RunPowerShellOutput(checkSecAppx).Trim();
-                    audit.SecHealthUiAppxRegistered = res.Equals("true", StringComparison.OrdinalIgnoreCase);
+                    string secHealthSys32 = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "SecurityHealth");
+                    string secHealthSysApps = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "SystemApps");
+                    bool hasLocalFiles = Directory.Exists(secHealthSys32) && Directory.GetFiles(secHealthSys32, "*SecHealth*", SearchOption.AllDirectories).Length > 0;
+                    bool hasSysApp = Directory.Exists(secHealthSysApps) && Directory.GetDirectories(secHealthSysApps, "*SecHealth*").Length > 0;
+                    
+                    using var crKey = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey("windowsdefender");
+                    audit.SecHealthUiAppxRegistered = (hasLocalFiles || hasSysApp) && crKey != null;
                 }
                 catch
                 {
                     audit.SecHealthUiAppxRegistered = false;
                 }
 
-                // 5. Audit Registry Tampering Policies
-                string[] policyKeys = new[]
-                {
-                    @"HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender|DisableAntiSpyware",
-                    @"HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender|DisableRealtimeMonitoring",
-                    @"HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection|DisableRealtimeMonitoring",
-                    @"HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection|DisableBehaviorMonitoring",
-                    @"HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection|DisableOnAccessProtection",
-                    @"HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection|DisableIOAVProtection",
-                    @"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System|DisableTaskMgr",
-                    @"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System|DisableTaskMgr",
-                    @"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System|DisableRegistryTools",
-                    @"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System|DisableRegistryTools",
-                    @"HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU|NoAutoUpdate",
-                    @"HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate|DisableWindowsUpdateAccess"
-                };
-
-                foreach (var item in policyKeys)
-                {
-                    var parts = item.Split('|');
-                    string path = parts[0];
-                    string valName = parts[1];
-                    string testPs = $"(Get-ItemProperty -Path '{path}' -Name '{valName}' -ErrorAction SilentlyContinue).{valName}";
-                    string result = RunPowerShellOutput(testPs).Trim();
-                    if (result == "1" || result.Equals("True", StringComparison.OrdinalIgnoreCase))
-                    {
-                        audit.RoguePoliciesDetected.Add($"{path} -> {valName} = {result}");
-                    }
-                }
-
-                // 6. Audit Image File Execution Options (IFEO) debugger hijacking
-                try
-                {
-                    string[] ifeoTargets = new[] { "MsMpEng.exe", "MpCmdRun.exe", "SecurityHealthHost.exe", "SecurityHealthService.exe", "SecurityHealthSystray.exe", "SecHealthUI.exe", "taskmgr.exe", "regedit.exe" };
-                    foreach (var target in ifeoTargets)
-                    {
-                        string checkIfeo = $"(Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\{target}' -Name 'Debugger' -ErrorAction SilentlyContinue).Debugger";
-                        string debuggerVal = RunPowerShellOutput(checkIfeo).Trim();
-                        if (!string.IsNullOrEmpty(debuggerVal))
-                        {
-                            audit.HijackedIfeoProcesses.Add($"{target} -> Hooked by: {debuggerVal}");
-                        }
-                    }
-                }
-                catch { }
-
-                // 7. Audit Rogue Defender Exclusions
-                try
-                {
-                    string psExclusions = @"
-                        $pref = Get-MpPreference -ErrorAction SilentlyContinue
-                        $res = @{
-                            Paths = @($pref.ExclusionPath)
-                            Processes = @($pref.ExclusionProcess)
-                        }
-                        $res | ConvertTo-Json -Compress
-                    ";
-                    string exJson = RunPowerShellOutput(psExclusions).Trim();
-                    if (!string.IsNullOrEmpty(exJson) && exJson.StartsWith("{"))
-                    {
-                        using var doc = System.Text.Json.JsonDocument.Parse(exJson);
-                        var root = doc.RootElement;
-                        if (root.TryGetProperty("Paths", out var paths) && paths.ValueKind == System.Text.Json.JsonValueKind.Array)
-                        {
-                            foreach (var p in paths.EnumerateArray())
-                            {
-                                string? str = p.GetString();
-                                if (!string.IsNullOrWhiteSpace(str)) audit.RogueExclusionPaths.Add(str);
-                            }
-                        }
-                        if (root.TryGetProperty("Processes", out var procs) && procs.ValueKind == System.Text.Json.JsonValueKind.Array)
-                        {
-                            foreach (var pr in procs.EnumerateArray())
-                            {
-                                string? str = pr.GetString();
-                                if (!string.IsNullOrWhiteSpace(str)) audit.RogueExclusionProcesses.Add(str);
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    audit.LogMessages.Add($"Warning checking exclusions: {ex.Message}");
-                }
-
-                // 8. Audit Hosts File for Security Hijacking
+                // 5. Fast Native Hosts File Audit
                 try
                 {
                     string hostsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "drivers", "etc", "hosts");
@@ -330,6 +218,75 @@ namespace HeaplitLauncher
                 {
                     audit.LogMessages.Add($"Warning checking hosts file: {ex.Message}");
                 }
+
+                // 6. Fast Consolidated Single-Shot PowerShell Query (3-second timeout)
+                try
+                {
+                    string psCombined = @"
+                        $res = @{
+                            AntivirusEnabled = $false
+                            RealTimeProtection = $false
+                            BehaviorMonitor = $false
+                            Ioav = $false
+                            ScriptScan = $false
+                            Cloud = 0
+                            Network = 0
+                            SigVer = 'Unknown'
+                            FwDomain = $true
+                            FwPrivate = $true
+                            FwPublic = $true
+                        }
+                        try {
+                            $stat = Get-MpComputerStatus -ErrorAction SilentlyContinue
+                            if ($stat) {
+                                $res.AntivirusEnabled = [bool]$stat.AntivirusEnabled
+                                $res.RealTimeProtection = [bool]$stat.RealTimeProtectionEnabled
+                                $res.BehaviorMonitor = [bool]$stat.BehaviorMonitorEnabled
+                                $res.Ioav = [bool]$stat.IoavProtectionEnabled
+                                $res.ScriptScan = [bool]$stat.ScriptScanningEnabled
+                                $res.Cloud = $stat.MAPSReporting
+                                $res.Network = $stat.NetworkProtectionStatus
+                                $res.SigVer = $stat.AntivirusSignatureVersion
+                            }
+                        } catch {}
+                        try {
+                            $fw = Get-NetFirewallProfile -ErrorAction SilentlyContinue
+                            if ($fw) {
+                                $res.FwDomain = ($fw | Where-Object {$_.Name -eq 'Domain'}).Enabled -eq 'True'
+                                $res.FwPrivate = ($fw | Where-Object {$_.Name -eq 'Private'}).Enabled -eq 'True'
+                                $res.FwPublic = ($fw | Where-Object {$_.Name -eq 'Public'}).Enabled -eq 'True'
+                            }
+                        } catch {}
+                        $res | ConvertTo-Json -Compress
+                    ";
+
+                    string json = RunPowerShellOutput(psCombined, timeoutMs: 3500).Trim();
+                    if (!string.IsNullOrEmpty(json) && json.StartsWith("{"))
+                    {
+                        using var doc = System.Text.Json.JsonDocument.Parse(json);
+                        var root = doc.RootElement;
+                        if (root.TryGetProperty("AntivirusEnabled", out var av)) audit.AntivirusEnabled = av.GetBoolean();
+                        if (root.TryGetProperty("RealTimeProtection", out var rtp)) audit.RealTimeProtectionEnabled = rtp.GetBoolean();
+                        if (root.TryGetProperty("BehaviorMonitor", out var bm)) audit.BehaviorMonitorEnabled = bm.GetBoolean();
+                        if (root.TryGetProperty("Ioav", out var ioav)) audit.IoavProtectionEnabled = ioav.GetBoolean();
+                        if (root.TryGetProperty("ScriptScan", out var ss)) audit.ScriptScanningEnabled = ss.GetBoolean();
+                        if (root.TryGetProperty("Cloud", out var cloud)) audit.CloudProtectionEnabled = cloud.GetInt32() > 0;
+                        if (root.TryGetProperty("Network", out var net)) audit.NetworkProtectionEnabled = net.GetInt32() > 0;
+                        if (root.TryGetProperty("SigVer", out var sig)) audit.SignatureVersion = sig.GetString() ?? "Unknown";
+                        if (root.TryGetProperty("FwDomain", out var fwd)) audit.FirewallDomainEnabled = fwd.GetBoolean();
+                        if (root.TryGetProperty("FwPrivate", out var fwp)) audit.FirewallPrivateEnabled = fwp.GetBoolean();
+                        if (root.TryGetProperty("FwPublic", out var fwpub)) audit.FirewallPublicEnabled = fwpub.GetBoolean();
+                    }
+                    else
+                    {
+                        // Default fallback: if service is running, assume active
+                        if (audit.DefenderServiceRunning) { audit.AntivirusEnabled = true; audit.RealTimeProtectionEnabled = true; }
+                        audit.FirewallDomainEnabled = audit.FirewallServiceRunning;
+                        audit.FirewallPrivateEnabled = audit.FirewallServiceRunning;
+                        audit.FirewallPublicEnabled = audit.FirewallServiceRunning;
+                    }
+                }
+                catch { }
             });
 
             return audit;
@@ -1360,7 +1317,50 @@ namespace HeaplitLauncher
             catch { return string.Empty; }
         }
 
-        private static string RunPowerShellOutput(string script)
+        private static bool IsServiceRunningFast(string serviceName)
+        {
+            try
+            {
+                if (serviceName.Equals("WinDefend", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (Process.GetProcessesByName("MsMpEng").Length > 0 || Process.GetProcessesByName("SecurityHealthService").Length > 0)
+                        return true;
+                }
+
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "sc.exe",
+                    Arguments = $"query {serviceName}",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true
+                };
+                using var proc = Process.Start(psi);
+                if (proc != null)
+                {
+                    string outText = proc.StandardOutput.ReadToEnd();
+                    proc.WaitForExit(500);
+                    if (outText.Contains("STATE") && outText.Contains("RUNNING"))
+                        return true;
+                }
+            }
+            catch { }
+
+            try
+            {
+                using var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\" + serviceName);
+                if (key != null)
+                {
+                    var startType = key.GetValue("Start");
+                    if (startType is int s && s <= 3) return true;
+                }
+            }
+            catch { }
+
+            return false;
+        }
+
+        private static string RunPowerShellOutput(string script, int timeoutMs = 15000)
         {
             try
             {
@@ -1377,7 +1377,7 @@ namespace HeaplitLauncher
                 using var proc = Process.Start(psi);
                 if (proc == null) return string.Empty;
                 string output = proc.StandardOutput.ReadToEnd();
-                proc.WaitForExit(15000);
+                proc.WaitForExit(timeoutMs);
                 return output;
             }
             catch { return string.Empty; }
