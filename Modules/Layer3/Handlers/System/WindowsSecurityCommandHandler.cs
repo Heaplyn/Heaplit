@@ -40,12 +40,19 @@ namespace HeaplitLauncher
                    query.StartsWith("sfc") ||
                    query.StartsWith("downloaddef") ||
                    query.StartsWith("reinstalldef") ||
+                   query.Contains("bios") ||
+                   query.Contains("uefi") ||
+                   query.Contains("flash") ||
+                   query.Contains("usb") ||
+                   query.Contains("restore") ||
+                   query.Contains("recovery") ||
                    SearchUtil.IsClose(first, "security") ||
                    SearchUtil.IsClose(first, "defender") ||
                    SearchUtil.IsClose(first, "antivirus") ||
                    SearchUtil.IsClose(first, "firewall") ||
                    SearchUtil.IsClose(first, "malware") ||
                    SearchUtil.IsClose(first, "registry") ||
+                   SearchUtil.IsClose(first, "bios") ||
                    SearchUtil.IsClose(first, "msert");
         }
 
@@ -55,9 +62,29 @@ namespace HeaplitLauncher
             query = query.Trim().ToLowerInvariant();
 
             double baseSim = 4.5;
-            if (query.Contains("fix") || query.Contains("restore") || query.Contains("reenable") || query.Contains("malware") || query.Contains("download") || query.Contains("reinstall") || query.Contains("reg") || query.Contains("appx"))
+            if (query.Contains("fix") || query.Contains("restore") || query.Contains("reenable") || query.Contains("malware") || query.Contains("download") || query.Contains("reinstall") || query.Contains("reg") || query.Contains("appx") || query.Contains("bios") || query.Contains("flash") || query.Contains("usb"))
             {
                 baseSim = 5.5;
+            }
+
+            // 0. Restart to BIOS (Restore with Flash Drive / USB Boot)
+            if (query.Contains("bios") || query.Contains("flash") || query.Contains("usb") || query.Contains("restore") || query.Contains("recover") || query.Contains("boot") || SearchUtil.IsClose(query, "bios"))
+            {
+                results.Add(new CommandResult
+                {
+                    TITLE = "🔌 Restart to BIOS (Restore with Flash Drive / USB Boot)",
+                    DESCRIPTION = "Reboot computer directly into motherboard BIOS / UEFI setup to select a USB flash drive or restore media",
+                    SIMILARITY = baseSim + 1.2,
+                    EXECUTE = () => PowerCommandHandler.TriggerBootToBios()
+                });
+
+                results.Add(new CommandResult
+                {
+                    TITLE = "🚀 Reboot to Advanced Startup (USB / Launch Options)",
+                    DESCRIPTION = "Restart into Windows Recovery Environment (WinRE) to select 'Use a device' (USB Boot) or Startup Settings",
+                    SIMILARITY = baseSim + 1.15,
+                    EXECUTE = () => PowerCommandHandler.TriggerBootToLaunchOptions()
+                });
             }
 
             // 1. Primary Healer Hub

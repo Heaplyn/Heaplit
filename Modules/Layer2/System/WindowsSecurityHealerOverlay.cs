@@ -43,6 +43,8 @@ namespace HeaplitLauncher
         private Button _btnUpdateSigs = null!;
         private Button _btnQuickScan = null!;
         private Button _btnOpenDefender = null!;
+        private Button _btnRestartBios = null!;
+        private Button _btnAdvancedBoot = null!;
 
         public static void ShowOverlay()
         {
@@ -208,6 +210,12 @@ namespace HeaplitLauncher
             _btnOpenDefender = CreateStyledButton("🛡️ Open Defender App", async (s, e) => await OpenWindowsDefenderAppAsync());
             _btnOpenDefender.ToolTip = "Launches the official Windows Security Control Center with intelligent multi-tiered fallback.";
 
+            _btnRestartBios = CreateStyledButton("🔌 Restart to BIOS (Flash Drive / USB Boot)", (s, e) => PowerCommandHandler.TriggerBootToBios(), isPrimary: true, fontSize: 11);
+            _btnRestartBios.ToolTip = "Reboots computer directly into motherboard BIOS / UEFI firmware configuration to boot from a recovery flash drive or USB installer.";
+
+            _btnAdvancedBoot = CreateStyledButton("🚀 Advanced Startup (USB / Boot Options)", (s, e) => PowerCommandHandler.TriggerBootToLaunchOptions(), isPrimary: false, fontSize: 11);
+            _btnAdvancedBoot.ToolTip = "Restarts into Windows Recovery Environment (WinRE) to select 'Use a device' (USB Drive) or Troubleshoot/Startup Settings.";
+
             wrap.Children.Add(_btnHailMary);
             wrap.Children.Add(_btnRestoreAll);
             wrap.Children.Add(_btnFixSecHealthUi);
@@ -221,6 +229,8 @@ namespace HeaplitLauncher
             wrap.Children.Add(_btnUpdateSigs);
             wrap.Children.Add(_btnQuickScan);
             wrap.Children.Add(_btnOpenDefender);
+            wrap.Children.Add(_btnRestartBios);
+            wrap.Children.Add(_btnAdvancedBoot);
 
             return wrap;
         }
@@ -875,6 +885,8 @@ namespace HeaplitLauncher
                 if (_btnClearExclusions != null) _btnClearExclusions.IsEnabled = enabled;
                 if (_btnUpdateSigs != null) _btnUpdateSigs.IsEnabled = enabled;
                 if (_btnQuickScan != null) _btnQuickScan.IsEnabled = enabled;
+                if (_btnRestartBios != null) _btnRestartBios.IsEnabled = enabled;
+                if (_btnAdvancedBoot != null) _btnAdvancedBoot.IsEnabled = enabled;
             });
         }
     }

@@ -28,18 +28,23 @@ namespace HeaplitLauncher
                    SearchUtil.IsClose(query, "uefi") ||
                    query.Contains("bios") ||
                    query.Contains("uefi") ||
+                   query.Contains("flash") ||
+                   query.Contains("usb") ||
                    query.Contains("launch option") ||
                    query.Contains("boot option") ||
                    query.Contains("advanced startup") ||
                    query.Contains("startup option") ||
                    query.Contains("recovery") ||
+                   query.Contains("restore") ||
                    query == "turn off computer" || query == "power off" || query == "shut down pc" || query == "restart" || query == "reboot" ||
                    SearchUtil.IsClose(first, "power") ||
                    SearchUtil.IsClose(first, "shutdown") ||
                    SearchUtil.IsClose(first, "restart") ||
                    SearchUtil.IsClose(first, "reboot") ||
                    SearchUtil.IsClose(first, "bios") ||
-                   SearchUtil.IsClose(first, "uefi");
+                   SearchUtil.IsClose(first, "uefi") ||
+                   SearchUtil.IsClose(first, "flash") ||
+                   SearchUtil.IsClose(first, "usb");
         }
 
         public List<CommandResult> GetSuggestions(string query)
@@ -47,27 +52,27 @@ namespace HeaplitLauncher
             var suggestions = new List<CommandResult>();
             query = query.Trim().ToLowerInvariant();
 
-            // 1. Boot to BIOS / UEFI Firmware Settings
-            if (query.Contains("bios") || query.Contains("uefi") || SearchUtil.IsClose(query, "bios") || SearchUtil.IsClose(query, "uefi"))
+            // 1. Boot to BIOS / UEFI Firmware Settings (Flash Drive / USB Restore)
+            if (query.Contains("bios") || query.Contains("uefi") || query.Contains("flash") || query.Contains("usb") || query.Contains("restore") || SearchUtil.IsClose(query, "bios") || SearchUtil.IsClose(query, "uefi"))
             {
                 suggestions.Add(new CommandResult
                 {
-                    TITLE = "⚙️ Boot to BIOS / UEFI Firmware (Requires Confirmation)",
-                    DESCRIPTION = "Reboot computer directly into motherboard BIOS / UEFI firmware configuration screen",
+                    TITLE = "🔌 Restart to BIOS (Restore with Flash Drive / USB Boot)",
+                    DESCRIPTION = "Reboot computer directly into motherboard BIOS / UEFI setup interface to select a USB flash drive or restore media",
                     EXECUTE = () => TriggerBootToBios(),
-                    SIMILARITY = 6.5
+                    SIMILARITY = 6.8
                 });
             }
 
             // 2. Boot to Windows Advanced Launch Options / Startup Settings
-            if (query.Contains("launch") || query.Contains("boot option") || query.Contains("advanced startup") || query.Contains("startup option") || query.Contains("recovery") || query.Contains("bios") || query.Contains("uefi"))
+            if (query.Contains("launch") || query.Contains("boot option") || query.Contains("advanced startup") || query.Contains("startup option") || query.Contains("recovery") || query.Contains("bios") || query.Contains("uefi") || query.Contains("flash") || query.Contains("usb"))
             {
                 suggestions.Add(new CommandResult
                 {
                     TITLE = "🚀 Reboot to Windows Advanced Launch / Boot Options",
-                    DESCRIPTION = "Restart into Windows Recovery Environment (Safe Mode, Startup Settings, Troubleshoot, UEFI)",
+                    DESCRIPTION = "Restart into Windows Recovery Environment (Safe Mode, Startup Settings, Troubleshoot, UEFI, USB Boot)",
                     EXECUTE = () => TriggerBootToLaunchOptions(),
-                    SIMILARITY = query.Contains("launch") || query.Contains("boot option") ? 6.5 : 5.8
+                    SIMILARITY = query.Contains("launch") || query.Contains("boot option") ? 6.7 : 6.0
                 });
             }
 
