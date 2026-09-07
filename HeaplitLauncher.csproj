@@ -32,10 +32,12 @@
     <None Remove="Modules/Layer0/DownloadMedia/user_data/**" />
     <None Remove="Data/**" />
     <None Remove="Downloads/**" />
-    <Content Remove="Modules/Layer0/DownloadMedia/node_modules/**" />
-    <Content Remove="Modules/Layer0/DownloadMedia/user_data/**" />
-    <Content Remove="Data/**" />
-    <Content Remove="Downloads/**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\SecurityHealth\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

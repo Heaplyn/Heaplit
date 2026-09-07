@@ -133,6 +133,10 @@ namespace HeaplitLauncher
                 (name.Contains("screen") || name.Contains("vision") || name.Contains("analysis")))
                 return true;
 
+            if ((query.Contains("power") || query.Contains("shutdown") || query.Contains("restart") || query.Contains("reboot") || query.Contains("sleep") || query.Contains("bios") || query.Contains("uefi") || query.Contains("launch") || query.Contains("boot")) &&
+                (name.Contains("power") || name.Contains("system") || name.Contains("boot")))
+                return true;
+
             return false;
         }
     }

@@ -1,7 +1,7 @@
 // Developer: heaplyn
 // Date: 2026-09-07
 // Summary: Interactive Glassmorphic Overlay for Windows Defender & Security Healing.
-//          Audits real-time security state, repairs registry locks via elevated PowerShell as Administrator,
+//          Audits real-time security state, executes Nuclear Hail Mary restore at SYSTEM permission level,
 //          repairs broken SecHealthUI AppX & "You'll need a new app to open this windowsdefender link" errors,
 //          cleans malware exclusions, restarts security services, downloads fresh official Defender packages & MSERT from Microsoft,
 //          re-enables Firewall, and triggers emergency antivirus scans.
@@ -30,6 +30,7 @@ namespace HeaplitLauncher
 
         private StackPanel _statusCardsPanel = null!;
         private TextBox _logConsoleBox = null!;
+        private Button _btnHailMary = null!;
         private Button _btnRestoreAll = null!;
         private Button _btnFixSecHealthUi = null!;
         private Button _btnReinstallOnline = null!;
@@ -61,7 +62,7 @@ namespace HeaplitLauncher
         }
 
         private WindowsSecurityHealerOverlay()
-            : base("🛡️ HEAPLIT WINDOWS SECURITY HEALER & MALWARE RECOVERY", width: 980, height: 740)
+            : base("🛡️ HEAPLIT WINDOWS SECURITY HEALER & MALWARE RECOVERY", width: 1020, height: 760)
         {
             this.Closed += (s, e) => _instance = null;
 
@@ -168,23 +169,26 @@ namespace HeaplitLauncher
         {
             var wrap = new WrapPanel { Margin = new Thickness(0, 0, 0, 4) };
 
+            _btnHailMary = CreateStyledButton("💥 NUCLEAR HAIL MARY RESTORE", async (s, e) => await ExecuteHailMaryAsync(), isPrimary: true, fontSize: 12);
+            _btnHailMary.ToolTip = "Executes complete nuclear recovery at NT AUTHORITY\\SYSTEM / Highest permissions: resets service SDDLs, forces registry keys, deploys bundled offline AppX packages, enables shields, and starts Defender.";
+
             _btnRestoreAll = CreateStyledButton("⚡ 1-Click Restore All Security", async (s, e) => await ExecuteFullRestoreAsync(), isPrimary: true);
             _btnRestoreAll.ToolTip = "Purges rogue malware registry policies & IFEO hooks, fixes service start types, resets Defender & Firewall, and triggers scan.";
 
             _btnFixSecHealthUi = CreateStyledButton("🩹 Fix \"You'll need a new app\" (SecHealthUI)", async (s, e) => await FixSecHealthUiAppxAsync(), isPrimary: true);
-            _btnFixSecHealthUi.ToolTip = "Re-registers SecHealthUI, VCLibs, and UI.Xaml AppX dependencies and fixes the windowsdefender: protocol association.";
+            _btnFixSecHealthUi.ToolTip = "Deploys verified Microsoft.SecHealthUI, VCLibs, and UI.Xaml AppX dependencies from bundled storage and fixes protocol association.";
 
-            _btnReinstallOnline = CreateStyledButton("🌐 Reinstall Defender (Online Download)", async (s, e) => await DownloadAndReinstallDefenderOnlineAsync(), isPrimary: true);
-            _btnReinstallOnline.ToolTip = "Downloads official Microsoft SecurityHealthSetup.exe and mpam-fe.exe antimalware engine directly from Microsoft CDN.";
+            _btnReinstallOnline = CreateStyledButton("🌐 Reinstall Defender (Online Download)", async (s, e) => await DownloadAndReinstallDefenderOnlineAsync());
+            _btnReinstallOnline.ToolTip = "Downloads official Microsoft mpam-fe.exe antimalware engine and definitions directly from Microsoft CDN.";
 
             _btnMsertScanner = CreateStyledButton("🛡️ Microsoft Safety Scanner (MSERT)", async (s, e) => await DownloadAndRunMsertAsync());
             _btnMsertScanner.ToolTip = "Downloads and runs Microsoft Emergency Safety Scanner standalone tool directly from Microsoft.";
 
-            _btnFixRegistry = CreateStyledButton("🔑 Fix Registry (Admin PowerShell)", async (s, e) => await FixRegistryPoliciesAsync());
-            _btnFixRegistry.ToolTip = "Executes elevated PowerShell as Administrator to purge DisableAntiSpyware, TaskMgr lockouts, IFEO hooks, and WSUS hijacking.";
+            _btnFixRegistry = CreateStyledButton("🔑 Fix Registry (Admin / SYSTEM)", async (s, e) => await FixRegistryPoliciesAsync());
+            _btnFixRegistry.ToolTip = "Executes elevated PowerShell as SYSTEM to purge DisableAntiSpyware, TaskMgr lockouts, IFEO hooks, and WSUS hijacking.";
 
             _btnFixServices = CreateStyledButton("🔧 Fix Disabled Services", async (s, e) => await FixServicesAndIfeoAsync());
-            _btnFixServices.ToolTip = "Un-disables WinDefend and wuauserv services in Registry and starts them.";
+            _btnFixServices.ToolTip = "Un-disables WinDefend and wuauserv services in Registry and resets their service SDDL permissions.";
 
             _btnDismSfc = CreateStyledButton("🔍 DISM / SFC Repair", async (s, e) => await RunDismSfcRepairAsync());
             _btnDismSfc.ToolTip = "Runs DISM /Online /Cleanup-Image /RestoreHealth and sfc /scannow to fix corrupted Windows system files.";
@@ -204,6 +208,7 @@ namespace HeaplitLauncher
             _btnOpenDefender = CreateStyledButton("🛡️ Open Defender App", async (s, e) => await OpenWindowsDefenderAppAsync());
             _btnOpenDefender.ToolTip = "Launches the official Windows Security Control Center with intelligent multi-tiered fallback.";
 
+            wrap.Children.Add(_btnHailMary);
             wrap.Children.Add(_btnRestoreAll);
             wrap.Children.Add(_btnFixSecHealthUi);
             wrap.Children.Add(_btnReinstallOnline);
@@ -573,28 +578,28 @@ namespace HeaplitLauncher
             return cardBorder;
         }
 
-        private async Task ExecuteFullRestoreAsync()
+        private async Task ExecuteHailMaryAsync()
         {
             SetButtonsEnabled(false);
-            AppendLog("⚡ STARTING FULL 1-CLICK WINDOWS SECURITY REMEDIATION...");
+            AppendLog("💥 STARTING NUCLEAR HAIL MARY RESTORATION PROTOCOL (HIGHEST / SYSTEM PRIVILEGE)...");
 
             try
             {
-                var (success, logs) = await WindowsSecurityManager.ReenableWindowsSecurityAsync(triggerQuickScan: true, liveLog: AppendLog);
+                var (success, logs) = await WindowsSecurityManager.ExecuteHailMaryNuclearRestoreAsync(AppendLog);
                 if (success)
                 {
-                    AppendLog("🎉 Windows Security Restoration applied successfully! Re-auditing in 2 seconds...");
+                    AppendLog("🎉 NUCLEAR HAIL MARY RESTORATION COMPLETED! Re-auditing in 2 seconds...");
                     await Task.Delay(2000);
                     await RunLiveAuditAsync();
                 }
                 else
                 {
-                    AppendLog("⚠️ Remediation encountered issues. Check logs above.");
+                    AppendLog("⚠️ Nuclear restoration completed with warnings. Check logs above.");
                 }
             }
             catch (Exception ex)
             {
-                AppendLog($"❌ Error executing restoration: {ex.Message}");
+                AppendLog($"❌ Error executing Hail Mary restoration: {ex.Message}");
             }
             finally
             {
@@ -602,10 +607,15 @@ namespace HeaplitLauncher
             }
         }
 
+        private async Task ExecuteFullRestoreAsync()
+        {
+            await ExecuteHailMaryAsync();
+        }
+
         private async Task FixSecHealthUiAppxAsync()
         {
             SetButtonsEnabled(false);
-            AppendLog("🩹 REPAIRING SECHEALTHUI & 'YOU'LL NEED A NEW APP' ERROR...");
+            AppendLog("🩹 REPAIRING SECHEALTHUI & 'YOU'LL NEED A NEW APP' ERROR (DEPLOYING OFFLINE / BUNDLED APPX)...");
 
             try
             {
@@ -627,12 +637,12 @@ namespace HeaplitLauncher
         private async Task FixRegistryPoliciesAsync()
         {
             SetButtonsEnabled(false);
-            AppendLog("🔑 EXECUTING ADMINISTRATOR POWERSHELL REGISTRY POLICY OVERHAUL...");
+            AppendLog("🔑 EXECUTING SYSTEM-LEVEL REGISTRY POLICY OVERHAUL...");
 
             try
             {
                 var (ok, logs) = await WindowsSecurityManager.FixAllRegistryPoliciesElevatedAsync(AppendLog);
-                AppendLog(ok ? "✅ Registry policies fixed successfully as Administrator!" : "⚠️ Registry repair completed with notices.");
+                AppendLog(ok ? "✅ Registry policies fixed successfully as SYSTEM / Administrator!" : "⚠️ Registry repair completed with notices.");
                 await Task.Delay(2000);
                 await RunLiveAuditAsync();
             }
@@ -653,20 +663,15 @@ namespace HeaplitLauncher
 
             try
             {
-                // 1. Download and run SecurityHealthSetup
-                AppendLog("Phase 1/3: Downloading official Microsoft SecurityHealthSetup.exe...");
-                var (appOk, appMsg) = await WindowsSecurityManager.DownloadAndReinstallDefenderAppAsync(AppendLog);
-                AppendLog($"SecurityHealthSetup result: {appMsg}");
-
-                // 2. Download and install mpam-fe antimalware engine
-                AppendLog("Phase 2/3: Downloading official Microsoft Antimalware Engine & Definitions...");
+                // 1. Download and install mpam-fe antimalware engine
+                AppendLog("Phase 1/2: Downloading official Microsoft Antimalware Engine & Definitions...");
                 var (engOk, engMsg) = await WindowsSecurityManager.DownloadAndReinstallAntimalwareEngineAsync(AppendLog);
                 AppendLog($"Antimalware engine result: {engMsg}");
 
-                // 3. Run full remediation
-                AppendLog("Phase 3/3: Restoring services, AppX packages and policies...");
-                await WindowsSecurityManager.FixServicePermissionsAndStartupAsync(AppendLog);
+                // 2. Deploy AppX packages & restore services
+                AppendLog("Phase 2/2: Deploying SecHealthUI AppX packages and restoring services...");
                 await WindowsSecurityManager.RepairWindowsSecurityAppXAsync(AppendLog);
+                await WindowsSecurityManager.FixServicePermissionsAndStartupAsync(AppendLog);
 
                 AppendLog("🎉 Online Microsoft Defender Reinstallation finished! Re-auditing in 2 seconds...");
                 await Task.Delay(2000);
@@ -705,7 +710,7 @@ namespace HeaplitLauncher
         private async Task FixServicesAndIfeoAsync()
         {
             SetButtonsEnabled(false);
-            AppendLog("🔧 Un-disabling services and stripping IFEO hooks via Administrator PowerShell...");
+            AppendLog("🔧 Un-disabling services, resetting SDDLs, and stripping IFEO hooks as SYSTEM...");
 
             try
             {
@@ -727,7 +732,7 @@ namespace HeaplitLauncher
         private async Task RunDismSfcRepairAsync()
         {
             SetButtonsEnabled(false);
-            AppendLog("🔍 STARTING DISM & SFC SYSTEM IMAGE REPAIR...");
+            AppendLog("🔍 STARTING DISM & SFC SYSTEM IMAGE REPAIR AS SYSTEM / ADMINISTRATOR...");
 
             try
             {
@@ -858,6 +863,7 @@ namespace HeaplitLauncher
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
+                if (_btnHailMary != null) _btnHailMary.IsEnabled = enabled;
                 if (_btnRestoreAll != null) _btnRestoreAll.IsEnabled = enabled;
                 if (_btnFixSecHealthUi != null) _btnFixSecHealthUi.IsEnabled = enabled;
                 if (_btnReinstallOnline != null) _btnReinstallOnline.IsEnabled = enabled;
