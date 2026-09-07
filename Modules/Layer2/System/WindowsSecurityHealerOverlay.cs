@@ -46,6 +46,7 @@ namespace HeaplitLauncher
         private Button _btnRestartBios = null!;
         private Button _btnAdvancedBoot = null!;
         private Button _btnStealthReinstall = null!;
+        private Button _btnInstallPackages = null!;
 
         public static void ShowOverlay()
         {
@@ -220,9 +221,13 @@ namespace HeaplitLauncher
             _btnStealthReinstall = CreateStyledButton("🥷 STEALTH CLOAK REINSTALL", async (s, e) => await ExecuteStealthCloakReinstallAsync(), isPrimary: true, fontSize: 11);
             _btnStealthReinstall.ToolTip = "Deploys Defender under a disguised package name (Microsoft.Windows.AppHealthBroker) and cloaked binaries (WinSysBrokerHost.exe) to bypass malware kill loops and IFEO hooks.";
 
+            _btnInstallPackages = CreateStyledButton("📦 Auto-Install .NET & Packages", async (s, e) => await ExecuteAutoInstallPackagesAsync(), isPrimary: true, fontSize: 11);
+            _btnInstallPackages.ToolTip = "Automatically detects and downloads missing .NET 10 Desktop Runtime, VC++ Redistributable, WebView2, and Winget online via PowerShell.";
+
             wrap.Children.Add(_btnHailMary);
             wrap.Children.Add(_btnStealthReinstall);
             wrap.Children.Add(_btnRestoreAll);
+            wrap.Children.Add(_btnInstallPackages);
             wrap.Children.Add(_btnFixSecHealthUi);
             wrap.Children.Add(_btnReinstallOnline);
             wrap.Children.Add(_btnMsertScanner);
@@ -305,7 +310,6 @@ namespace HeaplitLauncher
 
         private async Task RunLiveAuditAsync()
         {
-            SetButtonsEnabled(false);
             AppendLog("Starting comprehensive Windows Security audit...");
 
             try
@@ -327,10 +331,6 @@ namespace HeaplitLauncher
             catch (Exception ex)
             {
                 AppendLog($"Error running audit: {ex.Message}");
-            }
-            finally
-            {
-                SetButtonsEnabled(true);
             }
         }
 
@@ -656,6 +656,30 @@ namespace HeaplitLauncher
             }
         }
 
+        private async Task ExecuteAutoInstallPackagesAsync()
+        {
+            SetButtonsEnabled(false);
+            AppendLog("📦 Starting automated online packages & runtimes installation via PowerShell...");
+
+            try
+            {
+                var progress = new Progress<string>(AppendLog);
+                string res = await SystemPackageManager.InstallAllMissingPrerequisitesAsync(progress);
+                AppendLog(res);
+                AppendLog("✅ Package auto-installer completed! Re-auditing in 2 seconds...");
+                await Task.Delay(2000);
+                await RunLiveAuditAsync();
+            }
+            catch (Exception ex)
+            {
+                AppendLog($"❌ Error auto-installing packages: {ex.Message}");
+            }
+            finally
+            {
+                SetButtonsEnabled(true);
+            }
+        }
+
         private async Task FixSecHealthUiAppxAsync()
         {
             SetButtonsEnabled(false);
@@ -922,6 +946,7 @@ namespace HeaplitLauncher
                 if (_btnRestartBios != null) _btnRestartBios.IsEnabled = enabled;
                 if (_btnAdvancedBoot != null) _btnAdvancedBoot.IsEnabled = enabled;
                 if (_btnStealthReinstall != null) _btnStealthReinstall.IsEnabled = enabled;
+                if (_btnInstallPackages != null) _btnInstallPackages.IsEnabled = enabled;
             });
         }
     }

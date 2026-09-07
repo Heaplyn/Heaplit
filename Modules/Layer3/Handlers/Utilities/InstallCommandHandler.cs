@@ -13,7 +13,7 @@ namespace HeaplitLauncher
     {
         public bool CanHandle(string query)
         {
-            return SearchUtil.MatchesAny(query, "install", "suite", "devsuite", "developer suite");
+            return SearchUtil.MatchesAny(query, "install", "suite", "devsuite", "developer suite", "prerequisite", "prerequisites", "dependency", "dependencies", "runtime", "dotnet", ".net", "vcredist", "webview2", "winget");
         }
 
         public List<CommandResult> GetSuggestions(string query)
@@ -21,6 +21,45 @@ namespace HeaplitLauncher
             var suggestions = new List<CommandResult>();
             string trimmed = query.Trim().ToLower();
             string args = query.Length > 8 ? query.Substring(8).Trim() : "";
+
+            // System Runtimes / Prerequisites Auto-Installer
+            if (trimmed.Contains("prereq") || trimmed.Contains("depend") || trimmed.Contains("runtime") || 
+                trimmed == "install .net" || trimmed == "install dotnet" || trimmed == "install vcredist" || trimmed == "install webview2" || trimmed == "install winget")
+            {
+                suggestions.Add(new CommandResult
+                {
+                    TITLE = "📦 Auto-Install Missing .NET & System Packages (PowerShell)",
+                    DESCRIPTION = "Detects and downloads .NET 10, VC++ 2015-2022, WebView2, and Winget online via PowerShell.",
+                    SIMILARITY = (SearchUtil.BestSimilarity(query, "prerequisites", "dependencies", "install .net", "install runtime") + 12.0 * 0.01),
+                    EXECUTE = () =>
+                    {
+                        Task.Run(async () =>
+                        {
+                            TextOverlay.Show("📦 Starting online package & runtime auto-installer...", 4000);
+                            var progress = new Progress<string>(msg => TextOverlay.Show(msg, 3500));
+                            string result = await SystemPackageManager.InstallAllMissingPrerequisitesAsync(progress);
+                            TextOverlay.Show(result, 6000);
+                        });
+                    }
+                });
+
+                suggestions.Add(new CommandResult
+                {
+                    TITLE = "🚀 Download & Install .NET 10 Desktop Runtime & SDK",
+                    DESCRIPTION = "Silently downloads and installs .NET 10 via official Microsoft dotnet-install engine.",
+                    SIMILARITY = (SearchUtil.BestSimilarity(query, "install .net", "install dotnet", "dotnet") + 11.0 * 0.01),
+                    EXECUTE = () =>
+                    {
+                        Task.Run(async () =>
+                        {
+                            TextOverlay.Show("🚀 Installing .NET 10 Runtime & SDK...", 4000);
+                            var progress = new Progress<string>(msg => TextOverlay.Show(msg, 3500));
+                            string result = await SystemPackageManager.InstallDotNet10Async(progress);
+                            TextOverlay.Show(result, 5000);
+                        });
+                    }
+                });
+            }
 
             if (trimmed == "suite" || trimmed == "devsuite" || trimmed == "developer suite" || trimmed == "install")
             {
@@ -38,10 +77,10 @@ namespace HeaplitLauncher
             {
                 suggestions.Add(new CommandResult
                 {
-                    TITLE = "📥 Install Packages & Tools",
-                    DESCRIPTION = "Syntax: install [winget/npm/python/dotnet/url] [package_name]",
+                    TITLE = "📥 Install Packages & Tools Online",
+                    DESCRIPTION = "Syntax: install [winget/npm/python/dotnet/url/prerequisites] [package_name]",
                     SIMILARITY = (SearchUtil.BestSimilarity(query, "install", "suite", "devsuite", "developer suite") + 5.0 * 0.01),
-                    EXECUTE = () => TextOverlay.Show("Example: install winget sideloadly", 4000)
+                    EXECUTE = () => TextOverlay.Show("Example: install winget sideloadly OR install prerequisites", 4000)
                 });
                 return suggestions;
             }
@@ -104,26 +143,42 @@ namespace HeaplitLauncher
                     EXECUTE = () => RunInstallProcess("cmd.exe", $"/c pip install {pkg}")
                 });
             }
-            // Route 5: Dotnet workloads installer
+            // Route 5: Dotnet workloads / SDK installer
             else if (provider == "dotnet" || provider == "workload")
             {
                 suggestions.Add(new CommandResult
                 {
-                    TITLE = $"🛠️ Install .NET Workload: {pkg}",
-                    DESCRIPTION = $"Runs: dotnet workload install {pkg} --source https://api.nuget.org/v3/index.json",
+                    TITLE = $"🛠️ Install .NET Package/Workload: {pkg}",
+                    DESCRIPTION = $"Installs {pkg} via .NET SDK and PowerShell installer.",
                     SIMILARITY = (SearchUtil.BestSimilarity(query, "install", "suite", "devsuite", "developer suite") + 6.8 * 0.01),
-                    EXECUTE = () => RunInstallProcess("dotnet", $"workload install {pkg} --source https://api.nuget.org/v3/index.json", runAsAdmin: true)
+                    EXECUTE = () =>
+                    {
+                        Task.Run(async () =>
+                        {
+                            TextOverlay.Show($"🛠️ Installing .NET workload: {pkg}...", 4000);
+                            await SystemPackageManager.InstallOnlinePackageAsync(pkg);
+                        });
+                    }
                 });
             }
             else
             {
-                // General fallback: Winget search install
+                // General fallback: Online Package Installer (Winget/PowerShell)
                 suggestions.Add(new CommandResult
                 {
-                    TITLE = $"📥 Install '{args}' via Winget",
-                    DESCRIPTION = $"Runs: winget install {args}",
+                    TITLE = $"📥 Install '{args}' Online via PowerShell/Winget",
+                    DESCRIPTION = $"Auto-fetches and silently installs '{args}' via PowerShell.",
                     SIMILARITY = (SearchUtil.BestSimilarity(query, "install", "suite", "devsuite", "developer suite") + 6.0 * 0.01),
-                    EXECUTE = () => RunInstallProcess("winget", $"install {args}")
+                    EXECUTE = () =>
+                    {
+                        Task.Run(async () =>
+                        {
+                            TextOverlay.Show($"📥 Auto-getting package '{args}' online...", 4000);
+                            var progress = new Progress<string>(msg => TextOverlay.Show(msg, 3500));
+                            string result = await SystemPackageManager.InstallOnlinePackageAsync(args, progress);
+                            TextOverlay.Show(result, 4000);
+                        });
+                    }
                 });
                 suggestions.Add(new CommandResult
                 {
@@ -166,6 +221,8 @@ namespace HeaplitLauncher
         {
             return new List<CommandDesc>
             {
+                new CommandDesc("install prerequisites", "Auto-detect and download .NET 10, VC++ Redist, WebView2, and Winget online via PowerShell", "install prerequisites"),
+                new CommandDesc("install .net", "Download and install .NET 10 Desktop Runtime & SDK via PowerShell", "install .net"),
                 new CommandDesc("install winget [pkg]", "Install a package silently using winget command line", "install winget sideloadly"),
                 new CommandDesc("install npm [pkg]", "Install global NPM package dependency", "install npm vite"),
                 new CommandDesc("install [url]", "Scrape and download/run installer from target webpage", "install https://sideloadly.io/index.html")
