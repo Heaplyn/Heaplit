@@ -320,6 +320,12 @@ namespace HeaplitLauncher
             _glowAmountSlider = CreateSlider(0, 30, set.TEXT_GLOW_AMOUNT, 0.1); stack.Children.Add(_glowAmountSlider);
             AddColorEditor(stack, "Glow Color:", _glowHex, h => _glowHex = h);
 
+            stack.Children.Add(CreateHeader("Custom Font Studio & Vectorizer"));
+            var fontStudioBtn = CreateStyledButton("🔤 OPEN PNG ➔ TTF FONT STUDIO...", (s, e) => FontStudioOverlay.ShowOverlay(), isPrimary: true, fontSize: 11);
+            fontStudioBtn.Height = 34;
+            fontStudioBtn.Margin = new Thickness(0, 4, 0, 10);
+            stack.Children.Add(fontStudioBtn);
+
             return new ScrollViewer { Content = stack, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
         }
 

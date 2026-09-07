@@ -124,7 +124,7 @@ namespace HeaplitLauncher
                 Padding = new Thickness(8, 6, 8, 6),
                 FontSize = 12
             };
-            string[] formats = new[] { "png", "webp", "jpg", "mp4", "gif", "mp3", "wav", "mov", "mkv", "m4a", "webm", "avi" };
+            string[] formats = new[] { "png", "webp", "jpg", "ttf", "mp4", "gif", "mp3", "wav", "mov", "mkv", "m4a", "webm", "avi" };
             foreach (var fmt in formats) _targetFormatCombo.Items.Add(fmt.ToUpper());
             _targetFormatCombo.SelectedIndex = 0;
             if (!string.IsNullOrEmpty(defaultTargetFormat)) SetTargetFormat(defaultTargetFormat);
@@ -170,6 +170,13 @@ namespace HeaplitLauncher
             var btnExtractAudio = CreateButton("🔊 Extract MP3 Audio");
             btnExtractAudio.Click += (s, e) => SetTargetFormat("mp3");
             presetGrid.Children.Add(btnExtractAudio);
+
+            var btnPng2Ttf = CreateButton("🔤 PNG ➔ TTF Font");
+            btnPng2Ttf.Click += (s, e) => {
+                SetTargetFormat("ttf");
+                FontStudioOverlay.ShowOverlay(_inputFileBox.Text.Trim().Trim('"', '\''));
+            };
+            presetGrid.Children.Add(btnPng2Ttf);
 
             root.Children.Add(presetGrid);
 
@@ -269,7 +276,13 @@ namespace HeaplitLauncher
                     string args = "";
                     targetExt = targetExt.ToLower();
 
-                    if (targetExt == "png")
+                    if (targetExt == "ttf")
+                    {
+                        var task = PngToTtfEngine.ConvertAsync(input, output);
+                        task.Wait();
+                        return task.Result.success;
+                    }
+                    else if (targetExt == "png")
                     {
                         args = $"-y -i \"{input}\" \"{output}\"";
                     }

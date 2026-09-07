@@ -377,6 +377,17 @@ namespace HeaplitLauncher
             return brush;
         }
 
+        public static void ApplyFont(string fontPath)
+        {
+            try
+            {
+                SettingsManager.Current.CUSTOM_FONT_PATH = fontPath;
+                SettingsManager.Save();
+                ApplyVisualOverrides();
+            }
+            catch { }
+        }
+
         private static void UpdateImplicitStyles(FontFamily fontFamily)
         {
             try
